@@ -12,13 +12,14 @@
     <!-- <h1><%= title %></h1>
     <p>Welcome to <%= title %></p> -->
     <script type="text/javascript" src="/javascripts/peer.js"></script>
-	<script type="text/javascript" src="/javascripts/main.js"></script>
+	<!-- <script type="text/javascript" src="/javascripts/main.js"></script> -->
+    <script type="text/javascript" src="/javascripts/postURL.js"></script>
     <button id="toggle" class="normal"></button>
 		
 		<div id="actions">
 			
 			<div id="login">
-				<form action="http://localhost:3000/login" method="post">
+				<form action="/login" method="post">
 			        <input type="text" name="username" id="username" placeholder="[Username]"/>
 			        <input type="password" name="password" id="password" placeholder="[Password]">
 			        <input type="submit" value="Log In" id="login_submit"/>

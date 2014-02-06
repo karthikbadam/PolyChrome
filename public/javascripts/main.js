@@ -18,7 +18,7 @@ function makeMessage(eventType, message) {
 	}
 
 	return data;
-}
+}	
 
 //arraylist of all connections
 var connections = [];
@@ -266,8 +266,6 @@ $(document).ready(function() {
 			handle_scroll();
 		}
 	});
-	
-
 });
 
 

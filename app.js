@@ -80,6 +80,15 @@ app.get('/js/*', function(req, res) {
 });
 
 
+app.post('/loadURL', function (req, res) {
+
+	var parsedUrl = url.parse(req.url, true); // true to get query as object
+	var params = parsedUrl.query;
+	var selected_url = String(params.url);
+
+	console.log ("Woohoo - "+ String(params));
+});
+
 app.get('/polychrome', function(req, res) {
 
 	var parsedUrl = url.parse(req.url, true); // true to get query as object
