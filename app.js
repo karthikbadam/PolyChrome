@@ -10,7 +10,6 @@ var path = require('path');
 var fs = require('fs');
 var connect = require('connect');
 
-
 var peer = require('./peer/server');
 var PeerServer = peer.PeerServer;
 
@@ -20,8 +19,6 @@ var url = require('url');
 
 var app = express();
 app.engine('.html', require('ejs').__express);
-
-var polychrome_append = '<button id="toggle" class="normal"></button>				<div id="actions">						<div id="login">				<form action="http://localhost:3000/login" method="post">			 <input type="text" name="username" id="username" placeholder="[Username]"/>			 <input type="password" name="password" id="password" placeholder="[Password]">			 <input type="submit" value="Log In" id="login_submit"/>			 <input type="button" value="Sign Up" id="signup_submit"/>				</form>			</div>			<div id: "url_info">					<ul>				<input type="text" id="url" placeholder="[Enter URL here]">				<button id="url_submit"></button>				</ul>				<ul>					Your PeerJS ID is <span id="pid"></span>				</ul>				<!-- <ul>					Connect to a peer:					<input type="text" id="rid" placeholder="Someone elses id">					<input class="button" type="button" id="connect">				</ul> -->				<ul id="results"></ul>			</div>			<div id="screen-options">				<ul>					<p> Select Screen Type:</p>				</ul>	 				<div id="multiple-screen">					<ul>					<input type="button" id="one-screen">					</ul>					</div>				<div id="multiple-screen">					<ul>					<input type="button" class="multiple-screen-element" id="two-screen-left">					<input type="button" class="multiple-screen-element" id="two-screen-right">					</ul>					</div>				<div id="multiple-screen">						<ul id="multiple-screens">					<input type="button" class="multiple-screen-element" id="four-screen-left-top">					<input type="button" class="multiple-screen-element" id="four-screen-right-top">					</ul>						<ul id="multiple-screens">					<input type="button" class="multiple-screen-element" id="four-screen-left-bottom">					<input type="button" class="multiple-screen-element" id="four-screen-right-bottom">					</ul>					</div>				<div id="multiple-screen">							<ul id="multiple-screens">					<input type="button" class="multiple-screen-element" id="six-screen-left-top">					<input type="button" class="multiple-screen-element" id="six-screen-middle-top">					<input type="button" class="multiple-screen-element" id="six-screen-right-top">					</ul>											<ul id="multiple-screens">					<input type="button" class="multiple-screen-element" id="six-screen-left-bottom">					<input type="button" class="multiple-screen-element" id="six-screen-middle-bottom">					<input type="button" class="multiple-screen-element" id="six-screen-right-bottom">					</ul>					</div>			</div>		</div>';
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -88,7 +85,7 @@ app.get('/polychrome', function(req, res) {
 	var parsedUrl = url.parse(req.url, true); // true to get query as object
 	var params = parsedUrl.query;
 
-	var selected_url = "http://vis.movievis.com/";
+	var selected_url = "http://www.youtube.com/";
 	var screen_count = 1;
 	var screen_index = 1;
 
@@ -111,14 +108,11 @@ app.get('/polychrome', function(req, res) {
 	console.log("selected URl is " + selected_url);
 
 	//Tell the request that we want to fetch youtube.com, send the results to a callback function
-	request({
-		uri: selected_url
-	}, function(err, response, body1) {
+	request({uri: selected_url }, function(err, response, body1) {
 		var isBlocked = 'No';
 
 		// If the page was found...
 		if (!err && response.statusCode == 200) {
-
 			// Grab the headers
 			var headers = response.headers;
 
@@ -135,16 +129,14 @@ app.get('/polychrome', function(req, res) {
 			) {
 				isBlocked = 'Yes';
 			}
+
 		} else {
+			
 			res.end("Page NOT FOUNd");
 		}
 
 		console.log('Blocked --' + isBlocked);
 
-
-		var self = this;
-
-		self.items = new Array();
 		//Just a basic error check
 		if (err && response.statusCode !== 200) {
 			console.log('Request error');
@@ -161,7 +153,7 @@ app.get('/polychrome', function(req, res) {
 				//Use jQuery just as in a regular HTML page
 				var $ = window.jQuery;
 
-				// 	        $('script').each(function() {
+				// $('script').each(function() {
 				//   	var link = $(this).attr('src');
 				//   	if (link!== undefined && link.indexOf("http") == -1) {
 				// 	  var url = "http://vis.movievis.com/"+link;
@@ -204,18 +196,15 @@ app.get('/polychrome', function(req, res) {
 				$('head').append('<link rel="stylesheet" href="/stylesheets/polychrome_style.css"></link>');
 
 				$('body').attr('id', 'chrome_body');
-				$('body').append(polychrome_append);
-
-				//$('body').append(appendScript);
-
+				var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
+				$('body').append(polychrome_panel.toString());
 				res.write('<html>' + $('html').html() + '</html>');
 				res.end();
+
 			}
 		});
 	});
 });
-
-
 
 http.createServer(app).listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));
