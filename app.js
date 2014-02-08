@@ -1,7 +1,6 @@
 /**
  * Module dependencies.
  */
-
 var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
@@ -86,7 +85,7 @@ app.post('/loadURL', function (req, res) {
 	var params = parsedUrl.query;
 	var selected_url = String(params.url);
 
-	console.log ("Woohoo - "+ String(params));
+	//console.log ("Woohoo - "+ String(params));
 });
 
 app.get('/polychrome', function(req, res) {
