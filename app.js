@@ -80,12 +80,109 @@ app.get('/js/*', function(req, res) {
 
 
 app.post('/loadURL', function (req, res) {
+	var selectedUrl = String(req.body.url);
+	console.log ("Requested URL -"+selectedUrl);
+	var spaceConfiguration = parseInt(req.body.space);
+	var displayConfiguration = parseInt(req.body.display);
 
-	var parsedUrl = url.parse(req.url, true); // true to get query as object
-	var params = parsedUrl.query;
-	var selected_url = String(params.url);
 
-	//console.log ("Woohoo - "+ String(params));
+	//Tell the request that we want to fetch youtube.com, send the results to a callback function
+	request({uri: selectedUrl }, function(err, response, body1) {
+		var isBlocked = 'No';
+
+		// If the page was found...
+		if (!err && response.statusCode == 200) {
+			// Grab the headers
+			var headers = response.headers;
+
+			// Grab the x-frame-options header if it exists
+			var xFrameOptions = headers['x-frame-options'] || '';
+
+			// Normalize the header to lowercase
+			xFrameOptions = xFrameOptions.toLowerCase();
+
+			// Check if it's set to a blocking option
+			if (
+				xFrameOptions === 'sameorigin' ||
+				xFrameOptions === 'deny'
+			) {
+				isBlocked = 'Yes';
+			}
+
+		} else {
+			
+			res.end("Page NOT FOUNd");
+		}
+
+		console.log('Blocked --' + isBlocked);
+
+		//Just a basic error check
+		if (err && response.statusCode !== 200) {
+			console.log('Request error');
+		}
+		body1 = response.body;
+
+
+		//Send the body param as the HTML code we will parse in jsdom
+		//also tell jsdom to attach jQuery in the scripts and loaded from jQuery.com
+		jsdom.env({
+			html: body1,
+			scripts: ['http://code.jquery.com/jquery.js', '/javascripts/peer.js', '/javascripts/polychrome-accesspanel.js'],
+			done: function(err, window) {
+				//Use jQuery just as in a regular HTML page
+				var $ = window.jQuery;
+
+				// $('script').each(function() {
+				//   	var link = $(this).attr('src');
+				//   	if (link!== undefined && link.indexOf("http") == -1) {
+				// 	  var url = "http://vis.movievis.com/"+link;
+				// 	  console.log(url);
+				// 	  $(this).attr('src', url);
+				// 	}
+				// });	
+
+				$('link').each(function() {
+					var css = $(this).attr('href');
+					if (css.indexOf(".com") == -1) {
+						var url = selected_url + css;
+						console.log(url);
+						$(this).attr('href', url);
+					}
+				});
+
+				$('image').each(function() {
+					var image = $(this).attr('href');
+					if (image !== undefined && image.indexOf(".com") == -1) {
+						var url = selected_url + image;
+						console.log(url);
+						$(this).attr('href', url);
+					}
+				});
+
+				$('a').each(function() {
+					var hyperlink = $(this).attr('href');
+					if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
+						var url = selectedUrl + hyperlink;
+						console.log(url);
+						$(this).attr('href', url);
+					}
+				});
+
+				//var appendScript1 = fs.readFileSync("/public/javasripts/polychrome-accesspanel.js");
+				//var appendScript = '<script>var myclick = false; $(document).on("click", function(evt) { if (evt.target.nodeName !== "circle") { return;} alert("captured event "+myclick); var elem = document.elementFromPoint(evt.pageX, evt.pageY); if (!myclick) { var clickevt = document.createEvent("MouseEvents"); clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null); alert("generated event "+ myclick); myclick = true; /* elem.dispatchEvent(clickevt); */ } else {myclick = false;} }); </script>'
+
+				$('head').append('<link rel="stylesheet" href="/stylesheets/pc.css"></link>');
+				$('head').append('<link rel="stylesheet" href="/stylesheets/polychrome_style.css"></link>');
+
+				$('body').attr('id', 'chrome_body');
+				var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
+				$('body').append(polychrome_panel.toString());
+				res.write('<html>' + $('html').html() + '</html>');
+				res.end();
+
+			}
+		});
+	});
 });
 
 app.get('/polychrome', function(req, res) {
