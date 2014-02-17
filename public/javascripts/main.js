@@ -64,7 +64,7 @@ function connect(conn) {
 //TODO change me to work with a server
 var randomValue = randomString(5);
 var peer = new Peer(
-	{host: 'localhost', port:'9000'}
+	{host: 'localhost', port:'8000'}
 );
 
 peer.on('open', function(id, clientIds) {

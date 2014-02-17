@@ -1,10 +1,12 @@
-/**
+    /**
  * @author Karthik Badam
  * created in Feb 2014
  */
 
 //default clone 
-var screenConfiguration = 1; 
+var spaceConfiguration = 1; 
+var displayConfiguration = 1; 
+
 $(document).ready(function() {
 
 	$("#toggle").click(function() {
@@ -16,64 +18,74 @@ $(document).ready(function() {
 		var url = $("#url").val(); 	
 		var sendData = {};
 		sendData['url']	= url;
-		sendData['config'] = screenConfiguration;
+		sendData['space'] = spaceConfiguration;
+		sendData['display'] = displayConfiguration;
+		
+        $.ajax({
+			url: '/getPage',
+			type: 'GET',
+			data: sendData,
+			contentType: "application/x-www-form-urlencoded",
+			dataType: "json",
+			success: function(data) {
+				$('html').html(data);
+			},
+			error: function() {}
+		});
 
-		//send data to nodejs
-		// $.ajax({
-		// 	url: '/loadURL',
-		// 	type: 'GET',
-		// 	data: sendData,
-		// 	contentType: "application/x-www-form-urlencoded",
-		// 	dataType: "json",
-		// 	success: function(data) {
-		// 		//$('html').html(data);
-		// 		console.log ("done");
-		// 	},
-		// 	error: function() {},
-		// });
-
-
-	 $.post("/loadURL", sendData, function(data, error){
-	   		if (error)
-	   			console.log(error)             
-	            
-	        console.log("URL --"+ url + " loaded");    
-	   	});
+		//$.post("/loadUrl", sendData, function(data, error){
+	 //  		if (error)
+	 //  			console.log(error)             
+	 //       var win=window.open('about:blank');
+		//    win.document.write(data);
+		//    // with(win.document) {
+		//    //   open();
+		//    //   write(data);
+		//    //   close();
+		//    // }
+	 //    	console.log("URL --"+ url + " loaded");    
+	 //  	});
 	});
 
 	//Clone 
 	$("#one-screen").click(function() {
-		screenConfiguration = 1; 
+		spaceConfiguration = 1;
+		displayConfiguration = 1; 
 	});
-
 
 	//two screen left
 	$("#two-screen-left").click(function() {
-		screenConfiguration = 2; 
+		spaceConfiguration = 2;
+		displayConfiguration = 1; 
 	});
 
 	//two screen left
 	$("#two-screen-right").click(function() {
-		screenConfiguration = 3; 
+		spaceConfiguration = 2;
+		displayConfiguration = 2; 
 	});
 
 	//four screen left top
 	$("#four-screen-left-top").click(function() {
-		screenConfiguration = 4; 
+		spaceConfiguration = 4;
+		displayConfiguration = 1; 
 	});
 
 	//four screen right top
 	$("#four-screen-right-top").click(function() {
-		screenConfiguration = 5;
+		spaceConfiguration = 4;
+		displayConfiguration = 2; 
 	});
 
 	//four screen left bottom
 	$("#four-screen-left-bottom").click(function() {
-		screenConfiguration = 6;
+		spaceConfiguration = 4;
+		displayConfiguration = 3; 
 	});
 
 	//four screen right bottom
 	$("#four-screen-right-bottom").click(function() {
-		screenConfiguration = 7;
+		spaceConfiguration = 4;
+		displayConfiguration = 4; 
 	});
 });

@@ -67,7 +67,7 @@ function onData(data) {
 
 			var clickevt = document.createEvent("MouseEvents");
 			clickevt.initMouseEvent(data.eventType, true, true, window, 1, posX, posY, posX, posY, false, false, false, false, 0, null);
-			//alert("generated event " + myclick);
+			console.log ("generated event " + myclick);
 			elem.dispatchEvent(clickevt); 
 			
 		} else {
@@ -77,8 +77,6 @@ function onData(data) {
 	if (data.eventType == "scroll") {
 		$(window).scroll();
 	}
-
-
 }
 
 //on connection 
@@ -100,7 +98,7 @@ function connect(conn) {
 var randomValue = randomString(5);
 var peer = new Peer({
 	host: 'localhost',
-	port: '9000'
+	port: '8000'
 });
 
 peer.on('open', function(id, clientIds) {
@@ -189,16 +187,79 @@ var domain = null;
 
 //change this when deployed
 var hostname = "localhost";
-var port = "9000";
+var port = "8000";
 
+
+function simulate(element, eventName)
+{
+    var options = extend(defaultOptions, arguments[2] || {});
+    var oEvent, eventType = null;
+
+    for (var name in eventMatchers)
+    {
+        if (eventMatchers[name].test(eventName)) { eventType = name; break; }
+    }
+
+    if (!eventType)
+        throw new SyntaxError('Only HTMLEvents and MouseEvents interfaces are supported');
+
+    if (document.createEvent)
+    {
+        oEvent = document.createEvent(eventType);
+        if (eventType == 'HTMLEvents')
+        {
+            oEvent.initEvent(eventName, options.bubbles, options.cancelable);
+        }
+        else
+        {
+            oEvent.initMouseEvent(eventName, options.bubbles, options.cancelable, document.defaultView,
+            options.button, options.pointerX, options.pointerY, options.pointerX, options.pointerY,
+            options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, element);
+        }
+        element.dispatchEvent(oEvent);
+    }
+    else
+    {
+        options.clientX = options.pointerX;
+        options.clientY = options.pointerY;
+        var evt = document.createEventObject();
+        oEvent = extend(evt, options);
+        element.fireEvent('on' + eventName, oEvent);
+    }
+    return element;
+}
+
+function extend(destination, source) {
+    for (var property in source)
+      destination[property] = source[property];
+    return destination;
+}
+
+var eventMatchers = {
+    'HTMLEvents': /^(?:load|unload|abort|error|select|change|submit|reset|focus|blur|resize|scroll)$/,
+    'MouseEvents': /^(?:click|dblclick|mouse(?:down|up|over|move|out))$/
+}
+
+var defaultOptions = {
+    pointerX: 0,
+    pointerY: 0,
+    button: 0,
+    ctrlKey: false,
+    altKey: false,
+    shiftKey: false,
+    metaKey: false,
+    bubbles: true,
+    cancelable: true
+}
 	
-$(document).ready(function() {
-	
+$(window).load(function() {
+	alert("blah");
 	$(document).on("click", function(evt) {
 		
 		console.log("captured event " + myclick);
 		
 		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
+
 		if (!myclick) {
 			//myclick = true;
 			var toSend = new Object();
@@ -209,6 +270,7 @@ $(document).ready(function() {
 			connections.forEach(function(connection) {
 		  		connection.send(toSend);
 		  	});	
+
 			//var clickevt = document.createEvent("MouseEvents");
 			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
 			//alert("generated event " + myclick);
@@ -217,6 +279,62 @@ $(document).ready(function() {
 			myclick = false;
 		}
 	});
+
+    $(document).on("move", function(evt) {
+		
+		console.log("captured event " + myclick);
+		
+		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
+
+		if (!myclick) {
+			//myclick = true;
+			var toSend = new Object();
+			toSend.eventType = "move";
+			toSend.target = evt.target.nodeName;
+			toSend.posX = evt.pageX;
+			toSend.posY = evt.pageY; 
+            console.log("Move at - "+ toSend.posX+", "+toSend.posY);
+
+			connections.forEach(function(connection) {
+		  		connection.send(toSend);
+		  	});	
+
+			//var clickevt = document.createEvent("MouseEvents");
+			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
+			//alert("generated event " + myclick);
+			// /* elem.dispatchEvent(clickevt); */
+		} else {
+			myclick = false;
+		}
+	});
+
+    $(document).on("click", function(evt) {
+		
+		console.log("captured event " + myclick);
+		
+		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
+
+		if (!myclick) {
+			//myclick = true;
+			var toSend = new Object();
+			toSend.eventType = "click";
+			toSend.target = evt.target.nodeName;
+			toSend.posX = evt.pageX;
+			toSend.posY = evt.pageY; 
+			connections.forEach(function(connection) {
+		  		connection.send(toSend);
+		  	});	
+
+			//var clickevt = document.createEvent("MouseEvents");
+			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
+			//alert("generated event " + myclick);
+			// /* elem.dispatchEvent(clickevt); */
+		} else {
+			myclick = false;
+		}
+	});
+
+
 
 	$("#toggle").click(function() {
 		$('#toggle').toggleClass('active');
@@ -257,7 +375,7 @@ $(document).ready(function() {
 
 
 		$.ajax({
-			url: '/polychrome',
+			url: '/getPage',
 			type: 'GET',
 			data: send_items,
 			contentType: "application/x-www-form-urlencoded",

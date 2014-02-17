@@ -38,7 +38,7 @@ WebPage.prototype.parseUrl = function () {
             host: _self.urlObject.hostname,
             port: port
         }, function (res) {
-            console.log("success " + res);
+            //console.log("success " + res);
             _self.isValid = true;
         }).on("error", function (e) {
             _self.isValid = false;

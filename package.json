@@ -1,5 +1,5 @@
 {
-  "name": "webscraping",
+  "name": "PolyChrome",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -15,7 +15,11 @@
     "request": "*",
     "jsdom": "*", 
     "url": "*",
-    "connect": "*"
+    "connect": "*", 
+    "cheerio": "*", 
+    "async": "*", 
+    "util": "*", 
+    "mime": "*"
   },
   "devDependencies": {
     "expect.js": "*",

@@ -276,7 +276,6 @@ PeerServer.prototype._initializeHTTP = function() {
 
   // Listen on user-specified port.
   this._httpServer.listen(this._options.port);
-  
 };
 
 /** Saves a streaming response and takes care of timeouts and headers. */

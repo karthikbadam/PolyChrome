@@ -1,7 +1,9 @@
+
 #chrome_body{
 	position: absolute;
-	width: 200%;
-	height: 200%;
-	left: 0%;
-	top: 00%;
+	width: 100%;
+	height: 100%;
+	left: 50%; 
+	top: 50%;
+    -webkit-transform: scale(2, 2);
 }
