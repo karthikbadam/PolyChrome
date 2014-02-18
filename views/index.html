@@ -1,94 +1,79 @@
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-    <link rel="stylesheet" href="/stylesheets/polychrome_style.css" />
-    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
-	<script type="text/javascript" src="/javascripts/jquery.zoomooz.js"></script>
-	<script type="text/javascript" src="/javascripts/plugins.js"></script>
-	
-  </head>
-  <body>
-    <!-- <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p> -->
-    <script type="text/javascript" src="/javascripts/peer.js"></script>
-	<!-- <script type="text/javascript" src="/javascripts/main.js"></script> -->
-    <script type="text/javascript" src="/javascripts/postURL.js"></script>
-    <button id="toggle" class="normal"></button>
-		
-		<div id="actions">
-			
-			<div id="login">
-				<form action="/login" method="post">
-			        <input type="text" name="username" id="username" placeholder="[Username]"/>
-			        <input type="password" name="password" id="password" placeholder="[Password]">
-			        <input type="submit" value="Log In" id="login_submit"/>
-			        <input type="button" value="Sign Up" id="signup_submit"/>
-				</form>
-			</div>
+    <head>
+        <title>PolyChrome</title>
+        <link rel="shortcut icon" href="images/polychrome-icon.png" />
+        <link rel="stylesheet" href="/stylesheets/polychrome-index.css" />
+        <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+        <script type="text/javascript" src="/javascripts/jquery.zoomooz.js"></script>
+        <script type="text/javascript" src="/javascripts/plugins.js"></script>
+    </head>
+    <body>
 
-			<div id: "url_info">	
-				<ul>
-				<input type="text" id="url" placeholder="[Enter URL here]">
-				<button id="url_submit"></button>
-				</ul>
-				<ul>
-					Your PeerJS ID is <span id="pid"></span>
-				</ul>
-				<!-- <ul>
-					Connect to a peer:
-					<input type="text" id="rid" placeholder="Someone else's id">
-					<input class="button" type="button" id="connect">
-				</ul> -->
-				<ul id="results"></ul>
+        <script type="text/javascript" src="/javascripts/peer.js"></script>
+        <script type="text/javascript" src="/javascripts/postURL.js"></script>
 
-			</div>
+        <div id="actions">
+            <div id="login">
+                <form action="/login" method="post">
+                    <input type="text" name="username" id="username" placeholder="[Username]" />
+                    <input type="password" name="password" id="password" placeholder="[Password]">
+                    <input type="submit" value="Log In" id="login_submit" />
+                    <input type="button" value="Sign Up" id="signup_submit" />
+                </form>
+            </div>
 
-			<div id="screen-options">
-				<ul>
-					<p> Select Screen Type:</p>
-				</ul>	 
+            <div id="url_info">
+                <ul>
+                    <input type="text" id="url" placeholder="[Enter URL here]">
+                    <button id="url_submit"></button>
+                </ul>
+                <ul>
+				Your PeerJS ID is
+                    <span id="pid"></span>
+                </ul>
+                <ul id="results"></ul>
+            </div>
 
-				<div id="multiple-screen">
-					<ul>
-					<input type="button" id="one-screen">
-					</ul>	
-				</div>
+            <div id="screen-options">
+                <ul>
+                    <p> Select Screen Type:</p>
+                </ul>
+                <div id="multiple-screen">
+                    <ul>
+                        <input type="button" id="one-screen">
+                    </ul>
+                </div>
+                <div id="multiple-screen">
+                    <ul>
+                        <input type="button" class="multiple-screen-element" id="two-screen-left">
+                        <input type="button" class="multiple-screen-element" id="two-screen-right">
+                    </ul>
+                </div>
+                <div id="multiple-screen">
+                    <ul id="multiple-screens">
+                        <input type="button" class="multiple-screen-element" id="four-screen-left-top">
+                        <input type="button" class="multiple-screen-element" id="four-screen-right-top">
+                    </ul>
+                    <ul id="multiple-screens">
+                        <input type="button" class="multiple-screen-element" id="four-screen-left-bottom">
+                        <input type="button" class="multiple-screen-element" id="four-screen-right-bottom">
+                    </ul>
+                </div>
+                <div id="multiple-screen">
+                    <ul id="multiple-screens">
+                        <input type="button" class="multiple-screen-element" id="six-screen-left-top">
+                        <input type="button" class="multiple-screen-element" id="six-screen-middle-top">
+                        <input type="button" class="multiple-screen-element" id="six-screen-right-top">
+                    </ul>
 
-				<div id="multiple-screen">
-					<ul>
-					<input type="button" class="multiple-screen-element" id="two-screen-left">
-					<input type="button" class="multiple-screen-element" id="two-screen-right">
-					</ul>	
-				</div>
+                    <ul id="multiple-screens">
+                        <input type="button" class="multiple-screen-element" id="six-screen-left-bottom">
+                        <input type="button" class="multiple-screen-element" id="six-screen-middle-bottom">
+                        <input type="button" class="multiple-screen-element" id="six-screen-right-bottom">
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-				<div id="multiple-screen">	
-					<ul id="multiple-screens">
-					<input type="button" class="multiple-screen-element" id="four-screen-left-top">
-					<input type="button" class="multiple-screen-element" id="four-screen-right-top">
-					</ul>	
-					<ul id="multiple-screens">
-					<input type="button" class="multiple-screen-element" id="four-screen-left-bottom">
-					<input type="button" class="multiple-screen-element" id="four-screen-right-bottom">
-					</ul>	
-				</div>
-
-				<div id="multiple-screen">		
-					<ul id="multiple-screens">
-					<input type="button" class="multiple-screen-element" id="six-screen-left-top">
-					<input type="button" class="multiple-screen-element" id="six-screen-middle-top">
-					<input type="button" class="multiple-screen-element" id="six-screen-right-top">
-					</ul>	
-					
-					<ul id="multiple-screens">
-					<input type="button" class="multiple-screen-element" id="six-screen-left-bottom">
-					<input type="button" class="multiple-screen-element" id="six-screen-middle-bottom">
-					<input type="button" class="multiple-screen-element" id="six-screen-right-bottom">
-					</ul>	
-				</div>
-			</div>
-
-		</div>
-		
-  </body>
+    </body>
 </html>

@@ -252,8 +252,7 @@ var defaultOptions = {
     cancelable: true
 }
 	
-$(window).load(function() {
-	alert("blah");
+$(document).ready(function() {
 	$(document).on("click", function(evt) {
 		
 		console.log("captured event " + myclick);

@@ -11,19 +11,22 @@ var request = require('request');
 var url = require('url');
 var cheerio = require('cheerio');
 var mime = require('mime');
+var querystring = require('querystring');
 
 /* display web page class */
 var pageclass = require('./display/webpage');
 var WebPage = pageclass.WebPage;
 var currentPage = null;
 
+/* session control */
+var sessionclass = require('./display/polychrome-session');
+var PolyChromeSession = sessionclass.PolyChromeSession;
+var sessions = {};
+var peerIds = [];
 
 /* peer server to give unique id to each peer */
 var peer = require('./peer/server');
 var PeerServer = peer.PeerServer;
-
-/* Mapping between client ID and session */
-
 
 var app = express();
 app.engine('.html', require('ejs').__express);
@@ -85,7 +88,7 @@ app.get('/images/*', function (req, res) {
 
 app.get('/img/*', function (req, res) {
     console.log("image request captured: " + req.url);
-    
+
     var urlString = currentPage.url + req.url;
     console.log("Requesting for " + urlString + ", " + ValidURL(urlString));
     request({
@@ -95,7 +98,7 @@ app.get('/img/*', function (req, res) {
             res.writeHead(400);
             return;
         } else {
-            res.writeHead(200, { "Content-Type": 'image/png',  'Content-Length': body.size }); // Pass in the mime-type
+            res.writeHead(200, { "Content-Type": 'image/png', 'Content-Length': body.size }); // Pass in the mime-type
             res.end(body, "binary"); //Stream the file down
         }
     });
@@ -126,188 +129,148 @@ app.post('/loadUrl', function (req, res) {
     console.log("Requested URL -" + selectedUrl);
     var spaceConfiguration = parseInt(req.body.space);
     var displayConfiguration = parseInt(req.body.display);
+    var peerId = String(req.body.peerId);
 
     var page = new WebPage({
         url: selectedUrl,
-        spaceConfig: spaceConfiguration,
-        displayConfig: displayConfiguration
+        spaceConfig: 1,
+        displayConfig: 1,
+        peerId: "blah"
     });
 
     page.parseUrl();
     currentPage = page;
 
-    //request for the webpage content
-    request({ uri: page.parseUrl() }, function (err, response, body) {
-        var isBlocked = 'No';
-
-        // If the page was found...
-        if (!err && response.statusCode == 200) {
-            // Grab the headers
-            var headers = response.headers;
-
-            // Grab the x-frame-options header if it exists
-            var xFrameOptions = headers['x-frame-options'] || '';
-
-            // Normalize the header to lowercase
-            xFrameOptions = xFrameOptions.toLowerCase();
-
-            // Check if it's set to a blocking option
-            if (
-     			xFrameOptions === 'sameorigin' ||
-     			xFrameOptions === 'deny'
-     			) {
-                isBlocked = 'Yes';
-            }
-
-        } else {
-            res.end("PAGE NOT FOUND");
-        }
-
-
-        /* using cheerio to manipulate the DOM */
-        $ = cheerio.load(body);
-        console.log(body);
-
-        $('script').each(function () {
-            var link = $(this).attr('src');
-            if (link !== undefined && link.indexOf("http") == -1) {
-                var url = selectedUrl + link;
-                console.log(url);
-                $(this).attr('src', url);
-            }
-        });
-
-        $('link').each(function () {
-            var css = $(this).attr('href');
-            if (css.indexOf(".com") == -1) {
-                var url = selectedUrl + css;
-                console.log(url);
-                $(this).attr('href', url);
-            }
-        });
-
-        $('image').each(function () {
-            var image = $(this).attr('href');
-            if (image !== undefined && image.indexOf(".com") == -1) {
-                var url = selectedUrl + image;
-                console.log(url);
-                $(this).attr('href', url);
-            }
-        });
-
-        $('a').each(function () {
-            var hyperlink = $(this).attr('href');
-            if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
-                var url = selectedUrl + hyperlink;
-                console.log(url);
-                $(this).attr('href', url);
-            }
-        });
-
-
-        $('head').append('<link rel="stylesheet" href="/stylesheets/pc.css"></link>');
-        $('head').append('<link rel="stylesheet" href="/stylesheets/polychrome_style.css"></link>');
-        $('body').append('<script type="text/javascript" src="/javascripts/peer.js"></script>');
-        $('body').append('<script type="text/javascript" src="/javascripts/polychrome-accesspanel.js"></script>');
-        $('body').attr('id', 'chrome_body');
-        var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
-        $('body').append(polychrome_panel.toString());
-
-        console.log($.html());
-        res.write('<html>' + $.html() + '</html>');
-        res.end();
-
-        //Send the body param as the HTML code we will parse in jsdom
-        //also tell jsdom to attach jQuery in the scripts and loaded from jQuery.com
-        //jsdom.env({
-        //    html: response.body,
-        //    scripts: ['http://code.jquery.com/jquery.js', 'http://localhost:3000/javascripts/peer.js', 'http://localhost:3000/javascripts/polychrome-accesspanel.js'],
-        //    done: function (err, window) {
-        //        //Use jQuery just as in a regular HTML page
-        //        var $ = window.jQuery;
-
-
-        //          $('script').each(function() {
-        //           	var link = $(this).attr('src');
-        //           	if (link!== undefined && link.indexOf("http") == -1) {
-        //         	  var url = selectedUrl+link;
-        //         	  console.log(url);
-        //         	  $(this).attr('src', url);
-        //         	}
-        //         });	
-
-        //         $('link').each(function () {
-        //            var css = $(this).attr('href');
-        //            if (css.indexOf(".com") == -1) {
-        //                var url = selectedUrl + css;
-        //                console.log(url);
-        //                $(this).attr('href', url);
-        //            }
-        //        });
-
-        //        $('image').each(function () {
-        //            var image = $(this).attr('href');
-        //            if (image !== undefined && image.indexOf(".com") == -1) {
-        //                var url = selectedUrl + image;
-        //                console.log(url);
-        //                $(this).attr('href', url);
-        //            }
-        //        });
-
-        //        $('a').each(function () {
-        //            var hyperlink = $(this).attr('href');
-        //            if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
-        //                var url = selectedUrl + hyperlink;
-        //                console.log(url);
-        //                $(this).attr('href', url);
-        //            }
-        //        });
-
-        //        //$('a').each(function () {
-        //        //    var hyperlink = $(this).attr('href');
-        //        //    if (hyperlink !== undefined && hyperlink.indexOf(".co.uk") == -1 && hyperlink.indexOf(".com") == -1 && hyperlink.indexOf(".net") == -1 && hyperlink.indexOf(".org") == -1) {
-        //        //        var url = selectedUrl + hyperlink;
-        //        //        console.log(url);
-        //        //        $(this).attr('href', url);
-        //        //    }
-        //        //});
-
-        //        //var appendScript1 = fs.readFileSync("/public/javasripts/polychrome-accesspanel.js");
-        //        //var appendScript = '<script>var myclick = false; $(document).on("click", function(evt) { if (evt.target.nodeName !== "circle") { return;} alert("captured event "+myclick); var elem = document.elementFromPoint(evt.pageX, evt.pageY); if (!myclick) { var clickevt = document.createEvent("MouseEvents"); clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null); alert("generated event "+ myclick); myclick = true; /* elem.dispatchEvent(clickevt); */ } else {myclick = false;} }); </script>'
-        //        //$('head').append('<meta name="viewport" content="width=1320" />');
-
-        //        //console.log("Head is " + $('head').toString());
-        //        //$('body').append('<script type="text/javascript" src="/javascripts/polychrome-accesspanel.js"></script>');
-        //        $('body').append('<link rel="stylesheet" href="/stylesheets/pc.css"></link>');
-        //        $('body').append('<link rel="stylesheet" href="/stylesheets/polychrome_style.css"></link>');
-        //        $('body').attr('id', 'chrome_body');
-        //        var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
-        //        $('body').append(polychrome_panel.toString());
-        //        res.write('<html>' + $('html').html() + '</html>');
-        //        res.end();
-
-        //    }
-        //});
+    var session = new PolyChromeSession({
+        page: page,
+        peerId: "blah",
+        username: "Chrome",
+        password: "Chrome"
     });
+
+    sessions[peerId] = session;
+    peerIds.push(peerId);
+
+    var urlEncoding = { 'url': selectedUrl, 'peerId': peerId };
+    var toOpen = 'http://localhost:3000/getPage?' + querystring.stringify(urlEncoding);
+
+    res.write(toOpen);
+    res.end();
+
+    ////request for the webpage content
+    //request({ uri: page.parseUrl() }, function (err, response, body) {
+    //    var isBlocked = 'No';
+
+    //    // If the page was found...
+    //    if (!err && response.statusCode == 200) {
+    //        // Grab the headers
+    //        var headers = response.headers;
+
+    //        // Grab the x-frame-options header if it exists
+    //        var xFrameOptions = headers['x-frame-options'] || '';
+
+    //        // Normalize the header to lowercase
+    //        xFrameOptions = xFrameOptions.toLowerCase();
+
+    //        // Check if it's set to a blocking option
+    //        if (
+    // 			xFrameOptions === 'sameorigin' ||
+    // 			xFrameOptions === 'deny'
+    // 			) {
+    //            isBlocked = 'Yes';
+    //        }
+
+    //    } else {
+    //        res.end("PAGE NOT FOUND");
+    //    }
+
+
+    //    /* using cheerio to manipulate the DOM */
+    //    $ = cheerio.load(body);
+    //    console.log(body);
+
+    //    $('script').each(function () {
+    //        var link = $(this).attr('src');
+    //        if (link !== undefined && link.indexOf("http") == -1) {
+    //            var url = selectedUrl + link;
+    //            console.log(url);
+    //            $(this).attr('src', url);
+    //        }
+    //    });
+
+    //    $('link').each(function () {
+    //        var css = $(this).attr('href');
+    //        if (css.indexOf(".com") == -1) {
+    //            var url = selectedUrl + css;
+    //            console.log(url);
+    //            $(this).attr('href', url);
+    //        }
+    //    });
+
+    //    $('image').each(function () {
+    //        var image = $(this).attr('href');
+    //        if (image !== undefined && image.indexOf(".com") == -1) {
+    //            var url = selectedUrl + image;
+    //            console.log(url);
+    //            $(this).attr('href', url);
+    //        }
+    //    });
+
+    //    $('a').each(function () {
+    //        var hyperlink = $(this).attr('href');
+    //        if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
+    //            var url = selectedUrl + hyperlink;
+    //            console.log(url);
+    //            $(this).attr('href', url);
+    //        }
+    //    });
+
+
+
+
+    //    $('head').append('<link rel="stylesheet" href="/stylesheets/pc.css"></link>');
+    //    $('head').append('<link rel="stylesheet" href="/stylesheets/polychrome_style.css"></link>');
+    //    $('body').append('<script type="text/javascript" src="/javascripts/peer.js"></script>');
+    //    $('body').append('<script type="text/javascript" src="/javascripts/polychrome-accesspanel.js"></script>');
+    //    $('body').attr('id', 'chrome_body');
+    //    var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
+    //    $('body').append(polychrome_panel.toString());
+
+    //    console.log($.html());
+    //    res.write('<html>' + $.html() + '</html>');
+    //    res.end();
+    //});
 });
 
 app.get('/getPage', function (req, res) {
+
     var parsedUrl = url.parse(req.url, true); // true to get query as object
     var params = parsedUrl.query;
 
-    var selectedUrl = "http://multiviz.gforge.inria.fr/scatterdice/oscars/";
-    var spaceConfiguration = 1;
-    var displayConfiguration = 1;
+    var selectedUrl = "http://www.youtube.com/";
 
-    //var selectedUrl = String(req.body.url);
-    console.log("Requested URL -" + selectedUrl);
-    //var spaceConfiguration = parseInt(req.body.space);
+    var peerId = "";
+    if (JSON.stringify(params) !== '{}') {
+        selectedUrl = String(params.url);
+        peerId = String(params.peerId);
+    }
+
+    //var parsedUrl = url.parse(req.url, true); // true to get query as object
+    //var params = parsedUrl.query;
+
+    //var selectedUrl = "http://multiviz.gforge.inria.fr/scatterdice/oscars/";
+    //var spaceConfiguration = 1;
+    //var displayConfiguration = 1;
+
+    ////var selectedUrl = String(req.body.url);
+    //console.log("Requested URL -" + selectedUrl);
+    ////var spaceConfiguration = parseInt(req.body.space);
     //var displayConfiguration = parseInt(req.body.display);
 
     var page = new WebPage({
         url: selectedUrl,
-        spaceConfig: spaceConfiguration,
-        displayConfig: displayConfiguration
+        spaceConfig: 1,
+        displayConfig: 1
     });
 
     page.parseUrl();
@@ -343,11 +306,11 @@ app.get('/getPage', function (req, res) {
 
         /* using cheerio to manipulate the DOM */
         $ = cheerio.load(body);
-        console.log(body);
-
+        
         $('script').each(function () {
             var link = $(this).attr('src');
             if (link !== undefined && link.indexOf("http") == -1) {
+
                 var url = selectedUrl + link;
                 console.log(url);
                 $(this).attr('src', url);
@@ -384,13 +347,12 @@ app.get('/getPage', function (req, res) {
 
         $('head').append('<link rel="stylesheet" href="/stylesheets/pc.css"></link>');
         $('head').append('<link rel="stylesheet" href="/stylesheets/polychrome_style.css"></link>');
+        $('head').append('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
         $('body').append('<script type="text/javascript" src="/javascripts/peer.js"></script>');
         $('body').append('<script type="text/javascript" src="/javascripts/polychrome-accesspanel.js"></script>');
         $('body').attr('id', 'chrome_body');
         var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
         $('body').append(polychrome_panel.toString());
-
-        console.log($.html());
         res.write('<html>' + $.html() + '</html>');
         res.end();
     });

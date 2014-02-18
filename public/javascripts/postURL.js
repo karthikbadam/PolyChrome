@@ -9,10 +9,10 @@ var displayConfiguration = 1;
 
 $(document).ready(function() {
 
-	$("#toggle").click(function() {
-			$('#toggle').toggleClass('active');
-			$("#actions").slideToggle("slow");
-	});
+	//$("#toggle").click(function() {
+	//		$('#toggle').toggleClass('active');
+	//		$("#actions").slideToggle("slow");
+	//});
 
 	$("#url_submit").click(function () {
 		var url = $("#url").val(); 	
@@ -21,30 +21,24 @@ $(document).ready(function() {
 		sendData['space'] = spaceConfiguration;
 		sendData['display'] = displayConfiguration;
 		
-        $.ajax({
-			url: '/getPage',
-			type: 'GET',
-			data: sendData,
-			contentType: "application/x-www-form-urlencoded",
-			dataType: "json",
-			success: function(data) {
-				$('html').html(data);
-			},
-			error: function() {}
-		});
+  //      $.ajax({
+		//	url: '/getPage',
+		//	type: 'GET',
+		//	data: sendData,
+		//	contentType: "application/x-www-form-urlencoded",
+		//	dataType: "json",
+		//	success: function(data) {
+		//		$('html').html(data);
+		//	},
+		//	error: function() {}
+		//});
 
-		//$.post("/loadUrl", sendData, function(data, error){
-	 //  		if (error)
-	 //  			console.log(error)             
-	 //       var win=window.open('about:blank');
-		//    win.document.write(data);
-		//    // with(win.document) {
-		//    //   open();
-		//    //   write(data);
-		//    //   close();
-		//    // }
-	 //    	console.log("URL --"+ url + " loaded");    
-	 //  	});
+		$.post("/loadUrl", sendData, function(data, error){
+	   		if (error)
+	   			console.log(error)             
+	        var win=window.open(data, 'about:blank');
+		    console.log("URL --"+ url + " loaded");    
+	   	});
 	});
 
 	//Clone 
