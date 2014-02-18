@@ -17,9 +17,13 @@ var pageclass = require('./display/webpage');
 var WebPage = pageclass.WebPage;
 var currentPage = null;
 
+
 /* peer server to give unique id to each peer */
 var peer = require('./peer/server');
 var PeerServer = peer.PeerServer;
+
+/* Mapping between client ID and session */
+
 
 var app = express();
 app.engine('.html', require('ejs').__express);
@@ -81,7 +85,7 @@ app.get('/images/*', function (req, res) {
 
 app.get('/img/*', function (req, res) {
     console.log("image request captured: " + req.url);
-    req.url = req.url.substr(1);
+    
     var urlString = currentPage.url + req.url;
     console.log("Requesting for " + urlString + ", " + ValidURL(urlString));
     request({

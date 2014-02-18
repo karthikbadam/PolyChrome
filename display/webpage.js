@@ -1,22 +1,22 @@
 
 /**
- * Definition class for any webpage   
+* Definition class for any webpage   
 **/
 var http = require('http');
 var url = require('url');
 
-function WebPage (options) {
-	var _self = this; 
-	_self.url = options.url;
-	_self.spaceConfig = options.spaceConfig;
-	_self.displayConfig = options.displayConfig;
-	_self.isValid = true;
-	_self.isCached = false; 
+function WebPage(options) {
+    var _self = this;
+    _self.url = options.url;
+    _self.spaceConfig = options.spaceConfig;
+    _self.displayConfig = options.displayConfig;
+    _self.isValid = true;
+    _self.isCached = false;
 }
 
 WebPage.prototype.getUrl = function () {
-	var _self = this; 
-	return _self.url;
+    var _self = this;
+    return _self.url;
 };
 
 WebPage.prototype.parseUrl = function () {
@@ -58,7 +58,7 @@ WebPage.prototype.getbaseUrl = function () {
     var _self = this;
     var url = _self.parseUrl();
     var path = _self.urlObject.pathname;
-    var returnString = url.replace("/"+_self.urlObject.pathname, '');
+    var returnString = url.replace("/" + _self.urlObject.pathname, '');
     returnString = url.replace(_self.urlObject.pathname, '');
     return returnString;
 };
@@ -67,7 +67,7 @@ WebPage.prototype.getbaseUrl = function () {
 WebPage.prototype.setContent = function (body) {
     var _self = this;
     _self.body = body;
-    _self.isCached = true; 
+    _self.isCached = true;
 };
 
 /* get the content after caching */
@@ -79,57 +79,47 @@ WebPage.prototype.getContent = function () {
     return;
 };
 
-/* append path */
-WebPage.prototype.appendPath = function (path) {
+/* append relative path */
+WebPage.prototype.appendPath = function (path, callback) {
     var _self = this;
-    //return function (callback, errback) {
-    //    
-    //    var baseUrl = _self.getbaseUrl();
-    //    var url = _self.getUrl();
-    //    
-    //    http.get({
-    //        host: hostname,
-    //        port: port
-    //    }, function (res) {
-    //        //console.log("success " + res);
-    //        _self.isValid = true;
-    //        callback(hostname)
-    //    }).on("error", function (e) {
-    //    });
-    //    
-    //    
-    //} 
+
+    var baseUrl = _self.getbaseUrl();
+    var url = _self.getUrl();
+    var hostpath = baseUrl + path;
+
+    if (url.charAt(url.length - 1) === '/' && path.charAt(0) === '/') {
+        path = path.substr(1);
+        hostpath = url + path;
+    }
+
+    checkUrl(hostpath, checkBaseUrl);
+
+    var checkBaseUrl = function () {
+        baseUrl = _self.getbaseUrl();
+        hostpath = baseUrl + path;
+
+        if (baseUrl.charAt(baseUrl.length - 1) === '/' && path.charAt(0) === '/') {
+            path = path.substr(1);
+            hostpath = url + path;
+        }
+
+        checkUrl(hostpath, null);
+    }
+
+    var checkUrl = function (hostname, checkBaseUrl) {
+        http.get({
+            host: hostname,
+            port: 80
+        }, function (res) {
+            _self.isValid = true;
+            return callback(hostname);
+        }).on("error", function (e) {
+            if (checkBaseUrl)
+                return checkBaseUrl();
+            console.log("Check path " + path);
+        });
+    }
 }
-
-/* A typical asynchronous method example */
-//function fileWrite (filename, data) { return function (callback, errback) {
-//  fs.open(filename, "w", 0666)(function (fd) {
-//    var totalWritten = 0;
-//    function doWrite (_data) {
-//      fs.write(fd, _data, 0, 'utf8')(
-//        function (written) {
-//          totalWritten += written
-//          if (totalWritten === _data.length) {
-//            fs.close(fd);
-//            callback(totalWritten);
-//          } else {
-//            doWrite(_data.slice(totalWritten));
-//          }
-//        }, errback);
-//    }
-//    doWrite(data);
-//  }, errback);
-//}}
-// Use it!
-//fileWrite('test', "Hello")(
-//  function (written) {
-//    console.log(written + " bytes successfully written");
-//  },
-//  function (err) {
-//    throw err;
-//  }
-//);
-
 
 exports.WebPage = WebPage;
 
