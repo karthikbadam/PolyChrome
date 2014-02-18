@@ -10,7 +10,8 @@ function WebPage (options) {
 	_self.url = options.url;
 	_self.spaceConfig = options.spaceConfig;
 	_self.displayConfig = options.displayConfig;
-	_self.isValid = true; 
+	_self.isValid = true;
+	_self.isCached = false; 
 }
 
 WebPage.prototype.getUrl = function () {
@@ -61,6 +62,74 @@ WebPage.prototype.getbaseUrl = function () {
     returnString = url.replace(_self.urlObject.pathname, '');
     return returnString;
 };
+
+/* set the content for the page - caching! */
+WebPage.prototype.setContent = function (body) {
+    var _self = this;
+    _self.body = body;
+    _self.isCached = true; 
+};
+
+/* get the content after caching */
+WebPage.prototype.getContent = function () {
+    var _self = this;
+    if (_self.isCached) {
+        return _self.body;
+    }
+    return;
+};
+
+/* append path */
+WebPage.prototype.appendPath = function (path) {
+    var _self = this;
+    //return function (callback, errback) {
+    //    
+    //    var baseUrl = _self.getbaseUrl();
+    //    var url = _self.getUrl();
+    //    
+    //    http.get({
+    //        host: hostname,
+    //        port: port
+    //    }, function (res) {
+    //        //console.log("success " + res);
+    //        _self.isValid = true;
+    //        callback(hostname)
+    //    }).on("error", function (e) {
+    //    });
+    //    
+    //    
+    //} 
+}
+
+/* A typical asynchronous method example */
+//function fileWrite (filename, data) { return function (callback, errback) {
+//  fs.open(filename, "w", 0666)(function (fd) {
+//    var totalWritten = 0;
+//    function doWrite (_data) {
+//      fs.write(fd, _data, 0, 'utf8')(
+//        function (written) {
+//          totalWritten += written
+//          if (totalWritten === _data.length) {
+//            fs.close(fd);
+//            callback(totalWritten);
+//          } else {
+//            doWrite(_data.slice(totalWritten));
+//          }
+//        }, errback);
+//    }
+//    doWrite(data);
+//  }, errback);
+//}}
+// Use it!
+//fileWrite('test', "Hello")(
+//  function (written) {
+//    console.log(written + " bytes successfully written");
+//  },
+//  function (err) {
+//    throw err;
+//  }
+//);
+
 
 exports.WebPage = WebPage;
 

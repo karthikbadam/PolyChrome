@@ -20,7 +20,15 @@ PolyChromeSession.prototype.getPageDetails = function (peerId) {
     if (_self.peerId === peerId) {
         return _self.page;
     }
-    return null;
+    return;
+};
+
+PolyChromeSession.prototype.getUrl = function (peerId) {
+    var _self = this;
+    if (_self.peerId === peerId) {
+        return _self.page.url;
+    }
+    return;
 };
 
 exports.PolyChromeSession = PolyChromeSession;
