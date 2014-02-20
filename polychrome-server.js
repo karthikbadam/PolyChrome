@@ -58,8 +58,16 @@ app.get('/users', user.list);
 /* requests for data */
 app.get('/data/*', function (req, res) {
     console.log("data request captured: " + req.url);
+    var urlString = currentPage.url + req.url;
+    if (req.url.charAt(0) === '/') {
+        var baseUrl = currentPage.getCurrentBaseUrl();
+        urlString = baseUrl + req.url;
+        if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+            urlString = baseUrl + req.url.substr(1);
+        }
+    }
     request({
-        uri: currentPage.url + req.url
+        uri: urlString
     }, function (err, response, body) {
         if (err) {
             res.writeHead(400);
@@ -74,7 +82,15 @@ app.get('/data/*', function (req, res) {
 /* image requests captured */
 app.get('/images/*', function (req, res) {
     console.log("image request captured: " + req.url);
-    request({ uri: currentPage.url + req.url }, function (err, response, body) {
+    var urlString = currentPage.url + req.url;
+    if (req.url.charAt(0) === '/') {
+        var baseUrl = currentPage.getCurrentBaseUrl();
+        urlString = baseUrl + req.url;
+        if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+            urlString = baseUrl + req.url.substr(1);
+        }
+    }
+    request({ uri: urlString }, function (err, response, body) {
         if (err) {
             res.writeHead(400);
         } else {
@@ -88,8 +104,14 @@ app.get('/images/*', function (req, res) {
 
 app.get('/img/*', function (req, res) {
     console.log("image request captured: " + req.url);
-
     var urlString = currentPage.url + req.url;
+    if (req.url.charAt(0) === '/') {
+        var baseUrl = currentPage.getCurrentBaseUrl();
+        urlString = baseUrl + req.url;
+        if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+            urlString = baseUrl + req.url.substr(1);
+        }
+    }
     console.log("Requesting for " + urlString + ", " + ValidURL(urlString));
     request({
         uri: urlString
@@ -107,9 +129,18 @@ app.get('/img/*', function (req, res) {
 
 /* js files requested by the webpage */
 app.get('/js/*', function (req, res) {
+
     console.log("JS request captured: " + req.url);
+    var urlString = currentPage.url + req.url;
+    if (req.url.charAt(0) === '/') {
+        var baseUrl = currentPage.getCurrentBaseUrl();
+        urlString = baseUrl + req.url;
+        if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+            urlString = baseUrl + req.url.substr(1);
+        }
+    }
     request({
-        uri: currentPage.getbaseUrl() + req.url
+        uri: urlString
     }, function (err, response, body) {
         if (err) {
             res.writeHead(400);
@@ -152,94 +183,10 @@ app.post('/loadUrl', function (req, res) {
     peerIds.push(peerId);
 
     var urlEncoding = { 'url': selectedUrl, 'peerId': peerId };
-    var toOpen = 'http://localhost:3000/getPage?' + querystring.stringify(urlEncoding);
+    var toOpen = 'http://localhost:3000/polychrome?' + querystring.stringify(urlEncoding);
 
     res.write(toOpen);
     res.end();
-
-    ////request for the webpage content
-    //request({ uri: page.parseUrl() }, function (err, response, body) {
-    //    var isBlocked = 'No';
-
-    //    // If the page was found...
-    //    if (!err && response.statusCode == 200) {
-    //        // Grab the headers
-    //        var headers = response.headers;
-
-    //        // Grab the x-frame-options header if it exists
-    //        var xFrameOptions = headers['x-frame-options'] || '';
-
-    //        // Normalize the header to lowercase
-    //        xFrameOptions = xFrameOptions.toLowerCase();
-
-    //        // Check if it's set to a blocking option
-    //        if (
-    // 			xFrameOptions === 'sameorigin' ||
-    // 			xFrameOptions === 'deny'
-    // 			) {
-    //            isBlocked = 'Yes';
-    //        }
-
-    //    } else {
-    //        res.end("PAGE NOT FOUND");
-    //    }
-
-
-    //    /* using cheerio to manipulate the DOM */
-    //    $ = cheerio.load(body);
-    //    console.log(body);
-
-    //    $('script').each(function () {
-    //        var link = $(this).attr('src');
-    //        if (link !== undefined && link.indexOf("http") == -1) {
-    //            var url = selectedUrl + link;
-    //            console.log(url);
-    //            $(this).attr('src', url);
-    //        }
-    //    });
-
-    //    $('link').each(function () {
-    //        var css = $(this).attr('href');
-    //        if (css.indexOf(".com") == -1) {
-    //            var url = selectedUrl + css;
-    //            console.log(url);
-    //            $(this).attr('href', url);
-    //        }
-    //    });
-
-    //    $('image').each(function () {
-    //        var image = $(this).attr('href');
-    //        if (image !== undefined && image.indexOf(".com") == -1) {
-    //            var url = selectedUrl + image;
-    //            console.log(url);
-    //            $(this).attr('href', url);
-    //        }
-    //    });
-
-    //    $('a').each(function () {
-    //        var hyperlink = $(this).attr('href');
-    //        if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
-    //            var url = selectedUrl + hyperlink;
-    //            console.log(url);
-    //            $(this).attr('href', url);
-    //        }
-    //    });
-
-
-
-
-    //    $('head').append('<link rel="stylesheet" href="/stylesheets/pc.css"></link>');
-    //    $('head').append('<link rel="stylesheet" href="/stylesheets/polychrome_style.css"></link>');
-    //    $('body').append('<script type="text/javascript" src="/javascripts/peer.js"></script>');
-    //    $('body').append('<script type="text/javascript" src="/javascripts/polychrome-accesspanel.js"></script>');
-    //    $('body').attr('id', 'chrome_body');
-    //    var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
-    //    $('body').append(polychrome_panel.toString());
-
-    //    console.log($.html());
-    //    res.write('<html>' + $.html() + '</html>');
-    //    res.end();
-    //});
 });
 
 app.get('/getPage', function (req, res) {
@@ -247,7 +194,7 @@ app.get('/getPage', function (req, res) {
     var parsedUrl = url.parse(req.url, true); // true to get query as object
     var params = parsedUrl.query;
 
-    var selectedUrl = "http://www.youtube.com/";
+    var selectedUrl = "";
 
     var peerId = "";
     if (JSON.stringify(params) !== '{}') {
@@ -306,12 +253,23 @@ app.get('/getPage', function (req, res) {
 
         /* using cheerio to manipulate the DOM */
         $ = cheerio.load(body);
-        
+
         $('script').each(function () {
             var link = $(this).attr('src');
             if (link !== undefined && link.indexOf("http") == -1) {
-
                 var url = selectedUrl + link;
+                if (link.charAt(0) === '/') {
+                    var baseUrl = page.getbaseUrl();
+                    page.setCurrentBaseUrl(baseUrl);
+                    url = baseUrl + link;
+                    if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                        url = baseUrl + link.substr(1);
+                    }
+                } else {
+                    if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                        url = selectedUrl + "/" + link;
+                    }
+                }
                 console.log(url);
                 $(this).attr('src', url);
             }
@@ -321,6 +279,18 @@ app.get('/getPage', function (req, res) {
             var css = $(this).attr('href');
             if (css.indexOf(".com") == -1) {
                 var url = selectedUrl + css;
+                if (css.charAt(0) === '/') {
+                    var baseUrl = page.getbaseUrl();
+                    currentPage.setCurrentBaseUrl(baseUrl);
+                    url = baseUrl + css;
+                    if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                        url = baseUrl + css.substr(1);
+                    }
+                } else {
+                    if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                        url = selectedUrl + "/" + css;
+                    }
+                }
                 console.log(url);
                 $(this).attr('href', url);
             }
@@ -330,6 +300,18 @@ app.get('/getPage', function (req, res) {
             var image = $(this).attr('href');
             if (image !== undefined && image.indexOf(".com") == -1) {
                 var url = selectedUrl + image;
+                if (image.charAt(0) === '/') {
+                    var baseUrl = page.getbaseUrl();
+                    currentPage.setCurrentBaseUrl(baseUrl);
+                    url = baseUrl + image;
+                    if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                        url = baseUrl + image.substr(1);
+                    }
+                } else {
+                    if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                        url = selectedUrl + "/" + image;
+                    }
+                }
                 console.log(url);
                 $(this).attr('href', url);
             }
@@ -339,159 +321,233 @@ app.get('/getPage', function (req, res) {
             var hyperlink = $(this).attr('href');
             if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
                 var url = selectedUrl + hyperlink;
+                if (hyperlink.charAt(0) === '/') {
+                    var baseUrl = page.getbaseUrl();
+                    currentPage.setCurrentBaseUrl(baseUrl);
+                    url = baseUrl + hyperlink;
+                    if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                        url = baseUrl + hyperlink.substr(1);
+                    }
+                } else {
+                    if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                        url = selectedUrl + "/" + hyperlink;
+                    }
+                }
                 console.log(url);
                 $(this).attr('href', url);
             }
         });
 
-
-        $('head').append('<link rel="stylesheet" href="/stylesheets/pc.css"></link>');
-        $('head').append('<link rel="stylesheet" href="/stylesheets/polychrome_style.css"></link>');
-        $('head').append('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
-        $('body').append('<script type="text/javascript" src="/javascripts/peer.js"></script>');
-        $('body').append('<script type="text/javascript" src="/javascripts/polychrome-accesspanel.js"></script>');
+        $('body').append('<link rel="stylesheet" href="stylesheets/polychrome_style.css"></link>');
+        //$('head').append('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
+        $('body').append('<script type="text/javascript" src="javascripts/polychrome-peer.js"></script>');
+        $('body').append('<script type="text/javascript" src="javascripts/polychrome-accesspanel.js"></script>');
         $('body').attr('id', 'chrome_body');
+
         var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
         $('body').append(polychrome_panel.toString());
+        console.log($.html());
         res.write('<html>' + $.html() + '</html>');
         res.end();
     });
 });
 
 
-//app.get('/polychrome', function (req, res) {
+app.get('/polychrome', function (req, res) {
 
-//    var parsedUrl = url.parse(req.url, true); // true to get query as object
-//    var params = parsedUrl.query;
+   
+    var parsedUrl = url.parse(req.url, true); // true to get query as object
+    var params = parsedUrl.query;
 
-//    var selected_url = "http://www.youtube.com/";
-//    var screen_count = 1;
-//    var screen_index = 1;
+    var selectedUrl = "";
 
-//    if (JSON.stringify(params) !== '{}') {
-//        selected_url = String(params.selected_url);
-//        screen_count = params.screen_count;
-//        screen_index = params.screen_index;
-//    }
+    var peerId = "";
+    if (JSON.stringify(params) !== '{}') {
+        selectedUrl = String(params.url);
+        peerId = String(params.peerId);
+    }
 
-//    if (selected_url.indexOf("http://") <= -1) {
-//        res.end("Page NOT FOUND!!");
+    //var parsedUrl = url.parse(req.url, true); // true to get query as object
+    //var params = parsedUrl.query;
 
-//    }
+    //var selectedUrl = "http://multiviz.gforge.inria.fr/scatterdice/oscars/";
+    //var spaceConfiguration = 1;
+    //var displayConfiguration = 1;
 
-//    if (selected_url.indexOf(".com") <= -1 && selected_url.indexOf(".org") <= -1 && selected_url.indexOf(".edu") <= -1) {
-//        res.end("Page NOT FOUND!!");
-//    }
+    ////var selectedUrl = String(req.body.url);
+    //console.log("Requested URL -" + selectedUrl);
+    ////var spaceConfiguration = parseInt(req.body.space);
+    //var displayConfiguration = parseInt(req.body.display);
+
+    var page = new WebPage({
+        url: selectedUrl,
+        spaceConfig: 1,
+        displayConfig: 1
+    });
+
+    page.parseUrl();
+    currentPage = page;
+
+    //Tell the request that we want to fetch youtube.com, send the results to a callback function
+    request({ uri: selectedUrl }, function (err, response, body1) {
+        var isBlocked = 'No';
+
+        // If the page was found...
+        if (!err && response.statusCode == 200) {
+            // Grab the headers
+            var headers = response.headers;
+
+            // Grab the x-frame-options header if it exists
+            var xFrameOptions = headers['x-frame-options'] || '';
+
+            // Normalize the header to lowercase
+            xFrameOptions = xFrameOptions.toLowerCase();
+
+            // Check if it's set to a blocking option
+            if (
+					xFrameOptions === 'sameorigin' ||
+					xFrameOptions === 'deny'
+					) {
+                isBlocked = 'Yes';
+            }
+
+        } else {
+
+            res.end("Page NOT FOUNd");
+        }
+
+        console.log('Blocked --' + isBlocked);
+
+        //Just a basic error check
+        if (err && response.statusCode !== 200) {
+            console.log('Request error');
+        }
+        body1 = response.body;
 
 
-//    console.log("selected URl is " + selected_url);
+        //Send the body param as the HTML code we will parse in jsdom
+        //also tell jsdom to attach jQuery in the scripts and loaded from jQuery.com
+        jsdom.env({
+            html: body1,
+            scripts: ['http://code.jquery.com/jquery.js', 'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/javascripts/polychrome-accesspanel.js'],
+            done: function (err, window) {
+                //Use jQuery just as in a regular HTML page
+                var $ = window.jQuery;
 
-//    //Tell the request that we want to fetch youtube.com, send the results to a callback function
-//    request({ uri: selected_url }, function (err, response, body1) {
-//        var isBlocked = 'No';
+                $('script').each(function () {
+                    var link = $(this).attr('src');
+                    if (link !== undefined && link.indexOf("http") == -1) {
+                        var url = selectedUrl + link;
+                        if (link.charAt(0) === '/') {
+                            var baseUrl = page.getbaseUrl();
+                            page.setCurrentBaseUrl(baseUrl);
+                            url = baseUrl + link;
+                            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                                url = baseUrl + link.substr(1);
+                            }
+                        } else {
+                            if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                                url = selectedUrl + "/" + link;
+                            }
+                        }
+                        console.log(url);
+                        $(this).attr('src', url);
+                    }
+                });
 
-//        // If the page was found...
-//        if (!err && response.statusCode == 200) {
-//            // Grab the headers
-//            var headers = response.headers;
+                $('link').each(function () {
+                    var css = $(this).attr('href');
+                    if (css.indexOf(".com") == -1) {
+                        var url = selectedUrl + css;
+                        if (css.charAt(0) === '/') {
+                            var baseUrl = page.getbaseUrl();
+                            currentPage.setCurrentBaseUrl(baseUrl);
+                            url = baseUrl + css;
+                            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                                url = baseUrl + css.substr(1);
+                            }
+                        } else {
+                            if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                                url = selectedUrl + "/" + css;
+                            }
+                        }
+                        console.log(url);
+                        $(this).attr('href', url);
+                    }
+                });
 
-//            // Grab the x-frame-options header if it exists
-//            var xFrameOptions = headers['x-frame-options'] || '';
+                $('image').each(function () {
+                    var image = $(this).attr('href');
+                    if (image !== undefined && image.indexOf(".com") == -1) {
+                        var url = selectedUrl + image;
+                        if (image.charAt(0) === '/') {
+                            var baseUrl = page.getbaseUrl();
+                            currentPage.setCurrentBaseUrl(baseUrl);
+                            url = baseUrl + image;
+                            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                                url = baseUrl + image.substr(1);
+                            }
+                        } else {
+                            if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                                url = selectedUrl + "/" + image;
+                            }
+                        }
+                        console.log(url);
+                        $(this).attr('href', url);
+                    }
+                });
 
-//            // Normalize the header to lowercase
-//            xFrameOptions = xFrameOptions.toLowerCase();
+                $('a').each(function () {
+                    var hyperlink = $(this).attr('href');
+                    if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
+                        var url = selectedUrl + hyperlink;
+                        if (hyperlink.charAt(0) === '/') {
+                            var baseUrl = page.getbaseUrl();
+                            currentPage.setCurrentBaseUrl(baseUrl);
+                            url = baseUrl + hyperlink;
+                            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                                url = baseUrl + hyperlink.substr(1);
+                            }
+                        } else {
+                            if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                                url = selectedUrl + "/" + hyperlink;
+                            }
+                        }
+                        console.log(url);
+                        $(this).attr('href', url);
+                    }
+                });
 
-//            // Check if it's set to a blocking option
-//            if (
-//					xFrameOptions === 'sameorigin' ||
-//					xFrameOptions === 'deny'
-//					) {
-//                isBlocked = 'Yes';
-//            }
+                $('body').append('<link rel="stylesheet" href="stylesheets/polychrome_style.css"></link>');
+                $('head').append('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
+                //$('body').append('<script type="text/javascript" src="javascripts/polychrome-peer.js"></script>');
+                //$('body').append('<script type="text/javascript" src="javascripts/polychrome-accesspanel.js"></script>');
+                $('body').attr('id', 'chrome_body');
 
-//        } else {
+                var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
+                $('body').append(polychrome_panel.toString());
+                res.write('<html>' + $('html').html() + '</html>');
+                res.end();
 
-//            res.end("Page NOT FOUNd");
-//        }
-
-//        console.log('Blocked --' + isBlocked);
-
-//        //Just a basic error check
-//        if (err && response.statusCode !== 200) {
-//            console.log('Request error');
-//        }
-//        body1 = response.body;
-
-
-//        //Send the body param as the HTML code we will parse in jsdom
-//        //also tell jsdom to attach jQuery in the scripts and loaded from jQuery.com
-//        jsdom.env({
-//            html: body1,
-//            scripts: ['http://code.jquery.com/jquery.js', '/javascripts/peer.js', '/javascripts/polychrome-accesspanel.js'],
-//            done: function (err, window) {
-//                //Use jQuery just as in a regular HTML page
-//                var $ = window.jQuery;
-
-//                // $('script').each(function() {
-//                //   	var link = $(this).attr('src');
-//                //   	if (link!== undefined && link.indexOf("http") == -1) {
-//                // 	  var url = "http://vis.movievis.com/"+link;
-//                // 	  console.log(url);
-//                // 	  $(this).attr('src', url);
-//                // 	}
-//                // });	
-
-//                $('link').each(function () {
-//                    var css = $(this).attr('href');
-//                    if (css.indexOf(".com") == -1) {
-//                        var url = selected_url + css;
-//                        console.log(url);
-//                        $(this).attr('href', url);
-//                    }
-//                });
-
-//                $('image').each(function () {
-//                    var image = $(this).attr('href');
-//                    if (image !== undefined && image.indexOf(".com") == -1) {
-//                        var url = selected_url + image;
-//                        console.log(url);
-//                        $(this).attr('href', url);
-//                    }
-//                });
-
-//                $('a').each(function () {
-//                    var hyperlink = $(this).attr('href');
-//                    if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
-//                        var url = selected_url + hyperlink;
-//                        console.log(url);
-//                        $(this).attr('href', url);
-//                    }
-//                });
-
-//                //var appendScript1 = fs.readFileSync("/public/javasripts/polychrome-accesspanel.js");
-//                //var appendScript = '<script>var myclick = false; $(document).on("click", function(evt) { if (evt.target.nodeName !== "circle") { return;} alert("captured event "+myclick); var elem = document.elementFromPoint(evt.pageX, evt.pageY); if (!myclick) { var clickevt = document.createEvent("MouseEvents"); clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null); alert("generated event "+ myclick); myclick = true; /* elem.dispatchEvent(clickevt); */ } else {myclick = false;} }); </script>'
-
-//                $('head').append('<link rel="stylesheet" href="/stylesheets/pc.css"></link>');
-//                $('head').append('<link rel="stylesheet" href="/stylesheets/polychrome_style.css"></link>');
-
-//                $('body').attr('id', 'chrome_body');
-//                var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
-//                $('body').append(polychrome_panel.toString());
-//                res.write('<html>' + $('html').html() + '</html>');
-//                res.end();
-
-//            }
-//        });
-//    });
-//});
+            }
+        });
+    });
+});
 
 /* wild card for any other requests */
 app.get('/*', function (req, res) {
 
-    if (currentPage) {
+    if (currentPage && req.url.indexOf("polychrome") === -1) {
         console.log("request captured by wildcard: " + req.url);
-        req.url = req.url.substr(1);
         var urlString = currentPage.url + req.url;
+        if (req.url.charAt(0) === '/') {
+            var baseUrl = currentPage.getCurrentBaseUrl();
+            urlString = baseUrl + req.url;
+            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                urlString = baseUrl + req.url.substr(1);
+            }
+        }
+
         console.log("Requesting for " + urlString + ", " + ValidURL(urlString));
         request({
             uri: urlString

@@ -12,11 +12,22 @@ function WebPage(options) {
     _self.displayConfig = options.displayConfig;
     _self.isValid = true;
     _self.isCached = false;
+    _self.currentBaseUrl = _self.url; 
 }
 
 WebPage.prototype.getUrl = function () {
     var _self = this;
     return _self.url;
+};
+
+WebPage.prototype.setCurrentBaseUrl = function (url) {
+    var _self = this;
+    _self.currentBaseUrl = url;
+};
+
+WebPage.prototype.getCurrentBaseUrl = function (url) {
+    var _self = this;
+   return _self.currentBaseUrl;
 };
 
 WebPage.prototype.parseUrl = function () {
