@@ -39,17 +39,17 @@ function randomString(len, charSet) {
 
 //once you get some data on the peerjs connection
 function onData(data) {
-	//alert(data);
-	if (data.eventType == "click") {
+	if (data.eventType === "click" || data.eventType === "mousemove" || data.eventType === "mousedown" || data.eventType === "mouseup") {
 		//var url = domain + data.message;
 		//load_page(url);
-		if (!myclick) {
+		
+        if (!myclick) {
 			myclick = true;
 			var target = data.target;
 			var posX = data.posX - window.pageXOffset;
 			var posY = data.posY - window.pageYOffset; 
 			var elem = document.elementFromPoint(posX, posY);
-			console.log(posX +", "+ posY+", "+elem);
+			//console.log(posX +", "+ posY+", "+elem);
 			
 			if (elem === null) {
 				var items = document.getElementsByTagName("*");
@@ -60,14 +60,14 @@ function onData(data) {
 				    var rect_height = rect.bottom - rect.top;
 				    if (Math.abs(posX - rect.left) <= rect_width && Math.abs(posY - rect.top) <= rect_height && temp_elem.nodeName === target) {
 				    	elem = temp_elem;
-				    	//alert("found"+temp_elem.nodeName);	
+				    		
 				    }
 				}
-			}
+			} 
 
+            console.log("Propagated event found for " + elem.nodeType);
 			var clickevt = document.createEvent("MouseEvents");
 			clickevt.initMouseEvent(data.eventType, true, true, window, 1, posX, posY, posX, posY, false, false, false, false, 0, null);
-			console.log ("generated event " + myclick);
 			elem.dispatchEvent(clickevt); 
 			
 		} else {
@@ -105,22 +105,24 @@ peer.on('open', function(id, clientIds) {
 	$('#pid').text(id);
 	console.log(clientIds);
 
-	var peer1 = clientIds.split(",");
-	console.log(peer1[0]);
-	peer1.forEach(function(peerid) {
-		var conn = peer.connect(peerid);
-		conn.on('open', function() {
-			connections.push(conn);
-			alert("Now connected to " + conn.peer);
-			//first_connection(c);
-		});
+    if (clientIds) {
+	    var peer1 = clientIds.split(",");
+	    console.log(peer1[0]);
+	    peer1.forEach(function(peerid) {
+		    var conn = peer.connect(peerid);
+		    conn.on('open', function() {
+			    connections.push(conn);
+			    alert("Now connected to " + conn.peer);
+			    //first_connection(c);
+		    });
 
-		conn.on('data', function(data) {
-			if (data != null)
-				onData(data);
-		});
+		    conn.on('data', function(data) {
+			    if (data != null)
+				    onData(data);
+		    });
 
-	})
+	    })
+    }
 });
 
 //make sure that peerjs connections are handled by the connect function
@@ -253,63 +255,10 @@ var defaultOptions = {
 }
 	
 $(document).ready(function() {
-	$(document).on("click", function(evt) {
-		
-		console.log("captured event " + myclick);
-		
-		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
-
-		if (!myclick) {
-			//myclick = true;
-			var toSend = new Object();
-			toSend.eventType = "click";
-			toSend.target = evt.target.nodeName;
-			toSend.posX = evt.pageX;
-			toSend.posY = evt.pageY; 
-			connections.forEach(function(connection) {
-		  		connection.send(toSend);
-		  	});	
-
-			//var clickevt = document.createEvent("MouseEvents");
-			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
-			//alert("generated event " + myclick);
-			// /* elem.dispatchEvent(clickevt); */
-		} else {
-			myclick = false;
-		}
-	});
-
-    $(document).on("move", function(evt) {
-		
-		console.log("captured event " + myclick);
-		
-		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
-
-		if (!myclick) {
-			//myclick = true;
-			var toSend = new Object();
-			toSend.eventType = "move";
-			toSend.target = evt.target.nodeName;
-			toSend.posX = evt.pageX;
-			toSend.posY = evt.pageY; 
-            console.log("Move at - "+ toSend.posX+", "+toSend.posY);
-
-			connections.forEach(function(connection) {
-		  		connection.send(toSend);
-		  	});	
-
-			//var clickevt = document.createEvent("MouseEvents");
-			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
-			//alert("generated event " + myclick);
-			// /* elem.dispatchEvent(clickevt); */
-		} else {
-			myclick = false;
-		}
-	});
-
+	
     $(document).on("click", function(evt) {
 		
-		console.log("captured event " + myclick);
+		//console.log("captured event - Click -" + myclick);
 		
 		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
 
@@ -320,6 +269,38 @@ $(document).ready(function() {
 			toSend.target = evt.target.nodeName;
 			toSend.posX = evt.pageX;
 			toSend.posY = evt.pageY; 
+            console.log("Click at - "+ toSend.posX+", "+toSend.posY);
+
+			connections.forEach(function(connection) {
+		  		connection.send(toSend);
+		  	});	
+
+			//var clickevt = document.createEvent("MouseEvents");
+			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
+			//alert("generated event " + myclick);
+			// /* elem.dispatchEvent(clickevt); */
+		
+        } else {
+
+			myclick = false;
+		}
+	});
+
+    $(document).on("mousemove", function(evt) {
+		
+		//console.log("captured event - Move -" + myclick);
+		
+		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
+
+		if (!myclick) {
+			//myclick = true;
+			var toSend = new Object();
+			toSend.eventType = "mousemove";
+			toSend.target = evt.target.nodeName;
+			toSend.posX = evt.pageX;
+			toSend.posY = evt.pageY; 
+            console.log("Mousemove at - "+ toSend.posX+", "+toSend.posY);
+
 			connections.forEach(function(connection) {
 		  		connection.send(toSend);
 		  	});	
@@ -333,7 +314,61 @@ $(document).ready(function() {
 		}
 	});
 
+    $(document).on("mouseup", function(evt) {
+		
+		//console.log("captured event - Move -" + myclick);
+		
+		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
 
+		if (!myclick) {
+			//myclick = true;
+			var toSend = new Object();
+			toSend.eventType = "mouseup";
+			toSend.target = evt.target.nodeName;
+			toSend.posX = evt.pageX;
+			toSend.posY = evt.pageY; 
+            console.log("Mouseup at - "+ toSend.posX+", "+toSend.posY);
+
+			connections.forEach(function(connection) {
+		  		connection.send(toSend);
+		  	});	
+
+			//var clickevt = document.createEvent("MouseEvents");
+			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
+			//alert("generated event " + myclick);
+			// /* elem.dispatchEvent(clickevt); */
+		} else {
+			myclick = false;
+		}
+	});
+
+    $(document).on("mousedown", function(evt) {
+		
+		//console.log("captured event - Move -" + myclick);
+		
+		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
+
+		if (!myclick) {
+			//myclick = true;
+			var toSend = new Object();
+			toSend.eventType = "mousedown";
+			toSend.target = evt.target.nodeName;
+			toSend.posX = evt.pageX;
+			toSend.posY = evt.pageY; 
+            console.log("Mousedown at - "+ toSend.posX+", "+toSend.posY);
+
+			connections.forEach(function(connection) {
+		  		connection.send(toSend);
+		  	});	
+
+			//var clickevt = document.createEvent("MouseEvents");
+			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
+			//alert("generated event " + myclick);
+			// /* elem.dispatchEvent(clickevt); */
+		} else {
+			myclick = false;
+		}
+	});
 
 	$("#toggle").click(function() {
 		$('#toggle').toggleClass('active');

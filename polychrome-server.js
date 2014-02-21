@@ -338,10 +338,10 @@ app.get('/getPage', function (req, res) {
             }
         });
 
-        $('body').append('<link rel="stylesheet" href="stylesheets/polychrome_style.css"></link>');
+        $('body').prepend('<link rel="stylesheet" href="stylesheets/polychrome_style.css"></link>');
         //$('head').append('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
-        $('body').append('<script type="text/javascript" src="javascripts/polychrome-peer.js"></script>');
-        $('body').append('<script type="text/javascript" src="javascripts/polychrome-accesspanel.js"></script>');
+        $('body').prepend('<script type="text/javascript" src="javascripts/polychrome-peer.js"></script>');
+        $('body').prepend('<script type="text/javascript" src="javascripts/polychrome-accesspanel.js"></script>');
         $('body').attr('id', 'chrome_body');
 
         var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
@@ -413,7 +413,7 @@ app.get('/polychrome', function (req, res) {
 
         } else {
 
-            res.end("Page NOT FOUNd");
+            res.end("Page NOT FOUND");
         }
 
         console.log('Blocked --' + isBlocked);
@@ -422,9 +422,8 @@ app.get('/polychrome', function (req, res) {
         if (err && response.statusCode !== 200) {
             console.log('Request error');
         }
+        
         body1 = response.body;
-
-
         //Send the body param as the HTML code we will parse in jsdom
         //also tell jsdom to attach jQuery in the scripts and loaded from jQuery.com
         jsdom.env({
@@ -518,8 +517,8 @@ app.get('/polychrome', function (req, res) {
                     }
                 });
 
-                $('body').append('<link rel="stylesheet" href="stylesheets/polychrome_style.css"></link>');
-                $('head').append('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
+                $('body').prepend('<link rel="stylesheet" href="stylesheets/polychrome_style.css"></link>');
+                $('head').prepend('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
                 //$('body').append('<script type="text/javascript" src="javascripts/polychrome-peer.js"></script>');
                 //$('body').append('<script type="text/javascript" src="javascripts/polychrome-accesspanel.js"></script>');
                 $('body').attr('id', 'chrome_body');

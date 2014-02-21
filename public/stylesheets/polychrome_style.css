@@ -13,14 +13,22 @@
     transform-origin: 100% 10%;
 }
 
-#chrome_body{
+/*#chrome_body{
 	position: absolute;
 	width: 100%;
 	height: 100%;
 	left: 50%; 
 	top: 50%;
     -webkit-transform: scale(2, 2);
+}*/
+
+
+#chrome_body{
+	position: absolute;
+	width: 100%;
+	height: 100%;
 }
+
 
 #polychrome-container-onescreen {
 	float: left;
