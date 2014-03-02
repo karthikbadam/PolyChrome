@@ -20,7 +20,6 @@ function makeMessage(eventType, message) {
 	if (eventType == "scroll") {
 		data.eventType = "scroll";
 	}
-
 	return data;
 }
 
@@ -28,7 +27,7 @@ function makeMessage(eventType, message) {
 var connections = [];
 
 function randomString(len, charSet) {
-	charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:;';
 	var randomString = '';
 	for (var i = 0; i < len; i++) {
 		var randomPoz = Math.floor(Math.random() * charSet.length);
@@ -39,7 +38,7 @@ function randomString(len, charSet) {
 
 //once you get some data on the peerjs connection
 function onData(data) {
-	if (data.eventType === "click" || data.eventType === "mousemove" || data.eventType === "mousedown" || data.eventType === "mouseup") {
+	if (data.eventType === "click" || data.eventType === "mousemove" || data.eventType === "mousedown" || data.eventType === "mouseup" || data.eventType === "touchmove" || data.eventType === "touchstart" || data.eventType === "touchend") {
 		//var url = domain + data.message;
 		//load_page(url);
 		
@@ -343,6 +342,90 @@ $(document).ready(function() {
 	});
 
     $(document).on("mousedown", function(evt) {
+		
+		//console.log("captured event - Move -" + myclick);
+		
+		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
+
+		if (!myclick) {
+			//myclick = true;
+			var toSend = new Object();
+			toSend.eventType = "mousedown";
+			toSend.target = evt.target.nodeName;
+			toSend.posX = evt.pageX;
+			toSend.posY = evt.pageY; 
+            console.log("Mousedown at - "+ toSend.posX+", "+toSend.posY);
+
+			connections.forEach(function(connection) {
+		  		connection.send(toSend);
+		  	});	
+
+			//var clickevt = document.createEvent("MouseEvents");
+			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
+			//alert("generated event " + myclick);
+			// /* elem.dispatchEvent(clickevt); */
+		} else {
+			myclick = false;
+		}
+	});
+
+     $(document).on("touchstart", function(evt) {
+		
+		//console.log("captured event - Move -" + myclick);
+		
+		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
+
+		if (!myclick) {
+			//myclick = true;
+			var toSend = new Object();
+			toSend.eventType = "mousedown";
+			toSend.target = evt.target.nodeName;
+			toSend.posX = evt.pageX;
+			toSend.posY = evt.pageY; 
+            console.log("Mousedown at - "+ toSend.posX+", "+toSend.posY);
+
+			connections.forEach(function(connection) {
+		  		connection.send(toSend);
+		  	});	
+
+			//var clickevt = document.createEvent("MouseEvents");
+			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
+			//alert("generated event " + myclick);
+			// /* elem.dispatchEvent(clickevt); */
+		} else {
+			myclick = false;
+		}
+	});
+
+     $(document).on("touchmove", function(evt) {
+		
+		//console.log("captured event - Move -" + myclick);
+		
+		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
+
+		if (!myclick) {
+			//myclick = true;
+			var toSend = new Object();
+			toSend.eventType = "mousedown";
+			toSend.target = evt.target.nodeName;
+			toSend.posX = evt.pageX;
+			toSend.posY = evt.pageY; 
+            console.log("Mousedown at - "+ toSend.posX+", "+toSend.posY);
+
+			connections.forEach(function(connection) {
+		  		connection.send(toSend);
+		  	});	
+
+			//var clickevt = document.createEvent("MouseEvents");
+			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
+			//alert("generated event " + myclick);
+			// /* elem.dispatchEvent(clickevt); */
+		} else {
+			myclick = false;
+		}
+	});
+
+     $(document).on("touchend", function(evt) {
 		
 		//console.log("captured event - Move -" + myclick);
 		
