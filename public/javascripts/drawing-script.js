@@ -1,7 +1,7 @@
-$(function(){
+$(function () {
 
     // This demo depends on the canvas element
-    if(!('getContext' in document.createElement('canvas'))){
+    if (!('getContext' in document.createElement('canvas'))) {
         alert('Sorry, it looks like your browser does not support canvas!');
         return false;
     }
@@ -11,12 +11,14 @@ $(function(){
 
     var doc = $(document),
         win = $(window),
-        canvas = $('#paper'),
-        ctx = canvas[0].getContext('2d'),
         instructions = $('#instructions');
 
+    // get the canvas element and its context
+    var canvas = document.getElementById('paper');
+    var ctx = canvas.getContext('2d'), context = canvas.getContext('2d');
+
     // Generate an unique ID
-    var id = Math.round($.now()*Math.random());
+    var id = Math.round($.now() * Math.random());
 
     // A flag for drawing activity
     var drawing = false;
@@ -55,6 +57,47 @@ $(function(){
 
     var prev = {};
 
+    // create a drawer which tracks touch movements
+    var drawer = {
+        touchstart: function (coors) {
+            context.beginPath();
+            context.moveTo(coors.x, coors.y);
+            drawing = true;
+        },
+        touchmove: function (coors) {
+            if (drawing) {
+                context.lineTo(coors.x, coors.y);
+                context.stroke();
+            }
+        },
+        touchend: function (coors) {
+            if (this.isDrawing) {
+                this.touchmove(coors);
+                drawing = false;
+            }
+        }
+    };
+
+    // create a function to pass touch events and coordinates to drawer
+    function draw(event) {
+        // get the touch coordinates
+        var coors = {
+            x: event.targetTouches[0].pageX,
+            y: event.targetTouches[0].pageY
+        };
+        // pass the coordinates to the appropriate handler
+        drawer[event.type](coors);
+        event.preventDefault();
+    }
+
+    // attach the touchstart, touchmove, touchend event listeners.
+    document.body.addEventListener('touchstart', draw, false);
+    document.body.addEventListener('touchmove', draw, false);
+    document.body.addEventListener('touchend', draw, false);
+
+    // end body:touchmove
+
+    /* old code */
     //canvas.addEventListener('touchstart',function(e){
     //    e.preventDefault();
     //    drawing = true;
@@ -65,7 +108,7 @@ $(function(){
     //    instructions.fadeOut();
     //}, false);
 
-    canvas.on('mousedown',function(e){
+    $('#paper').on('mousedown', function (e) {
         e.preventDefault();
         drawing = true;
         prev.x = e.pageX;
@@ -75,13 +118,23 @@ $(function(){
         instructions.fadeOut();
     });
 
-    doc.bind('mouseup mouseleave touchend',function(){
+    //canvas.on('touchstart',function(e){
+    //    e.preventDefault();
+    //    drawing = true;
+    //    prev.x = e.pageX;
+    //    prev.y = e.pageY;
+
+    //    // Hide the instructions
+    //    instructions.fadeOut();
+    //});
+
+    doc.on('mouseup', function () {
         drawing = false;
     });
 
-    var lastEmit = $.now();
+    //var lastEmit = $.now();
 
-    doc.on('mousemove touchmove',function(e){
+    doc.on('mousemove', function (e) {
         //if($.now() - lastEmit > 30){
         //    socket.emit('mousemove',{
         //        'x': e.pageX,
@@ -95,7 +148,7 @@ $(function(){
         // Draw a line for the current user's movement, as it is
         // not received in the socket.on('moving') event above
 
-        if(drawing){
+        if (drawing) {
 
             drawLine(prev.x, prev.y, e.pageX, e.pageY);
 
@@ -105,10 +158,10 @@ $(function(){
     });
 
     // Remove inactive clients after 10 seconds of inactivity
-    setInterval(function(){
+    setInterval(function () {
 
-        for(ident in clients){
-            if($.now() - clients[ident].updated > 10000){
+        for (ident in clients) {
+            if ($.now() - clients[ident].updated > 10000) {
 
                 // Last update was more than 10 seconds ago.
                 // This user has probably closed the page
@@ -119,9 +172,9 @@ $(function(){
             }
         }
 
-    },10000);
+    }, 10000);
 
-    function drawLine(fromx, fromy, tox, toy){
+    function drawLine(fromx, fromy, tox, toy) {
         ctx.moveTo(fromx, fromy);
         ctx.lineTo(tox, toy);
         ctx.stroke();

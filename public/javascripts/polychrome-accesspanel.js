@@ -96,7 +96,7 @@ function connect(conn) {
 //TODO change me to work with a server
 var randomValue = randomString(5);
 var peer = new Peer({
-	host: 'localhost',
+	host: '192.168.43.30',
 	port: '8000'
 });
 
@@ -380,9 +380,9 @@ $(document).ready(function() {
 			var toSend = new Object();
 			toSend.eventType = "mousedown";
 			toSend.target = evt.target.nodeName;
-			toSend.posX = evt.pageX;
-			toSend.posY = evt.pageY; 
-            console.log("Mousedown at - "+ toSend.posX+", "+toSend.posY);
+			toSend.posX = evt.originalEvent.touches[0].pageX;
+			toSend.posY = evt.originalEvent.touches[0].pageY; 
+            console.log("touchstart at - "+ toSend.posX+", "+toSend.posY);
 
 			connections.forEach(function(connection) {
 		  		connection.send(toSend);
@@ -406,11 +406,11 @@ $(document).ready(function() {
 		if (!myclick) {
 			//myclick = true;
 			var toSend = new Object();
-			toSend.eventType = "mousedown";
+			toSend.eventType = "mousemove";
 			toSend.target = evt.target.nodeName;
-			toSend.posX = evt.pageX;
-			toSend.posY = evt.pageY; 
-            console.log("Mousedown at - "+ toSend.posX+", "+toSend.posY);
+			toSend.posX = evt.originalEvent.touches[0].pageX;
+			toSend.posY = evt.originalEvent.touches[0].pageY; 
+            console.log("touchmove at - "+ toSend.posX+", "+toSend.posY);
 
 			connections.forEach(function(connection) {
 		  		connection.send(toSend);
@@ -434,11 +434,11 @@ $(document).ready(function() {
 		if (!myclick) {
 			//myclick = true;
 			var toSend = new Object();
-			toSend.eventType = "mousedown";
+			toSend.eventType = "mouseup";
 			toSend.target = evt.target.nodeName;
-			toSend.posX = evt.pageX;
-			toSend.posY = evt.pageY; 
-            console.log("Mousedown at - "+ toSend.posX+", "+toSend.posY);
+			toSend.posX = evt.originalEvent.touches[0].pageX;
+			toSend.posY = evt.originalEvent.touches[0].pageY; 
+            console.log("touchend at - "+ toSend.posX+", "+toSend.posY);
 
 			connections.forEach(function(connection) {
 		  		connection.send(toSend);
