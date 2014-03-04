@@ -19,7 +19,8 @@
     "cheerio": "*", 
     "async": "*", 
     "util": "*", 
-    "mime": "*"
+    "mime": "*", 
+    "socket.io": "*"
   },
   "devDependencies": {
     "expect.js": "*",

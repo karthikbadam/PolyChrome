@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Node.js Multiplayer Drawing Game</title>
+
+        <!-- The stylesheets -->
+        <link rel="stylesheet" href="/stylesheets/drawing-styles.css" />
+        <link rel="stylesheet" href="stylesheets/polychrome_style.css"></link>
+        
+    </head>
+
+    <body>
+        <div id="cursors">
+            <!-- The mouse pointers will be created here -->
+        </div>
+
+        <canvas id="paper" width="1380" height="800">
+            Your browser needs to support canvas for this to work!
+        </canvas>
+
+        <!-- JavaScript includes. Notice that socket.io.js is served by node.js -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+        <script src="javascripts/drawing-script.js"></script>
+        <script type="text/javascript" src="javascripts/polychrome-peer.js"></script>
+        <script type="text/javascript" src="javascripts/polychrome-accesspanel.js"></script>
+
+
+        <button id="toggle" class="normal"></button>
+        <div id="actions">
+            <div id="login">
+                <form action="/login" method="post">
+                    <input type="text" name="username" id="username" placeholder="[Username]" />			 <input type="password" name="password" id="password" placeholder="[Password]">			 <input type="submit" value="Log In" id="login_submit" />			 <input type="button" value="Sign Up" id="signup_submit" />
+                </form>
+            </div>
+            <div id "url_info">
+                <ul>
+                    <input type="text" id="url" placeholder="[Enter URL here]">
+                    <button id="url_submit"></button>
+                </ul>
+                <ul>
+					Your PeerJS ID is
+                    <span id="pid"></span>
+                </ul>
+                <ul id="results"></ul>
+            </div>
+            <div id="screen-options">
+                <ul>
+                    <p> Select Screen Type:</p>
+                </ul>
+                <div id="multiple-screen">
+                    <ul>
+                        <input type="button" id="one-screen">
+                    </ul>
+                </div>
+                <div id="multiple-screen">
+                    <ul>
+                        <input type="button" class="multiple-screen-element" id="two-screen-left">
+                        <input type="button" class="multiple-screen-element" id="two-screen-right">
+                    </ul>
+                </div>
+                <div id="multiple-screen">
+                    <ul id="multiple-screens">
+                        <input type="button" class="multiple-screen-element" id="four-screen-left-top">
+                        <input type="button" class="multiple-screen-element" id="four-screen-right-top">
+                    </ul>
+                    <ul id="multiple-screens">
+                        <input type="button" class="multiple-screen-element" id="four-screen-left-bottom">
+                        <input type="button" class="multiple-screen-element" id="four-screen-right-bottom">
+                    </ul>
+                </div>
+                <div id="multiple-screen">
+                    <ul id="multiple-screens">
+                        <input type="button" class="multiple-screen-element" id="six-screen-left-top">
+                        <input type="button" class="multiple-screen-element" id="six-screen-middle-top">
+                        <input type="button" class="multiple-screen-element" id="six-screen-right-top">
+                    </ul>
+                    <ul id="multiple-screens">
+                        <input type="button" class="multiple-screen-element" id="six-screen-left-bottom">
+                        <input type="button" class="multiple-screen-element" id="six-screen-middle-bottom">
+                        <input type="button" class="multiple-screen-element" id="six-screen-right-bottom">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -6,3 +6,8 @@
 exports.index = function(req, res){
   res.render('index', { title: 'PolyChrome'});
 };
+
+
+exports.drawing = function(req, res){
+  res.render('drawing', {});
+};

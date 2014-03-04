@@ -52,8 +52,11 @@ if ('development' == app.get('env')) {
     app.use(express.errorHandler());
 }
 
+/* opening page */
 app.get('/', routes.index);
-app.get('/users', user.list);
+
+/* app1 drawing */
+app.get('/drawing', routes.drawing);
 
 /* requests for data */
 app.get('/data/*', function (req, res) {
@@ -354,7 +357,6 @@ app.get('/getPage', function (req, res) {
 
 
 app.get('/polychrome', function (req, res) {
-
    
     var parsedUrl = url.parse(req.url, true); // true to get query as object
     var params = parsedUrl.query;
@@ -580,10 +582,33 @@ var ValidURL = function (str) {
     }
 }
 
-http.createServer(app).listen(app.get('port'), function () {
+
+/* polychrome listen */
+var httpserver = http.createServer(app);
+httpserver.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
 });
 
+
+/* peer server */
 new PeerServer({
     port: 8000
+});
+
+/* socket io */
+var io = require('socket.io').listen(httpserver);
+
+// Delete this row if you want to see debug messages
+io.set('log level', 1);
+
+// Listen for incoming connections from clients
+io.sockets.on('connection', function (socket) {
+
+    // Start listening for mouse move events
+    socket.on('mousemove', function (data) {
+
+        // This line sends the event (broadcasts it)
+        // to everyone except the originating client.
+        socket.broadcast.emit('moving', data);
+    });
 });
