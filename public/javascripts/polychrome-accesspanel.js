@@ -96,7 +96,7 @@ function connect(conn) {
 //TODO change me to work with a server
 var randomValue = randomString(5);
 var peer = new Peer({
-	host: '192.168.43.30',
+	host: 'localhost',
 	port: '8000'
 });
 
