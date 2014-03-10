@@ -287,22 +287,19 @@
     margin: 10px;
     padding: 10px;
     text-align: center; 
-    background-color: #808080;
+    background-color: #666;
     font-size: 15px;
 	font-style: normal;
 	line-height: normal;
 	font-weight: 500;
     font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
-    background: #007ead;
-	background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
-	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
     cursor: pointer;
 }
 
 
 #polychrome-event-config{
-    width: 400px;
-    height: 200px;
+    width: 300px;
+    height: 250px;
     margin: 10px;
     text-align: center; 
     background-color: #808080;
@@ -311,12 +308,11 @@
 	line-height: normal;
 	font-weight: 500;
     font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
-    background: #1399d7;
 }
 
 #polychrome-display-config{
-    width: 400px;
-    height: 200px;
+    width: 300px;
+    height: 250px;
     margin: 10px;
     text-align: center; 
     background-color: #808080;
@@ -325,7 +321,6 @@
 	line-height: normal;
 	font-weight: 500;
     font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
-    background: #1399d7;
 }
 
 #polychrome-disconnect{
@@ -339,95 +334,168 @@
 	font-weight: 500;
     font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
     background: #007ead;
+    cursor: pointer;
+}
+
+#polychrome-disconnect:hover{
+    background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#333));
+	background: -moz-linear-gradient(top,  #444,  #333);
+}
+
+#polychrome-disconnect:active{
+    background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#333));
+	background: -moz-linear-gradient(top,  #444,  #333);
 }
 
 #polychrome-display-text{
-    padding: 10px;
+    padding: 5px;
     text-align: center; 
-    background-color: #808080;
-    font-size: 12px;
+    background-color: #666;
+    font-size: 10px;
 	font-style: normal;
 	line-height: normal;
 	font-weight: 500;
     font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
-    background: #007ead;
-	cursor: pointer;
+    cursor: pointer;
+    height: 5%;
 }
 
 #polychrome-event-text{
-    padding: 10px;
+    padding: 5px;
     text-align: center; 
-    background-color: #808080;
-    font-size: 12px;
+    background-color: #666;
+    font-size: 10px;
 	font-style: normal;
 	line-height: normal;
 	font-weight: 500;
     font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
-    background: #007ead;
-	cursor: pointer;
+    cursor: pointer;
+    height: 5%;
+    border: 0px solid #666;
 }
 
 #polychrome-display-div{
     width: 100%;
     display: inline;
+    overflow: hidden;
 }
 
 #polychrome-events-div{
     width: 100%;
-    height: auto;
     display: inline;
+    overflow: hidden;
 }
 
 #polychrome-events-list{
     width: 25%;
-    border: 1px solid #007ead;
+    border: 1px solid #444;
     float: left;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;  
 }
 
 #polychrome-display-list{
     width: 25%;
-    border: 1px solid #007ead;
+    border: 1px solid #444;
     float: left;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;  
 }
 
 .polychrome-display-button{
     padding: 5px;
     cursor: pointer;
-    background: #007ead;
+    background: #666;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;  
 }
 
 .polychrome-display-button:hover{
-    background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
-	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+    background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#333));
+	background: -moz-linear-gradient(top,  #444,  #333);
 }
 
 .polychrome-display-button:active{
-    background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
-	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+    background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#333));
+	background: -moz-linear-gradient(top,  #444,  #333);
 }
 
 .polychrome-event-button{
     padding: 5px;
     cursor: pointer;
-    background: #007ead;
+    background: #666;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;  
+
 }
 
 .polychrome-event-button:hover{
-    background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
-	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+    background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#333));
+	background: -moz-linear-gradient(top,  #444,  #333);
 }
 
 .polychrome-event-button:active{
-    background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
-	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+    background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#333));
+	background: -moz-linear-gradient(top,  #444,  #333);
 }
 
 #polychrome-events-dump{
     float: right;
     width: 75%;
+    height: 90%;
+    overflow-y: auto;
+    overflow-x: hidden;
+     box-sizing: border-box;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;  
 }
 
 #polychrome-display-dump{
     float: right;
     width: 75%;
+    height: 90%;
+    overflow-y: auto;
+    overflow-x: hidden;
+     box-sizing: border-box;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;
+    background-color: #777;  
+}
+
+.polychrome-display-element{
+    float: left;
+    cursor: pointer;
+    height: 20px;
+    padding-left: 10px;
+    border-bottom: 1px solid #666;
+    border-left: 1px solid #666;
+    width:  100%;
+    text-align: left;
+    background-color: #777;
+}
+
+.polychrome-event-element {
+    float: left;
+    cursor: pointer;
+    height: 20px;
+    padding-left: 10px;
+    border-bottom: 1px solid #666;
+    border-left: 1px solid #666;
+    width:  100%;
+    text-align: left;
+}
+
+
+.polychrome-display-element:active{
+    background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#333));
+	background: -moz-linear-gradient(top,  #444,  #333);
+}
+
+.polychrome-event-element:active{
+    background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#333));
+	background: -moz-linear-gradient(top,  #444,  #333);
 }
