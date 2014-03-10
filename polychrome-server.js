@@ -525,8 +525,9 @@ app.get('/polychrome', function (req, res) {
                 //$('body').append('<script type="text/javascript" src="javascripts/polychrome-accesspanel.js"></script>');
                 $('body').attr('id', 'chrome_body');
 
-                var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
+                var polychrome_panel = fs.readFileSync("public/renderings/PolyChrome-feedback.html", 'utf8');
                 $('body').append(polychrome_panel.toString());
+                $('body').append('<script>var peerId = "'+peerId+'"; </script>')
                 res.write('<html>' + $('html').html() + '</html>');
                 res.end();
 

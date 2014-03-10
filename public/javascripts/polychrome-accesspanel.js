@@ -48,7 +48,6 @@ function onData(data) {
 			var posX = data.posX - window.pageXOffset;
 			var posY = data.posY - window.pageYOffset; 
 			var elem = document.elementFromPoint(posX, posY);
-			//console.log(posX +", "+ posY+", "+elem);
 			
 			if (elem === null) {
 				var items = document.getElementsByTagName("*");
@@ -58,8 +57,7 @@ function onData(data) {
 				    var rect_width = rect.right - rect.left;
 				    var rect_height = rect.bottom - rect.top;
 				    if (Math.abs(posX - rect.left) <= rect_width && Math.abs(posY - rect.top) <= rect_height && temp_elem.nodeName === target) {
-				    	elem = temp_elem;
-				    		
+				    	elem = temp_elem;	    		
 				    }
 				}
 			} 
@@ -68,8 +66,8 @@ function onData(data) {
 			var clickevt = document.createEvent("MouseEvents");
 			clickevt.initMouseEvent(data.eventType, true, true, window, 1, posX, posY, posX, posY, false, false, false, false, 0, null);
 			elem.dispatchEvent(clickevt); 
-			
 		} else {
+
 			myclick = false;
 		}
 	}
@@ -95,7 +93,7 @@ function connect(conn) {
 
 //TODO change me to work with a server
 var randomValue = randomString(5);
-var peer = new Peer({
+var peer = new Peer(peerId, {
 	host: 'localhost',
 	port: '8000'
 });
@@ -256,12 +254,9 @@ var defaultOptions = {
 $(document).ready(function() {
 	
     $(document).on("click", function(evt) {
-		
-		//console.log("captured event - Click -" + myclick);
-		
 		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
-
-		if (!myclick) {
+		
+        if (!myclick) {
 			//myclick = true;
 			var toSend = new Object();
 			toSend.eventType = "click";
@@ -278,7 +273,6 @@ $(document).ready(function() {
 			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
 			//alert("generated event " + myclick);
 			// /* elem.dispatchEvent(clickevt); */
-		
         } else {
 
 			myclick = false;
