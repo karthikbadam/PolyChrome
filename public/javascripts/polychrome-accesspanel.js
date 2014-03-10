@@ -99,7 +99,7 @@ var peer = new Peer(peerId, {
 });
 
 peer.on('open', function(id, clientIds) {
-	$('#pid').text(id);
+	$('#polychrome-id').text("CLIENT ID: "+id);
 	console.log(clientIds);
 
     if (clientIds) {
@@ -449,7 +449,7 @@ $(document).ready(function() {
 
 	$("#toggle").click(function() {
 		$('#toggle').toggleClass('active');
-		$("#actions").slideToggle("slow");
+		$("#polychrome-actions").slideToggle("slow");
 	});
 
 	$("#url").keyup(function(e) {

@@ -1,24 +1,34 @@
 <button id="toggle" class="normal"></button>
 
-<div id="actions">
+<div id="polychrome-actions">
     <div id="polychrome-id">
         Peer ID:
     </div>
 
-    <div id="polychrome-event-list">
+    <div id="polychrome-event-config">
         <div id="polychrome-event-text">EVENTS</div>
-        <ul id="tabbar">
-            <li data-tab="1">My Events</li>
-        </ul>
-        <div data-tab="1" id="polychrome-self-events-tab"></div>
+        <div id="polychrome-events-div">
+            <div id="polychrome-events-list">
+                <div class="polychrome-event-button" id="polychrome-self-event-tab">
+                    My events
+                </div>
+            </div>
+            <div id="polychrome-events-dump">
+            </div>
+        </div>
     </div>
 
     <div id="polychrome-display-config">
         <div id="polychrome-display-text">DISPLAY</div>
-        <ul id="tabbar">
-            <li data-tab="1">My Display</li>
-        </ul>
-        <div data-tab="1" id="polychrome-self-display-tab"></div>
+        <div id="polychrome-display-div">
+            <div id="polychrome-display-list">
+                <div class="polychrome-display-button" id="polychrome-self-display-tab">
+                    My display
+                </div>
+            </div>
+            <div id="polychrome-display-dump">
+            </div>
+        </div>
     </div>
 
     <div id="polychrome-disconnect">

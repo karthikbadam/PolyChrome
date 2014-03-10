@@ -426,13 +426,12 @@ app.get('/polychrome', function (req, res) {
         }
 
         body1 = response.body;
-        //Send the body param as the HTML code we will parse in jsdom
-        //also tell jsdom to attach jQuery in the scripts and loaded from jQuery.com
+       
         jsdom.env({
             html: body1,
-            scripts: ['http://code.jquery.com/jquery.js', 'http://localhost:3000/javascripts/jqm-inlinetabs.js', 'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/javascripts/polychrome-accesspanel.js'],
+            scripts: ['http://code.jquery.com/jquery.js', 'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/javascripts/polychrome-accesspanel.js'],
             done: function (err, window) {
-                //Use jQuery just as in a regular HTML page
+                
                 var $ = window.jQuery;
 
                 $('script').each(function () {
@@ -519,11 +518,8 @@ app.get('/polychrome', function (req, res) {
                     }
                 });
 
-                $('body').prepend('<link rel="stylesheet" href="stylesheets/polychrome_style.css"></link>');
-                $('body').prepend('<link rel="stylesheet" href="stylesheets/jqm-inlinetabs.css"></link>');
+                $('body').prepend('<link rel="stylesheet" href="stylesheets/polychrome-style.css"></link>');
                 $('head').prepend('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
-                //$('body').append('<script type="text/javascript" src="javascripts/polychrome-peer.js"></script>');
-                //$('body').append('<script type="text/javascript" src="javascripts/polychrome-accesspanel.js"></script>');
                 $('body').attr('id', 'chrome_body');
 
                 var polychrome_panel = fs.readFileSync("public/renderings/PolyChrome-feedback.html", 'utf8');

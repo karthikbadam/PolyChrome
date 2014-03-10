@@ -142,24 +142,25 @@
 }
 
 
-#actions {
+#polychrome-actions {
 	display: none; 
 	font-family: Helvetica,Arial,sans-serif;
 	font-size: 12px; 
 	color: rgba(255, 255, 255, 1);
 	text-shadow: 0px 0px #ff0000;
-	background-color: rgba(100, 100, 100, 1);
+	background-color: rgba(0, 0, 0, 0.2);
     position: absolute;
     top: 0px;
     left: 0px;
-    margin-right: 4px;
-    margin-bottom: 4px;
-    padding: 5px;
+    padding: 20px;
+    padding-right: 20px;
 	border: 1px solid rgba(0, 0, 0, 0.2);
-  	-webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
- 	-moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  	-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+ 	-moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   	z-index: 3;
+    width: auto;
+    height: auto;
 }
 
 .normal{
@@ -282,3 +283,151 @@
 	margin: 0em 0;
 }
 
+#polychrome-id {
+    margin: 10px;
+    padding: 10px;
+    text-align: center; 
+    background-color: #808080;
+    font-size: 15px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: 500;
+    font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
+    background: #007ead;
+	background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+    cursor: pointer;
+}
+
+
+#polychrome-event-config{
+    width: 500px;
+    height: 200px;
+    margin: 10px;
+    text-align: center; 
+    background-color: #808080;
+    font-size: 15px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: 500;
+    font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
+    background: #1399d7;
+}
+
+#polychrome-display-config{
+    width: 500px;
+    height: 200px;
+    margin: 10px;
+    text-align: center; 
+    background-color: #808080;
+    font-size: 15px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: 500;
+    font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
+    background: #1399d7;
+}
+
+#polychrome-disconnect{
+    margin: 10px;
+    padding: 10px;
+    text-align: center; 
+    background-color: #808080;
+    font-size: 15px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: 500;
+    font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
+    background: #007ead;
+}
+
+#polychrome-display-text{
+    padding: 10px;
+    text-align: center; 
+    background-color: #808080;
+    font-size: 15px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: 500;
+    font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
+    background: #007ead;
+	cursor: pointer;
+}
+
+#polychrome-event-text{
+    padding: 10px;
+    text-align: center; 
+    background-color: #808080;
+    font-size: 15px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: 500;
+    font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
+    background: #007ead;
+	cursor: pointer;
+}
+
+#polychrome-display-div{
+    width: 100%;
+    display: inline;
+}
+
+#polychrome-events-div{
+    width: 100%;
+    height: auto;
+    display: inline;
+}
+
+#polychrome-events-list{
+    width: 25%;
+    border: 1px solid #007ead;
+    float: left;
+}
+
+#polychrome-display-list{
+    width: 25%;
+    border: 1px solid #007ead;
+    float: left;
+}
+
+.polychrome-display-button{
+    padding: 5px;
+    cursor: pointer;
+    background: #007ead;
+}
+
+.polychrome-display-button:hover{
+    background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+}
+
+.polychrome-display-button:active{
+    background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+}
+
+.polychrome-event-button{
+    padding: 5px;
+    cursor: pointer;
+    background: #007ead;
+}
+
+.polychrome-event-button:hover{
+    background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+}
+
+.polychrome-event-button:active{
+    background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+}
+
+#polychrome-events-dump{
+    float: right;
+    width: 75%;
+}
+
+#polychrome-display-dump{
+    float: right;
+    width: 75%;
+}
