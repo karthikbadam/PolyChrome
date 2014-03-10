@@ -167,8 +167,8 @@ app.post('/loadUrl', function (req, res) {
 
     var page = new WebPage({
         url: selectedUrl,
-        spaceConfig: 1,
-        displayConfig: 1,
+        spaceConfig: spaceConfiguration,
+        displayConfig: displayConfiguration,
         peerId: "blah"
     });
 
@@ -178,8 +178,8 @@ app.post('/loadUrl', function (req, res) {
     var session = new PolyChromeSession({
         page: page,
         peerId: "blah",
-        username: "Chrome",
-        password: "Chrome"
+        username: "chrome",
+        password: "chrome"
     });
 
     sessions[peerId] = session;

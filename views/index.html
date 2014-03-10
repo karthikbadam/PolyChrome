@@ -23,55 +23,60 @@
             </div>
 
             <div id="url_info">
-                <ul>
-                    <input type="text" id="url" placeholder="[Enter URL here]">
-                    <button id="url_submit"></button>
-                </ul>
-                <ul>
-				Your PeerJS ID is
-                    <span id="pid"></span>
-                </ul>
-                <ul id="results"></ul>
+                <input type="text" id="url" placeholder="[Enter URL here]">
+                <button id="url_submit"></button>
             </div>
 
+            <div>
+                <ul>
+                    <li>
+				        Your PeerJS ID is
+                        <span id="pid"></span>
+                    </li>
+                </ul>
+            </div>
+            
             <div id="screen-options">
                 <ul>
-                    <p> Select Screen Type:</p>
+                    <li><p> Select Screen Type:</p></li>
                 </ul>
-                <div id="multiple-screen">
-                    <ul>
+                <div class="multiple-screen">
+                    <div>
                         <input type="button" id="one-screen">
-                    </ul>
+                    </div>
                 </div>
-                <div id="multiple-screen">
-                    <ul>
+
+                <div class="multiple-screen">
+                    <div>
                         <input type="button" class="multiple-screen-element" id="two-screen-left">
                         <input type="button" class="multiple-screen-element" id="two-screen-right">
-                    </ul>
+                    </div>
                 </div>
-                <div id="multiple-screen">
-                    <ul id="multiple-screens">
+
+                <div class="multiple-screen">
+                    <div>
                         <input type="button" class="multiple-screen-element" id="four-screen-left-top">
                         <input type="button" class="multiple-screen-element" id="four-screen-right-top">
-                    </ul>
-                    <ul id="multiple-screens">
+                    </div>
+                    <div>
                         <input type="button" class="multiple-screen-element" id="four-screen-left-bottom">
                         <input type="button" class="multiple-screen-element" id="four-screen-right-bottom">
-                    </ul>
+                    </div>
                 </div>
-                <div id="multiple-screen">
-                    <ul id="multiple-screens">
+
+                <div class="multiple-screen">
+                    <div>
                         <input type="button" class="multiple-screen-element" id="six-screen-left-top">
                         <input type="button" class="multiple-screen-element" id="six-screen-middle-top">
                         <input type="button" class="multiple-screen-element" id="six-screen-right-top">
-                    </ul>
-
-                    <ul id="multiple-screens">
+                    </div>
+                    <div>
                         <input type="button" class="multiple-screen-element" id="six-screen-left-bottom">
                         <input type="button" class="multiple-screen-element" id="six-screen-middle-bottom">
                         <input type="button" class="multiple-screen-element" id="six-screen-right-bottom">
-                    </ul>
+                    </div>
                 </div>
+
             </div>
         </div>
 
