@@ -217,6 +217,7 @@ PeerServer.prototype._initializeHTTP = function() {
     var key = req.params.key;
     var ip = req.ip;
     
+    connectedClientIds.push(id);
     if (!self._clients[key] || !self._clients[key][id]) {
       self._checkKey(key, ip, function(err) {
         if (!err && !self._clients[key][id]) {

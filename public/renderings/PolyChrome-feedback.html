@@ -1,59 +1,27 @@
 <button id="toggle" class="normal"></button>
 
-  <div id="actions">
-    <div id="login">
-        <form action="http://localhost:3000/login" method="post">
-            <input type="text" name="username" id="username" placeholder="[Username]" />			 <input type="password" name="password" id="password" placeholder="[Password]">			 <input type="submit" value="Log In" id="login_submit" />			 <input type="button" value="Sign Up" id="signup_submit" />
-        </form>
+<div id="actions">
+    <div id="polychrome-id">
+        Peer ID:
     </div>
 
-    <div id "url_info">
-        <ul>
-            <input type="text" id="url" placeholder="[Enter URL here]">
-            <button id="url_submit"></button>
+    <div id="polychrome-event-list">
+        <div id="polychrome-event-text">EVENTS</div>
+        <ul id="tabbar">
+            <li data-tab="1">My Events</li>
         </ul>
-        <ul>
-Your PeerJS ID is
-            <span id="pid"></span>
-        </ul>
+        <div data-tab="1" id="polychrome-self-events-tab"></div>
     </div>
 
-    <div id="screen-options">
-        <ul>
-            <p> Select Screen Type:</p>
+    <div id="polychrome-display-config">
+        <div id="polychrome-display-text">DISPLAY</div>
+        <ul id="tabbar">
+            <li data-tab="1">My Display</li>
         </ul>
-        <div id="multiple-screen">
-            <ul>
-                <input type="button" id="one-screen">
-            </ul>
-        </div>
-        <div id="multiple-screen">
-            <ul>
-                <input type="button" class="multiple-screen-element" id="two-screen-left">
-                <input type="button" class="multiple-screen-element" id="two-screen-right">
-            </ul>
-        </div>
-        <div id="multiple-screen">
-            <ul id="multiple-screens">
-                <input type="button" class="multiple-screen-element" id="four-screen-left-top">
-                <input type="button" class="multiple-screen-element" id="four-screen-right-top">
-            </ul>
-            <ul id="multiple-screens">
-                <input type="button" class="multiple-screen-element" id="four-screen-left-bottom">
-                <input type="button" class="multiple-screen-element" id="four-screen-right-bottom">
-            </ul>
-        </div>
-        <div id="multiple-screen">
-            <ul id="multiple-screens">
-                <input type="button" class="multiple-screen-element" id="six-screen-left-top">
-                <input type="button" class="multiple-screen-element" id="six-screen-middle-top">
-                <input type="button" class="multiple-screen-element" id="six-screen-right-top">
-            </ul>
-            <ul id="multiple-screens">
-                <input type="button" class="multiple-screen-element" id="six-screen-left-bottom">
-                <input type="button" class="multiple-screen-element" id="six-screen-middle-bottom">
-                <input type="button" class="multiple-screen-element" id="six-screen-right-bottom">
-            </ul>
-        </div>
+        <div data-tab="1" id="polychrome-self-display-tab"></div>
+    </div>
+
+    <div id="polychrome-disconnect">
+        DISCONNECT
     </div>
 </div>
