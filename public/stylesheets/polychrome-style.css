@@ -301,12 +301,12 @@
 
 
 #polychrome-event-config{
-    width: 500px;
+    width: 400px;
     height: 200px;
     margin: 10px;
     text-align: center; 
     background-color: #808080;
-    font-size: 15px;
+    font-size: 12px;
 	font-style: normal;
 	line-height: normal;
 	font-weight: 500;
@@ -315,12 +315,12 @@
 }
 
 #polychrome-display-config{
-    width: 500px;
+    width: 400px;
     height: 200px;
     margin: 10px;
     text-align: center; 
     background-color: #808080;
-    font-size: 15px;
+    font-size: 12px;
 	font-style: normal;
 	line-height: normal;
 	font-weight: 500;
@@ -333,7 +333,7 @@
     padding: 10px;
     text-align: center; 
     background-color: #808080;
-    font-size: 15px;
+    font-size: 12px;
 	font-style: normal;
 	line-height: normal;
 	font-weight: 500;
@@ -345,7 +345,7 @@
     padding: 10px;
     text-align: center; 
     background-color: #808080;
-    font-size: 15px;
+    font-size: 12px;
 	font-style: normal;
 	line-height: normal;
 	font-weight: 500;
@@ -358,7 +358,7 @@
     padding: 10px;
     text-align: center; 
     background-color: #808080;
-    font-size: 15px;
+    font-size: 12px;
 	font-style: normal;
 	line-height: normal;
 	font-weight: 500;

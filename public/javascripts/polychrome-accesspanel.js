@@ -81,6 +81,7 @@ function connect(conn) {
 	conn.on('open', function() {
 		connections.push(conn);
 		alert("Now connected to " + conn.peer);
+        addPeerFeedback(conn.peer);
 		//first_connection(conn);
 	});
 
@@ -98,6 +99,12 @@ var peer = new Peer(peerId, {
 	port: '8000'
 });
 
+
+var addPeerFeedback = function(connectedPeer) {
+    $('#polychrome-events-list').append('<div class="polychrome-event-button" id="polychrome-'+connectedPeer+'-tab">'+connectedPeer+'</div>');
+    $('#polychrome-display-list').append('<div class="polychrome-display-button" id="polychrome-'+connectedPeer+'-tab">'+connectedPeer+'</div>');
+}
+
 peer.on('open', function(id, clientIds) {
 	$('#polychrome-id').text("CLIENT ID: "+id);
 	console.log(clientIds);
@@ -111,6 +118,7 @@ peer.on('open', function(id, clientIds) {
 			    connections.push(conn);
 			    alert("Now connected to " + conn.peer);
 			    //first_connection(c);
+                addPeerFeedback(conn.peer);
 		    });
 
 		    conn.on('data', function(data) {
@@ -274,7 +282,6 @@ $(document).ready(function() {
 			//alert("generated event " + myclick);
 			// /* elem.dispatchEvent(clickevt); */
         } else {
-
 			myclick = false;
 		}
 	});
@@ -297,7 +304,10 @@ $(document).ready(function() {
 			connections.forEach(function(connection) {
 		  		connection.send(toSend);
 		  	});	
+            evt.preventDefault();
+            evt.stopPropagation();
 
+             $('#polychrome-events-dump').prepend('<div class="polychrome-event-element"> mousemove at '+toSend.posX+", "+toSend.posY+' </div>');
 			//var clickevt = document.createEvent("MouseEvents");
 			//clickevt.initMouseEvent("click", true, true, window, 1, evt.pageX, evt.pageY, evt.pageX, evt.pageY, false, false, false, false, 0, null);
 			//alert("generated event " + myclick);
