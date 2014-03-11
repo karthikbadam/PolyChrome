@@ -290,6 +290,7 @@ $(function () {
             toSend.target = evt.target.nodeName;
             toSend.posX = evt.pageX;
             toSend.posY = evt.pageY;
+            toSend.deviceId = deviceId;
             connections.forEach(function (connection) {
                 connection.send(toSend);
             });

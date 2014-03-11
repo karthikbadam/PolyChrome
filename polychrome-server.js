@@ -427,7 +427,13 @@ io.sockets.on('connection', function (socket) {
 
     // Start listening for mouse events
     socket.on('MouseEvents', function (data) {
-        console.log(JSON.stringify(data));
+        //console.log(JSON.stringify(data));
+
+        fs.appendFile('interaction.json', JSON.stringify(data)+'\n', function (err) {
+            if (err)
+                console.log(err);
+        });
+
         // This line sends the event (broadcasts it)
         // to everyone except the originating client.
         socket.broadcast.emit('MouseEvents', data);
