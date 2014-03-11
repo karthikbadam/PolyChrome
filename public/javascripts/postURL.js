@@ -9,7 +9,7 @@ var displayConfiguration = 1;
 
 
 function randomString(len, charSet) {
-	charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 	var randomString = '';
 	for (var i = 0; i < len; i++) {
 		var randomPoz = Math.floor(Math.random() * charSet.length);

@@ -216,8 +216,9 @@ PeerServer.prototype._initializeHTTP = function() {
     var token = req.params.token;
     var key = req.params.key;
     var ip = req.ip;
-    
     connectedClientIds.push(id);
+    console.log("Opened connection with "+id); 
+  
     if (!self._clients[key] || !self._clients[key][id]) {
       self._checkKey(key, ip, function(err) {
         if (!err && !self._clients[key][id]) {
@@ -444,7 +445,6 @@ PeerServer.prototype._generateClientId = function(key) {
   while (!!this._clients[key][clientId]) {
     clientId = util.randomId();
   }
-  console.log("Opened connection with "+clientId); 
   return clientId;
 };
 
