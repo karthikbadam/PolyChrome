@@ -132,8 +132,6 @@ var executeEventOnPosition = function (eventType, eventName, posX, posY, targetN
         }
     }
 
-    console.log("Propagated event found for " + elem.nodeName);
-
     if (eventName == "HTMLEvents") {
         /* copying the defaultOptions */
         var options = new Object();
@@ -250,14 +248,13 @@ peer.on('open', function(id, clientIds) {
 /* make sure that peerjs connections are handled by the connect function */
 peer.on('connection', connect);
 
-
+/* on document load */
 $(function () {
 
     var eventHandler = function (evt) {
         if (evt.isPolyChrome) {
             return;
         } else if (evt.target.id.indexOf('polychrome') == -1) {
-            console.log(evt.target.id);
             var elem = document.elementFromPoint(evt.pageX, evt.pageY);
             var toSend = new Object();
             toSend.eventType = evt.type;
@@ -291,25 +288,4 @@ $(function () {
         $("#polychrome-actions").slideToggle("slow");
     });
 
-    //login management
-    $("#login_submit").click(function () {
-        // var username = $("#username").val();
-        // var password = $("#password").val();
-        // var message = [];
-        // message.push({id: username, password: password});	
-        // console.log(message);
-
-        // var http = new XMLHttpRequest();
-        // var url = 'http://' + hostname + ':' + port + '/login';
-        // http.open('post', url, true);
-        // http.setRequestHeader('Content-Type', 'application/json');
-        // http.send(message);
-        var form = $('#login_form');
-
-        // var url = 'http://' + hostname + ':' + port + '/login';
-        // form.setAttribute("method", "post");
-        // form.setAttribute("action", url);
-        // form.submit();
-
-    });
 });
