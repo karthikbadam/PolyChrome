@@ -354,7 +354,7 @@ app.get('/polychrome', function (req, res) {
                     $('head').prepend('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
                     $('body').attr('id', 'chrome_body');
 
-                    var polychrome_panel = fs.readFileSync("public/renderings/PolyChrome-feedback.html", 'utf8');
+                    var polychrome_panel = fs.readFileSync("public/renderings/polychrome-feedback.html", 'utf8');
                     $('body').append(polychrome_panel.toString());
                     //$('body').append('<script>var peerId = "' + peerId + '"; </script>');
                     
