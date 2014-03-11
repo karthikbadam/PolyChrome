@@ -198,19 +198,23 @@ app.get('/polychrome', function (req, res) {
 
     var parsedUrl = url.parse(req.url, true); // true to get query as object
     var params = parsedUrl.query;
-
     var selectedUrl = "";
 
     var peerId = "";
+    var spaceConfiguration = 1;
+    var displayConfiguration = 1;
+
     if (JSON.stringify(params) !== '{}') {
         selectedUrl = String(params.url);
         peerId = String(params.peerId);
+        spaceConfiguration = parseInt(params.screenConfig);
+        displayConfiguration = parseInt(params.displayConfig);
     }
 
     var page = new WebPage({
         url: selectedUrl,
-        spaceConfig: 1,
-        displayConfig: 1
+        spaceConfig: spaceConfiguration,
+        displayConfig: displayConfiguration
     });
 
     page.parseUrl();
@@ -218,6 +222,7 @@ app.get('/polychrome', function (req, res) {
 
     var currentPageCache = cache[page.parseUrl()];
     if (currentPageCache) {
+
         console.log('Served from Cache ' + page.parseUrl());
         res.write(currentPageCache);
         res.end();
