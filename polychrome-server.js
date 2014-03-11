@@ -187,7 +187,7 @@ app.post('/loadUrl', function (req, res) {
     sessions[peerId] = session;
     peerIds.push(peerId);
 
-    var urlEncoding = { 'url': selectedUrl, 'peerId': peerId };
+    var urlEncoding = { 'url': selectedUrl, 'peerId': peerId, 'spaceConfig': spaceConfiguration, 'displayConfig': displayConfiguration };
     var toOpen = 'http://localhost:3000/polychrome?' + querystring.stringify(urlEncoding);
 
     res.write(toOpen);

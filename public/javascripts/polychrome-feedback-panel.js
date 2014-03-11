@@ -10,12 +10,31 @@ var deviceId = "";
 
 /* parse url to get peerId and screen details*/
 var selfUrl = document.URL;
-var id_check = /[?&]peerId=([^&]+)/i;
-var match = id_check.exec(selfUrl);
+var idCheck = /[?&]peerId=([^&]+)/i;
+var spaceCheck = /[?&]spaceConfig=([^&]+)/i;
+var displayCheck = /[?&]displayConfig=([^&]+)/i;
+
+/* get peerId */
+var match = idCheck.exec(selfUrl);
 if (match != null) {
     deviceId = match[1];
 } else {
     deviceId = randomString(10);
+}
+
+/* get peer configurations */
+match = spaceCheck.exec(selfUrl);
+if (match != null) {
+    screenCount = parseInt(match[1]);
+} else {
+    screenCount = 1;
+}
+
+match = displayCheck.exec(selfUrl);
+if (match != null) {
+    screenIndex = parseInt(match[1]);
+} else {
+    screenIndex = 1;
 }
 
 /* arraylist of all connections */
