@@ -267,6 +267,16 @@ peer.on('open', function(id, clientIds) {
 /* make sure that peerjs connections are handled by the connect function */
 peer.on('connection', connect);
 
+
+/* sockets to connect to server */
+var socket = io.connect('http://localhost:3000');
+
+/* socket handle incoming messages */
+socket.on('MouseEvents', function (data) {
+    console.log('mouse event received');
+});
+
+
 /* on document load */
 $(function () {
 
@@ -283,6 +293,9 @@ $(function () {
             connections.forEach(function (connection) {
                 connection.send(toSend);
             });
+
+            /* also send the event to server */
+            socket.emit('MouseEvents', toSend);
 
             /* execute the event on current machine */
             onData(deviceId, toSend);

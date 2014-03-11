@@ -266,9 +266,9 @@ app.get('/polychrome', function (req, res) {
 
             jsdom.env({
                 html: body1,
-                scripts: ['http://code.jquery.com/jquery.js', 'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/javascripts/polychrome-feedback-panel.js'],
+                scripts: ['http://code.jquery.com/jquery.js', 'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/socket.io/socket.io.js', 'http://localhost:3000/javascripts/polychrome-feedback-panel.js'],
                 done: function (err, window) {
-
+                    
                     var $ = window.jQuery;
 
                     $('script').each(function () {
@@ -425,12 +425,12 @@ io.set('log level', 1);
 // Listen for incoming connections from clients
 io.sockets.on('connection', function (socket) {
 
-    // Start listening for mouse move events
-    socket.on('mousemove', function (data) {
-
+    // Start listening for mouse events
+    socket.on('MouseEvents', function (data) {
+        console.log(JSON.stringify(data));
         // This line sends the event (broadcasts it)
         // to everyone except the originating client.
-        socket.broadcast.emit('moving', data);
+        socket.broadcast.emit('MouseEvents', data);
     });
 });
 
