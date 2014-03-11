@@ -13,6 +13,9 @@ var cheerio = require('cheerio');
 var mime = require('mime');
 var querystring = require('querystring');
 
+/* cache file for all html files */
+var cache = {};
+
 /* display web page class */
 var pageclass = require('./display/webpage');
 var WebPage = pageclass.WebPage;
@@ -192,168 +195,179 @@ app.post('/loadUrl', function (req, res) {
     res.end();
 });
 
-app.get('/getPage', function (req, res) {
+//app.get('/getPage', function (req, res) {
 
-    var parsedUrl = url.parse(req.url, true); // true to get query as object
-    var params = parsedUrl.query;
+//    var parsedUrl = url.parse(req.url, true); // true to get query as object
+//    var params = parsedUrl.query;
 
-    var selectedUrl = "";
+//    var selectedUrl = "";
 
-    var peerId = "";
-    if (JSON.stringify(params) !== '{}') {
-        selectedUrl = String(params.url);
-        peerId = String(params.peerId);
-    }
+//    var peerId = "";
+//    if (JSON.stringify(params) !== '{}') {
+//        selectedUrl = String(params.url);
+//        peerId = String(params.peerId);
+//    }
 
-    //var parsedUrl = url.parse(req.url, true); // true to get query as object
-    //var params = parsedUrl.query;
+//    //var parsedUrl = url.parse(req.url, true); // true to get query as object
+//    //var params = parsedUrl.query;
 
-    //var selectedUrl = "http://multiviz.gforge.inria.fr/scatterdice/oscars/";
-    //var spaceConfiguration = 1;
-    //var displayConfiguration = 1;
+//    //var selectedUrl = "http://multiviz.gforge.inria.fr/scatterdice/oscars/";
+//    //var spaceConfiguration = 1;
+//    //var displayConfiguration = 1;
 
-    ////var selectedUrl = String(req.body.url);
-    //console.log("Requested URL -" + selectedUrl);
-    ////var spaceConfiguration = parseInt(req.body.space);
-    //var displayConfiguration = parseInt(req.body.display);
+//    ////var selectedUrl = String(req.body.url);
+//    //console.log("Requested URL -" + selectedUrl);
+//    ////var spaceConfiguration = parseInt(req.body.space);
+//    //var displayConfiguration = parseInt(req.body.display);
 
-    var page = new WebPage({
-        url: selectedUrl,
-        spaceConfig: 1,
-        displayConfig: 1
-    });
+//    var page = new WebPage({
+//        url: selectedUrl,
+//        spaceConfig: 1,
+//        displayConfig: 1
+//    });
 
-    page.parseUrl();
-    currentPage = page;
+//    page.parseUrl();
+//    currentPage = page;
 
-    //request for the webpage content
-    request({ uri: page.parseUrl() }, function (err, response, body) {
-        var isBlocked = 'No';
+//    var currentPageCache = cache[page.parseUrl()];
+//    if (currentPageCache) {
+//        console.log('Served from Cache '+page.parseUrl());
+//        res.write(currentPageCache);
+//        res.end();
 
-        // If the page was found...
-        if (!err && response.statusCode == 200) {
-            // Grab the headers
-            var headers = response.headers;
+//    } else {
+//        //request for the webpage content
+//        request({ uri: page.parseUrl() }, function (err, response, body) {
+//            var isBlocked = 'No';
 
-            // Grab the x-frame-options header if it exists
-            var xFrameOptions = headers['x-frame-options'] || '';
+//            console.log('Served from Internet '+page.parseUrl());
+//        
+//            // If the page was found...
+//            if (!err && response.statusCode == 200) {
+//                // Grab the headers
+//                var headers = response.headers;
 
-            // Normalize the header to lowercase
-            xFrameOptions = xFrameOptions.toLowerCase();
+//                // Grab the x-frame-options header if it exists
+//                var xFrameOptions = headers['x-frame-options'] || '';
 
-            // Check if it's set to a blocking option
-            if (
-     			xFrameOptions === 'sameorigin' ||
-     			xFrameOptions === 'deny'
-     			) {
-                isBlocked = 'Yes';
-            }
+//                // Normalize the header to lowercase
+//                xFrameOptions = xFrameOptions.toLowerCase();
 
-        } else {
-            res.end("PAGE NOT FOUND");
-        }
+//                // Check if it's set to a blocking option
+//                if (
+//     			xFrameOptions === 'sameorigin' ||
+//     			xFrameOptions === 'deny'
+//     			) {
+//                    isBlocked = 'Yes';
+//                }
+
+//            } else {
+//                res.end("PAGE NOT FOUND");
+//            }
 
 
-        /* using cheerio to manipulate the DOM */
-        $ = cheerio.load(body);
+//            /* using cheerio to manipulate the DOM */
+//            $ = cheerio.load(body);
 
-        $('script').each(function () {
-            var link = $(this).attr('src');
-            if (link !== undefined && link.indexOf("http") == -1) {
-                var url = selectedUrl + link;
-                if (link.charAt(0) === '/') {
-                    var baseUrl = page.getbaseUrl();
-                    page.setCurrentBaseUrl(baseUrl);
-                    url = baseUrl + link;
-                    if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-                        url = baseUrl + link.substr(1);
-                    }
-                } else {
-                    if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
-                        url = selectedUrl + "/" + link;
-                    }
-                }
-                console.log(url);
-                $(this).attr('src', url);
-            }
-        });
+//            $('script').each(function () {
+//                var link = $(this).attr('src');
+//                if (link !== undefined && link.indexOf("http") == -1) {
+//                    var url = selectedUrl + link;
+//                    if (link.charAt(0) === '/') {
+//                        var baseUrl = page.getbaseUrl();
+//                        page.setCurrentBaseUrl(baseUrl);
+//                        url = baseUrl + link;
+//                        if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+//                            url = baseUrl + link.substr(1);
+//                        }
+//                    } else {
+//                        if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+//                            url = selectedUrl + "/" + link;
+//                        }
+//                    }
+//                    console.log(url);
+//                    $(this).attr('src', url);
+//                }
+//            });
 
-        $('link').each(function () {
-            var css = $(this).attr('href');
-            if (css.indexOf(".com") == -1) {
-                var url = selectedUrl + css;
-                if (css.charAt(0) === '/') {
-                    var baseUrl = page.getbaseUrl();
-                    currentPage.setCurrentBaseUrl(baseUrl);
-                    url = baseUrl + css;
-                    if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-                        url = baseUrl + css.substr(1);
-                    }
-                } else {
-                    if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
-                        url = selectedUrl + "/" + css;
-                    }
-                }
-                console.log(url);
-                $(this).attr('href', url);
-            }
-        });
+//            $('link').each(function () {
+//                var css = $(this).attr('href');
+//                if (css.indexOf(".com") == -1) {
+//                    var url = selectedUrl + css;
+//                    if (css.charAt(0) === '/') {
+//                        var baseUrl = page.getbaseUrl();
+//                        currentPage.setCurrentBaseUrl(baseUrl);
+//                        url = baseUrl + css;
+//                        if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+//                            url = baseUrl + css.substr(1);
+//                        }
+//                    } else {
+//                        if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+//                            url = selectedUrl + "/" + css;
+//                        }
+//                    }
+//                    console.log(url);
+//                    $(this).attr('href', url);
+//                }
+//            });
 
-        $('image').each(function () {
-            var image = $(this).attr('href');
-            if (image !== undefined && image.indexOf(".com") == -1) {
-                var url = selectedUrl + image;
-                if (image.charAt(0) === '/') {
-                    var baseUrl = page.getbaseUrl();
-                    currentPage.setCurrentBaseUrl(baseUrl);
-                    url = baseUrl + image;
-                    if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-                        url = baseUrl + image.substr(1);
-                    }
-                } else {
-                    if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
-                        url = selectedUrl + "/" + image;
-                    }
-                }
-                console.log(url);
-                $(this).attr('href', url);
-            }
-        });
+//            $('image').each(function () {
+//                var image = $(this).attr('href');
+//                if (image !== undefined && image.indexOf(".com") == -1) {
+//                    var url = selectedUrl + image;
+//                    if (image.charAt(0) === '/') {
+//                        var baseUrl = page.getbaseUrl();
+//                        currentPage.setCurrentBaseUrl(baseUrl);
+//                        url = baseUrl + image;
+//                        if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+//                            url = baseUrl + image.substr(1);
+//                        }
+//                    } else {
+//                        if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+//                            url = selectedUrl + "/" + image;
+//                        }
+//                    }
+//                    console.log(url);
+//                    $(this).attr('href', url);
+//                }
+//            });
 
-        $('a').each(function () {
-            var hyperlink = $(this).attr('href');
-            if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
-                var url = selectedUrl + hyperlink;
-                if (hyperlink.charAt(0) === '/') {
-                    var baseUrl = page.getbaseUrl();
-                    currentPage.setCurrentBaseUrl(baseUrl);
-                    url = baseUrl + hyperlink;
-                    if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-                        url = baseUrl + hyperlink.substr(1);
-                    }
-                } else {
-                    if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
-                        url = selectedUrl + "/" + hyperlink;
-                    }
-                }
-                console.log(url);
-                $(this).attr('href', url);
-            }
-        });
+//            $('a').each(function () {
+//                var hyperlink = $(this).attr('href');
+//                if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
+//                    var url = selectedUrl + hyperlink;
+//                    if (hyperlink.charAt(0) === '/') {
+//                        var baseUrl = page.getbaseUrl();
+//                        currentPage.setCurrentBaseUrl(baseUrl);
+//                        url = baseUrl + hyperlink;
+//                        if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+//                            url = baseUrl + hyperlink.substr(1);
+//                        }
+//                    } else {
+//                        if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+//                            url = selectedUrl + "/" + hyperlink;
+//                        }
+//                    }
+//                    console.log(url);
+//                    $(this).attr('href', url);
+//                }
+//            });
 
-        $('body').prepend('<link rel="stylesheet" href="stylesheets/polychrome_style.css"></link>');
-        //$('head').append('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
-        $('body').prepend('<script type="text/javascript" src="javascripts/polychrome-peer.js"></script>');
-        $('body').prepend('<script type="text/javascript" src="javascripts/polychrome-accesspanel.js"></script>');
-        $('body').attr('id', 'chrome_body');
+//            $('body').prepend('<link rel="stylesheet" href="stylesheets/polychrome_style.css"></link>');
+//            $('head').append('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
+//            $('body').prepend('<script type="text/javascript" src="javascripts/polychrome-peer.js"></script>');
+//            $('body').prepend('<script type="text/javascript" src="javascripts/polychrome-accesspanel.js"></script>');
+//            $('body').attr('id', 'chrome_body');
 
-        var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
-        $('body').append(polychrome_panel.toString());
-        console.log($.html());
-        res.write('<html>' + $.html() + '</html>');
-        res.end();
-    });
-});
+//            var polychrome_panel = fs.readFileSync("public/renderings/accesspanel.txt", 'utf8');
+//            $('body').append(polychrome_panel.toString());
+
+//            cache[page.parseUrl()] = '<html>' + $.html() + '</html>';
+//            res.write('<html>' + $.html() + '</html>');
+//            res.end();
+//        });
+//    }
+//});
 
 
 app.get('/polychrome', function (req, res) {
@@ -369,18 +383,6 @@ app.get('/polychrome', function (req, res) {
         peerId = String(params.peerId);
     }
 
-    //var parsedUrl = url.parse(req.url, true); // true to get query as object
-    //var params = parsedUrl.query;
-
-    //var selectedUrl = "http://multiviz.gforge.inria.fr/scatterdice/oscars/";
-    //var spaceConfiguration = 1;
-    //var displayConfiguration = 1;
-
-    ////var selectedUrl = String(req.body.url);
-    //console.log("Requested URL -" + selectedUrl);
-    ////var spaceConfiguration = parseInt(req.body.space);
-    //var displayConfiguration = parseInt(req.body.display);
-
     var page = new WebPage({
         url: selectedUrl,
         spaceConfig: 1,
@@ -390,147 +392,158 @@ app.get('/polychrome', function (req, res) {
     page.parseUrl();
     currentPage = page;
 
-    //Tell the request that we want to fetch youtube.com, send the results to a callback function
-    request({ uri: selectedUrl }, function (err, response, body1) {
-        var isBlocked = 'No';
+    var currentPageCache = cache[page.parseUrl()];
+    if (currentPageCache) {
+        console.log('Served from Cache ' + page.parseUrl());
+        res.write(currentPageCache);
+        res.end();
 
-        // If the page was found...
-        if (!err && response.statusCode == 200) {
-            // Grab the headers
-            var headers = response.headers;
+    } else {
 
-            // Grab the x-frame-options header if it exists
-            var xFrameOptions = headers['x-frame-options'] || '';
+        //Tell the request that we want to fetch youtube.com, send the results to a callback function
+        request({ uri: selectedUrl }, function (err, response, body1) {
+            var isBlocked = 'No';
 
-            // Normalize the header to lowercase
-            xFrameOptions = xFrameOptions.toLowerCase();
+            // If the page was found...
+            if (!err && response.statusCode == 200) {
+                // Grab the headers
+                var headers = response.headers;
 
-            // Check if it's set to a blocking option
-            if (
+                // Grab the x-frame-options header if it exists
+                var xFrameOptions = headers['x-frame-options'] || '';
+
+                // Normalize the header to lowercase
+                xFrameOptions = xFrameOptions.toLowerCase();
+
+                // Check if it's set to a blocking option
+                if (
 					xFrameOptions === 'sameorigin' ||
 					xFrameOptions === 'deny'
 					) {
-                isBlocked = 'Yes';
+                    isBlocked = 'Yes';
+                }
+
+            } else {
+
+                res.end("Page NOT FOUND");
             }
 
-        } else {
-
-            res.end("Page NOT FOUND");
-        }
-
-        console.log('Blocked --' + isBlocked);
-
-        //Just a basic error check
-        if (err && response.statusCode !== 200) {
-            console.log('Request error');
-        }
-
-        body1 = response.body;
-       
-        jsdom.env({
-            html: body1,
-            scripts: ['http://code.jquery.com/jquery.js', 'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/javascripts/polychrome-accesspanel.js'],
-            done: function (err, window) {
-                
-                var $ = window.jQuery;
-
-                $('script').each(function () {
-                    var link = $(this).attr('src');
-                    if (link !== undefined && link.indexOf("http") == -1) {
-                        var url = selectedUrl + link;
-                        if (link.charAt(0) === '/') {
-                            var baseUrl = page.getbaseUrl();
-                            page.setCurrentBaseUrl(baseUrl);
-                            url = baseUrl + link;
-                            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-                                url = baseUrl + link.substr(1);
-                            }
-                        } else {
-                            if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
-                                url = selectedUrl + "/" + link;
-                            }
-                        }
-                        console.log(url);
-                        $(this).attr('src', url);
-                    }
-                });
-
-                $('link').each(function () {
-                    var css = $(this).attr('href');
-                    if (css.indexOf(".com") == -1) {
-                        var url = selectedUrl + css;
-                        if (css.charAt(0) === '/') {
-                            var baseUrl = page.getbaseUrl();
-                            currentPage.setCurrentBaseUrl(baseUrl);
-                            url = baseUrl + css;
-                            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-                                url = baseUrl + css.substr(1);
-                            }
-                        } else {
-                            if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
-                                url = selectedUrl + "/" + css;
-                            }
-                        }
-                        console.log(url);
-                        $(this).attr('href', url);
-                    }
-                });
-
-                $('image').each(function () {
-                    var image = $(this).attr('href');
-                    if (image !== undefined && image.indexOf(".com") == -1) {
-                        var url = selectedUrl + image;
-                        if (image.charAt(0) === '/') {
-                            var baseUrl = page.getbaseUrl();
-                            currentPage.setCurrentBaseUrl(baseUrl);
-                            url = baseUrl + image;
-                            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-                                url = baseUrl + image.substr(1);
-                            }
-                        } else {
-                            if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
-                                url = selectedUrl + "/" + image;
-                            }
-                        }
-                        console.log(url);
-                        $(this).attr('href', url);
-                    }
-                });
-
-                $('a').each(function () {
-                    var hyperlink = $(this).attr('href');
-                    if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
-                        var url = selectedUrl + hyperlink;
-                        if (hyperlink.charAt(0) === '/') {
-                            var baseUrl = page.getbaseUrl();
-                            currentPage.setCurrentBaseUrl(baseUrl);
-                            url = baseUrl + hyperlink;
-                            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-                                url = baseUrl + hyperlink.substr(1);
-                            }
-                        } else {
-                            if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
-                                url = selectedUrl + "/" + hyperlink;
-                            }
-                        }
-                        console.log(url);
-                        $(this).attr('href', url);
-                    }
-                });
-
-                $('body').prepend('<link rel="stylesheet" href="stylesheets/polychrome-style.css"></link>');
-                $('head').prepend('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
-                $('body').attr('id', 'chrome_body');
-
-                var polychrome_panel = fs.readFileSync("public/renderings/PolyChrome-feedback.html", 'utf8');
-                $('body').append(polychrome_panel.toString());
-                $('body').append('<script>var peerId = "' + peerId + '"; </script>')
-                res.write('<html>' + $('html').html() + '</html>');
-                res.end();
-
+            //Just a basic error check
+            if (err && response.statusCode !== 200) {
+                console.log('Request error');
             }
+
+            body1 = response.body;
+
+            jsdom.env({
+                html: body1,
+                scripts: ['http://code.jquery.com/jquery.js', 'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/javascripts/polychrome-accesspanel.js'],
+                done: function (err, window) {
+
+                    var $ = window.jQuery;
+
+                    $('script').each(function () {
+                        var link = $(this).attr('src');
+                        if (link !== undefined && link.indexOf("http") == -1) {
+                            var url = selectedUrl + link;
+                            if (link.charAt(0) === '/') {
+                                var baseUrl = page.getbaseUrl();
+                                page.setCurrentBaseUrl(baseUrl);
+                                url = baseUrl + link;
+                                if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                                    url = baseUrl + link.substr(1);
+                                }
+                            } else {
+                                if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                                    url = selectedUrl + "/" + link;
+                                }
+                            }
+                            console.log(url);
+                            $(this).attr('src', url);
+                        }
+                    });
+
+                    $('link').each(function () {
+                        var css = $(this).attr('href');
+                        if (css.indexOf(".com") == -1) {
+                            var url = selectedUrl + css;
+                            if (css.charAt(0) === '/') {
+                                var baseUrl = page.getbaseUrl();
+                                currentPage.setCurrentBaseUrl(baseUrl);
+                                url = baseUrl + css;
+                                if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                                    url = baseUrl + css.substr(1);
+                                }
+                            } else {
+                                if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                                    url = selectedUrl + "/" + css;
+                                }
+                            }
+                            console.log(url);
+                            $(this).attr('href', url);
+                        }
+                    });
+
+                    $('image').each(function () {
+                        var image = $(this).attr('href');
+                        if (image !== undefined && image.indexOf(".com") == -1) {
+                            var url = selectedUrl + image;
+                            if (image.charAt(0) === '/') {
+                                var baseUrl = page.getbaseUrl();
+                                currentPage.setCurrentBaseUrl(baseUrl);
+                                url = baseUrl + image;
+                                if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                                    url = baseUrl + image.substr(1);
+                                }
+                            } else {
+                                if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                                    url = selectedUrl + "/" + image;
+                                }
+                            }
+                            console.log(url);
+                            $(this).attr('href', url);
+                        }
+                    });
+
+                    $('a').each(function () {
+                        var hyperlink = $(this).attr('href');
+                        if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
+                            var url = selectedUrl + hyperlink;
+                            if (hyperlink.charAt(0) === '/') {
+                                var baseUrl = page.getbaseUrl();
+                                currentPage.setCurrentBaseUrl(baseUrl);
+                                url = baseUrl + hyperlink;
+                                if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                                    url = baseUrl + hyperlink.substr(1);
+                                }
+                            } else {
+                                if (selectedUrl.charAt(selectedUrl.length - 1) !== '/') {
+                                    url = selectedUrl + "/" + hyperlink;
+                                }
+                            }
+                            console.log(url);
+                            $(this).attr('href', url);
+                        }
+                    });
+
+                    $('body').prepend('<link rel="stylesheet" href="stylesheets/polychrome-style.css"></link>');
+                    $('head').prepend('<link rel="shortcut icon" href="images/polychrome-icon.png" />');
+                    $('body').attr('id', 'chrome_body');
+
+                    var polychrome_panel = fs.readFileSync("public/renderings/PolyChrome-feedback.html", 'utf8');
+                    $('body').append(polychrome_panel.toString());
+                    //$('body').append('<script>var peerId = "' + peerId + '"; </script>');
+                    
+                    /* caching the page */
+                    //cache[page.parseUrl()] = '<html>' + $('html').html() + '</html>';            
+                    
+                    res.write('<html>' + $('html').html() + '</html>');
+                    res.end();
+
+                }
+            });
         });
-    });
+    }
 });
 
 /* wild card for any other requests */

@@ -6,6 +6,8 @@
 var screenCount = 1;
 var screenIndex = 1;
 var myclick = false;
+//TODO change me to work with a server
+var peer = null;
 
 function makeMessage(eventType, message) {
 	var data = new Object();
@@ -92,46 +94,11 @@ function connect(conn) {
 	});
 }
 
-//TODO change me to work with a server
-var randomValue = randomString(5);
-var peer = new Peer(peerId, {
-	host: 'localhost',
-	port: '8000'
-});
-
-
 var addPeerFeedback = function(connectedPeer) {
     $('#polychrome-events-list').append('<div class="polychrome-event-button" id="polychrome-'+connectedPeer+'-tab">'+connectedPeer+'</div>');
     $('#polychrome-display-list').append('<div class="polychrome-display-button" id="polychrome-'+connectedPeer+'-tab">'+connectedPeer+'</div>');
 }
 
-peer.on('open', function(id, clientIds) {
-	$('#polychrome-id').text("CLIENT ID: "+id);
-	console.log(clientIds);
-
-    if (clientIds) {
-	    var peer1 = clientIds.split(",");
-	    console.log(peer1[0]);
-	    peer1.forEach(function(peerid) {
-		    var conn = peer.connect(peerid);
-		    conn.on('open', function() {
-			    connections.push(conn);
-			    alert("Now connected to " + conn.peer);
-			    //first_connection(c);
-                addPeerFeedback(conn.peer);
-		    });
-
-		    conn.on('data', function(data) {
-			    if (data != null)
-				    onData(data);
-		    });
-
-	    })
-    }
-});
-
-//make sure that peerjs connections are handled by the connect function
-peer.on('connection', connect);
 var domain = null;
 
 // function load_page(url) {
@@ -190,11 +157,6 @@ var domain = null;
 //     });
 
 // }
-
-
-//change this when deployed
-var hostname = "localhost";
-var port = "8000";
 
 
 function simulate(element, eventName)
@@ -259,8 +221,57 @@ var defaultOptions = {
     cancelable: true
 }
 	
-$(document).ready(function() {
-	
+var peerId = "";
+
+/* parse url */
+var selfUrl = document.URL;
+var id_check = /[?&]peerId=([^&]+)/i;
+var match = id_check.exec(selfUrl);
+if (match != null) {
+    peerId = match[1];
+} else {
+    peerId = randomString(10);
+}
+
+//alert(peerId);
+peer = new Peer(peerId, {
+	host: 'localhost',
+	port: '8000'    
+});
+
+peer.on('open', function(id, clientIds) {
+	$('#polychrome-id').text("CLIENT ID: "+id);
+	console.log(clientIds);
+
+    if (clientIds) {
+	    var peer1 = clientIds.split(",");
+	    console.log(peer1[0]);
+	    peer1.forEach(function(peerid) {
+		    var conn = peer.connect(peerid);
+		    conn.on('open', function() {
+			    connections.push(conn);
+			    alert("Now connected to " + conn.peer);
+			    //first_connection(c);
+                addPeerFeedback(conn.peer);
+		    });
+
+		    conn.on('data', function(data) {
+			    if (data != null)
+				    onData(data);
+		    });
+
+	    })
+    }
+});
+
+//make sure that peerjs connections are handled by the connect function
+peer.on('connection', connect);
+
+
+$(function() {
+
+    
+    	
     $(document).on("click", function(evt) {
 		var elem = document.elementFromPoint(evt.pageX, evt.pageY);
 		
