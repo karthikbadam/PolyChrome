@@ -535,7 +535,7 @@ app.get('/polychrome', function (req, res) {
                     //$('body').append('<script>var peerId = "' + peerId + '"; </script>');
                     
                     /* caching the page */
-                    //cache[page.parseUrl()] = '<html>' + $('html').html() + '</html>';            
+                    cache[page.parseUrl()] = '<html>' + $('html').html() + '</html>';            
                     
                     res.write('<html>' + $('html').html() + '</html>');
                     res.end();
