@@ -389,7 +389,6 @@ app.get('/*', function (req, res) {
             }
         }
 
-        console.log("Requesting for " + urlString + ", " + ValidURL(urlString));
         request({
             uri: urlString
         }, function (err, response, body) {

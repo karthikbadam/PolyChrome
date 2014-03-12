@@ -8,6 +8,16 @@ var screenIndex = 1;
 var myclick = false;
 var deviceId = "";
 
+/* define event capture state */
+var eventCapture = {};
+eventCapture.click = true;
+eventCapture.touchstart = true;
+eventCapture.touchmove = true;
+eventCapture.touchend = true;
+eventCapture.mousedown = true; 
+eventCapture.mousemove = true; 
+eventCapture.mouseup = true;
+
 /* parse page URL to get peerId and screen details*/
 var selfUrl = document.URL;
 var idCheck = /[?&]peerId=([^&]+)/i;
@@ -300,22 +310,26 @@ $(document).ready(function () {
             toSend.posY = evt.pageY;
             toSend.deviceId = deviceId;
 
+            
             /* send event to other peers */
-            connections.forEach(function (connection) {
-                connection.send(toSend);
-            });
+            if (eventCapture[evt.type]) {
+                addEventFeedback(deviceId, toSend.eventType, toSend.posX, toSend.posY);
 
-            /* also send the event to server */
-            socket.emit('MouseEvents', toSend);
+                connections.forEach(function (connection) {
+                    connection.send(toSend);
+                });
 
-            /* execute the event on current machine */
+                /* also send the event to server */
+                socket.emit('MouseEvents', toSend);
+
+                /* execute the event on current machine */    
+                //onData(deviceId, toSend);
+            }
+            
             //evt.preventDefault();
             //evt.stopPropagation();
-            
-            //onData(deviceId, toSend);
-            addEventFeedback(deviceId, toSend.eventType, toSend.posX, toSend.posY); 
-
-
+            //evt.stopImmediatePropagation();
+   
             if (evt.type == "mousedown") {
                 isMouseDown = true;
             }
@@ -342,4 +356,68 @@ $(document).ready(function () {
         $("#polychrome-actions").slideToggle("slow");
     });
 
+
+    /* handle checkbox changes */
+    $('#polychrome-checkbox-click').change(function () {
+        var $checkbox = $(this);
+        if ($checkbox.prop('checked')) {
+            eventCapture.click = true;
+        } else {
+            eventCapture.click = false;
+        }
+    });
+
+    $('#polychrome-checkbox-mousedown').change(function () {
+        var $checkbox = $(this);
+        if ($checkbox.prop('checked')) {
+            eventCapture.mousedown = true;
+        } else {
+            eventCapture.mousedown = false;
+        }
+    });
+
+    $('#polychrome-checkbox-mousemove').change(function () {
+        var $checkbox = $(this);
+        if ($checkbox.prop('checked')) {
+            eventCapture.mousemove = true;
+        } else {
+            eventCapture.mousemove = false;
+        }
+    });
+
+    $('#polychrome-checkbox-mouseup').change(function () {
+        var $checkbox = $(this);
+        if ($checkbox.prop('checked')) {
+            eventCapture.mouseup = true;
+        } else {
+            eventCapture.mouseup = false;
+        }
+    });
+
+    $('#polychrome-checkbox-touchstart').change(function () {
+        var $checkbox = $(this);
+        if ($checkbox.prop('checked')) {
+            eventCapture.touchstart = true;
+        } else {
+            eventCapture.touchstart = false;
+        }
+    });
+
+    $('#polychrome-checkbox-touchmove').change(function () {
+        var $checkbox = $(this);
+        if ($checkbox.prop('checked')) {
+            eventCapture.touchmove = true;
+        } else {
+            eventCapture.touchmove = false;
+        }
+    });
+
+    $('#polychrome-checkbox-touchend').change(function () {
+        var $checkbox = $(this);
+        if ($checkbox.prop('checked')) {
+            eventCapture.touchend = true;
+        } else {
+            eventCapture.touchend = false;
+        }
+    });
 });
