@@ -315,7 +315,7 @@ app.get('/polychrome', function (req, res) {
 
             jsdom.env({
                 html: body1,
-                scripts: ['http://code.jquery.com/jquery-2.1.0.js', 'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/socket.io/socket.io.js', 'http://localhost:3000/javascripts/polychrome-feedback-panel.js'],
+                scripts: ['http://code.jquery.com/jquery-2.1.0.js', 'http://localhost:3000/javascripts/jquery.nearest.js','http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/socket.io/socket.io.js', 'http://localhost:3000/javascripts/polychrome-feedback-panel.js'],
                 done: function (err, window) {
 
                     var $ = window.jQuery;

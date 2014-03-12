@@ -149,20 +149,30 @@ var executeEventOnPosition = function (eventType, eventName, posX, posY, targetN
 
     var pageX = posX - window.pageXOffset;
     var pageY = posY - window.pageYOffset;
-    var elem = document.elementFromPoint(pageX, pageY);
 
-    if (elem === null) {
+    $('#polychrome-event-capturer').css({"display": "none"});
+
+    var elem = document.elementFromPoint(pageX, pageY);
+    
+    $('#polychrome-event-capturer').css({ "display": "initial" });
+
+    if (elem == null) {
         var items = document.getElementsByTagName("*");
         for (var i = items.length; i--; ) {
             var temp_elem = items[i];
             var rect = temp_elem.getBoundingClientRect();
             var rect_width = rect.right - rect.left;
             var rect_height = rect.bottom - rect.top;
-            if (Math.abs(pageX - rect.left) <= rect_width && Math.abs(pageY - rect.top) <= rect_height && temp_elem.nodeName === targetName) {
+            if (Math.abs(pageX - rect.left) <= rect_width && Math.abs(pageY - rect.top) <= rect_height) {
                 elem = temp_elem;
             }
         }
     }
+
+    //var closestToPoint = $.nearest({ x: pageX, y: pageY });
+    //elem = closestToPoint.get(0);
+    console.log(pageX + ", " + pageY + ", " + elem.nodeName);
+
 
     if (eventName == "HTMLEvents") {
         /* copying the defaultOptions */
@@ -293,13 +303,15 @@ socket.on('MouseEvents', function (data) {
 /* on document load */
 $(document).ready(function () {
 
+    window.devicePixelRatio = 2;
+
     var eventHandler = function (evt) {
         if (evt.isPolyChrome) {
             return;
-        } else if (evt.target.id.indexOf('polychrome') == -1) {
+        } else if (evt.target.id.indexOf('polychrome') != -1) {
             if (evt.type == "mousemove") {
                 if (!isMouseDown) {
-                    return;
+                    
                 }
             }
 
@@ -390,10 +402,10 @@ $(document).ready(function () {
     };
 
 
-    document.addEventListener("click", eventHandler1);
-    document.addEventListener("mousedown", eventHandler1);
+    document.addEventListener("click", eventHandler);
+    document.addEventListener("mousedown", eventHandler);
     document.addEventListener("mousemove", eventHandler);
-    document.addEventListener("mouseup", eventHandler1);
+    document.addEventListener("mouseup", eventHandler);
     document.addEventListener("touchstart", eventHandler);
     document.addEventListener("touchmove", eventHandler);
     document.addEventListener("touchend", eventHandler);
