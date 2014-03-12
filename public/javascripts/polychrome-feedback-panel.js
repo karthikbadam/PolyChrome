@@ -292,6 +292,7 @@ socket.on('MouseEvents', function (data) {
 
 /* on document load */
 $(document).ready(function () {
+
     var eventHandler = function (evt) {
         if (evt.isPolyChrome) {
             return;
@@ -310,7 +311,7 @@ $(document).ready(function () {
             toSend.posY = evt.pageY;
             toSend.deviceId = deviceId;
 
-            
+
             /* send event to other peers */
             if (eventCapture[evt.type]) {
                 addEventFeedback(deviceId, toSend.eventType, toSend.posX, toSend.posY);
@@ -322,14 +323,14 @@ $(document).ready(function () {
                 /* also send the event to server */
                 socket.emit('MouseEvents', toSend);
 
-                /* execute the event on current machine */    
-                //onData(deviceId, toSend);
+                /* execute the event on current machine */
+                onData(deviceId, toSend);
             }
-            
-            //evt.preventDefault();
-            //evt.stopPropagation();
-            //evt.stopImmediatePropagation();
-   
+
+            evt.preventDefault();
+            evt.stopPropagation();
+            evt.stopImmediatePropagation();
+
             if (evt.type == "mousedown") {
                 isMouseDown = true;
             }
@@ -340,10 +341,59 @@ $(document).ready(function () {
         }
     };
 
-    document.addEventListener("click", eventHandler);
-    document.addEventListener("mousedown", eventHandler);
+    var eventHandler1 = function (evt) {
+        if (evt.isPolyChrome) {
+            return;
+        } else if (evt.target.id.indexOf('polychrome') == -1) {
+            if (evt.type == "mousemove") {
+                if (!isMouseDown) {
+                    return;
+                }
+            }
+
+            var elem = document.elementFromPoint(evt.pageX, evt.pageY);
+            var toSend = new Object();
+            toSend.eventType = evt.type;
+            toSend.target = evt.target.nodeName;
+            toSend.posX = evt.pageX;
+            toSend.posY = evt.pageY;
+            toSend.deviceId = deviceId;
+
+
+            /* send event to other peers */
+            if (eventCapture[evt.type]) {
+                addEventFeedback(deviceId, toSend.eventType, toSend.posX, toSend.posY);
+
+                connections.forEach(function (connection) {
+                    connection.send(toSend);
+                });
+
+                /* also send the event to server */
+                socket.emit('MouseEvents', toSend);
+
+                /* execute the event on current machine */
+                //onData(deviceId, toSend);
+            }
+
+            //evt.preventDefault();
+            //evt.stopPropagation();
+            //evt.stopImmediatePropagation();
+
+            if (evt.type == "mousedown") {
+                isMouseDown = true;
+            }
+
+            if (evt.type == "mouseup") {
+                isMouseDown = false;
+            }
+        }
+    };
+
+
+    document.addEventListener("click", eventHandler1);
+    document.addEventListener("mousedown", eventHandler1);
     document.addEventListener("mousemove", eventHandler);
-    document.addEventListener("mouseup", eventHandler);
+    document.addEventListener("mouseup", eventHandler1);
     document.addEventListener("touchstart", eventHandler);
     document.addEventListener("touchmove", eventHandler);
     document.addEventListener("touchend", eventHandler);
@@ -355,6 +405,48 @@ $(document).ready(function () {
         $('#polychrome-toggle').toggleClass('active');
         $("#polychrome-actions").slideToggle("slow");
     });
+
+    /* change display configuration based on read value */
+    if (screenCount == 1) {
+
+    } else if (screenCount == 2) {
+        if (screenIndex == 1) {
+            $('#chrome_body').css({
+                "-webkit-transform": "scale(2, 1)",
+                "-webkit-transform-origin": "0% 0%"
+            });
+        } else {
+            $('#chrome_body').css({
+                "-webkit-transform": "scale(2, 1)",
+                "-webkit-transform-origin": "100% 0%"
+            });
+        }
+    } else if (screenCount == 4) {
+        if (screenIndex == 1) {
+            $('#chrome_body').css({
+                "-webkit-transform": "scale(2, 2)",
+                "-webkit-transform-origin": "0% 0%"
+            });
+        } else if (screenIndex == 2) {
+            $('#chrome_body').css({
+                "-webkit-transform": "scale(2, 2)",
+                "-webkit-transform-origin": "100% 0%"
+            });
+        } else if (screenIndex == 3) {
+            $('#chrome_body').css({
+                "-webkit-transform": "scale(2, 2)",
+                "-webkit-transform-origin": "0% 100%"
+            });
+        } else {
+            $('#chrome_body').css({
+                "-webkit-transform": "scale(2, 2)",
+                "-webkit-transform-origin": "100% 100%"
+            });
+        }
+    }
+
+
+
 
 
     /* handle checkbox changes */

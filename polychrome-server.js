@@ -504,8 +504,6 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
-
-
 //app.get('/getPage', function (req, res) {
 
 //    var parsedUrl = url.parse(req.url, true); // true to get query as object
