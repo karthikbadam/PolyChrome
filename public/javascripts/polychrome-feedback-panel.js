@@ -8,7 +8,7 @@ var screenIndex = 1;
 var myclick = false;
 var deviceId = "";
 
-/* parse url to get peerId and screen details*/
+/* parse page URL to get peerId and screen details*/
 var selfUrl = document.URL;
 var idCheck = /[?&]peerId=([^&]+)/i;
 var spaceCheck = /[?&]spaceConfig=([^&]+)/i;
@@ -86,6 +86,7 @@ function simulateMouseEvent(element, eventType, options)
         options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, element);
         element.dispatchEvent(oEvent);
         return true; 
+
     } else {
     
         options.clientX = options.pointerX;
@@ -279,7 +280,6 @@ socket.on('MouseEvents', function (data) {
 
 /* on document load */
 $(function () {
-
     var eventHandler = function (evt) {
         if (evt.isPolyChrome) {
             return;
@@ -291,6 +291,8 @@ $(function () {
             toSend.posX = evt.pageX;
             toSend.posY = evt.pageY;
             toSend.deviceId = deviceId;
+
+            /* send event to other peers */
             connections.forEach(function (connection) {
                 connection.send(toSend);
             });

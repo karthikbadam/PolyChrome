@@ -27,6 +27,7 @@
 	position: absolute;
 	width: 100%;
 	height: 100%;
+    margin: 0px;
 }
 
 
@@ -504,4 +505,15 @@
 .polychrome-event-element:active{
     background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#333));
 	background: -moz-linear-gradient(top,  #444,  #333);
+}
+
+#polychrome-checkbox-div{
+    margin: 10px;
+    text-align: center; 
+    background-color: #808080;
+    font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: 500;
+    font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
 }
