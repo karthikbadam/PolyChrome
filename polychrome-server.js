@@ -118,7 +118,7 @@ app.get('/img/*', function (req, res) {
             urlString = baseUrl + req.url.substr(1);
         }
     }
-    console.log("Requesting for " + urlString + ", " + ValidURL(urlString));
+    
     request({
         uri: urlString
     }, function (err, response, body) {
@@ -266,7 +266,7 @@ app.get('/polychrome', function (req, res) {
 
             jsdom.env({
                 html: body1,
-                scripts: ['http://code.jquery.com/jquery.js', 'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/socket.io/socket.io.js', 'http://localhost:3000/javascripts/polychrome-feedback-panel.js'],
+                scripts: ['http://code.jquery.com/jquery-2.1.0.js' ,'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/socket.io/socket.io.js', 'http://localhost:3000/javascripts/polychrome-feedback-panel.js'],
                 done: function (err, window) {
                     
                     var $ = window.jQuery;
@@ -336,7 +336,7 @@ app.get('/polychrome', function (req, res) {
 
                     $('a').each(function () {
                         var hyperlink = $(this).attr('href');
-                        if (hyperlink !== undefined && hyperlink.indexOf(".com") == -1) {
+                        if (hyperlink !== undefined && hyperlink.indexOf("http") == -1) {
                             var url = selectedUrl + hyperlink;
                             if (hyperlink.charAt(0) === '/') {
                                 var baseUrl = page.getbaseUrl();

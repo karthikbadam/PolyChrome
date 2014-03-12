@@ -22,6 +22,8 @@ if (match != null) {
     deviceId = randomString(10);
 }
 
+var isMouseDown = false; 
+
 /* get peer configurations */
 match = spaceCheck.exec(selfUrl);
 if (match != null) {
@@ -216,7 +218,7 @@ function onData(connectedDeviceId, data) {
 		var posY = data.posY;
         
         executeEventOnPosition(eventType, eventName, posX, posY, targetName); 
-        addEventFeedback(connectedDeviceId, eventType, posX, posY);
+        addEventFeedback(connectedDeviceId, eventType, posX, posY); 
 
     } else {
         /* It is not an event but a message*/
@@ -279,11 +281,17 @@ socket.on('MouseEvents', function (data) {
 
 
 /* on document load */
-$(function () {
+$(document).ready(function () {
     var eventHandler = function (evt) {
         if (evt.isPolyChrome) {
             return;
         } else if (evt.target.id.indexOf('polychrome') == -1) {
+            if (evt.type == "mousemove") {
+                if (!isMouseDown) {
+                    return;
+                }
+            }
+
             var elem = document.elementFromPoint(evt.pageX, evt.pageY);
             var toSend = new Object();
             toSend.eventType = evt.type;
@@ -301,9 +309,20 @@ $(function () {
             socket.emit('MouseEvents', toSend);
 
             /* execute the event on current machine */
-            onData(deviceId, toSend);
-            evt.preventDefault();
-            evt.stopPropagation();
+            //evt.preventDefault();
+            //evt.stopPropagation();
+            
+            //onData(deviceId, toSend);
+            addEventFeedback(deviceId, toSend.eventType, toSend.posX, toSend.posY); 
+
+
+            if (evt.type == "mousedown") {
+                isMouseDown = true;
+            }
+
+            if (evt.type == "mouseup") {
+                isMouseDown = false;
+            }
         }
     };
 
