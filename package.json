@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node polychrome-server.js"
   },
   "dependencies": {
     "express": "3.4.4",
@@ -20,7 +20,8 @@
     "async": "*", 
     "util": "*", 
     "mime": "*", 
-    "socket.io": "*"
+    "socket.io": "*",
+    "webshot": "*"
   },
   "devDependencies": {
     "expect.js": "*",

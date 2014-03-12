@@ -12,7 +12,19 @@ var url = require('url');
 var cheerio = require('cheerio');
 var mime = require('mime');
 var querystring = require('querystring');
-
+var webshot = require('webshot');
+       
+var screenshot_options = {
+  screenSize: {
+    width: 1387, 
+    height: 780 
+  }, 
+  shotSize: {
+    width: 1387, 
+    height: 780
+  }
+}
+        
 /* cache file for all html files */
 var cache = {};
 
@@ -118,18 +130,49 @@ app.get('/img/*', function (req, res) {
             urlString = baseUrl + req.url.substr(1);
         }
     }
-    
-    request({
-        uri: urlString
-    }, function (err, response, body) {
-        if (err) {
-            res.writeHead(400);
-            return;
-        } else {
-            res.writeHead(200, { "Content-Type": 'image/png', 'Content-Length': body.size }); // Pass in the mime-type
-            res.end(body, "binary"); //Stream the file down
-        }
-    });
+
+    /* download and cache image in file system */
+    var filename = "cache/"+url.parse(urlString).pathname.split("/").pop();
+    if (fs.existsSync(filename)) {
+        fs.readFile(filename, function(err, data) {
+        if (err) throw err; // Fail if the file can't be read.
+        res.writeHead(200, {'Content-Type': 'image/png'});
+        res.end(data); // Send the file data to the browser.
+        });
+
+    } else {
+        var download = function(uri, filename, callback){
+          request.head(uri, function(err, res, body){
+            console.log('content-type:', res.headers['content-type']);
+            console.log('content-length:', res.headers['content-length']);
+
+            request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+          });
+        };
+
+        download(urlString, filename, function(){
+            fs.readFile(filename, function(err, data) {
+            if (err) throw err; // Fail if the file can't be read.
+            res.writeHead(200, {'Content-Type': 'image/png'});
+            res.end(data); // Send the file data to the browser.
+            });  
+        });
+    }
+
+    //request({
+    //    uri: urlString
+    //}, function (err, response, body) {
+    //    if (err) {
+    //        res.writeHead(400);
+    //        return;
+    //    } else {
+    //        console.log(filename);
+    //        res.contentType(filename);
+    //        //res.writeHead(200, { "Content-Type": 'image/png', 'Content-Length': body.size }); // Pass in the mime-type
+    //        res.send(body); //Stream the file down
+    //        res.end();
+    //    }
+    //});
 
 });
 
@@ -229,6 +272,12 @@ app.get('/polychrome', function (req, res) {
 
     } else {
 
+        /* capture a screenshot using node-webshot */
+        webshot(selectedUrl, 'cache/google.png', screenshot_options, function (err) {
+            if (err)
+                console.log(err);
+        });
+
         //Tell the request that we want to fetch youtube.com, send the results to a callback function
         request({ uri: selectedUrl }, function (err, response, body1) {
             var isBlocked = 'No';
@@ -266,9 +315,9 @@ app.get('/polychrome', function (req, res) {
 
             jsdom.env({
                 html: body1,
-                scripts: ['http://code.jquery.com/jquery-2.1.0.js' ,'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/socket.io/socket.io.js', 'http://localhost:3000/javascripts/polychrome-feedback-panel.js'],
+                scripts: ['http://code.jquery.com/jquery-2.1.0.js', 'http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/socket.io/socket.io.js', 'http://localhost:3000/javascripts/polychrome-feedback-panel.js'],
                 done: function (err, window) {
-                    
+
                     var $ = window.jQuery;
 
                     $('script').each(function () {
@@ -362,10 +411,10 @@ app.get('/polychrome', function (req, res) {
                     var polychrome_panel = fs.readFileSync("public/renderings/polychrome-feedback.html", 'utf8');
                     $('body').append(polychrome_panel.toString());
                     //$('body').append('<script>var peerId = "' + peerId + '"; </script>');
-                    
+
                     /* caching the page */
-                    cache[page.parseUrl()] = '<html>' + $('html').html() + '</html>';            
-                    
+                    cache[page.parseUrl()] = '<html>' + $('html').html() + '</html>';
+
                     res.write('<html>' + $('html').html() + '</html>');
                     res.end();
 
@@ -389,18 +438,34 @@ app.get('/*', function (req, res) {
             }
         }
 
-        request({
-            uri: urlString
-        }, function (err, response, body) {
-            if (err) {
-                res.writeHead(400);
-                console.log("400- request failed");
-            } else {
-                res.writeHead(200);
-            }
-            res.write(response.body);
+        console.log("Wild card url - " + urlString);
+
+
+        var currentPageCache = cache[urlString];
+        if (currentPageCache) {
+
+            console.log('Served from Cache ' + urlString);
+            res.write(currentPageCache);
             res.end();
-        });
+
+        } else {
+            request({
+                uri: urlString
+            }, function (err, response, body) {
+                if (err) {
+                    res.writeHead(400);
+                    console.log("400- request failed");
+                } else {
+                    res.writeHead(200);
+                }
+
+                /* caching wildcards to improve speed */
+                cache[urlString] = response.body;
+
+                res.write(response.body);
+                res.end();
+            });
+        }
     }
 });
 
