@@ -150,11 +150,11 @@ var executeEventOnPosition = function (eventType, eventName, posX, posY, targetN
     var pageX = posX - window.pageXOffset;
     var pageY = posY - window.pageYOffset;
 
-    $('#polychrome-event-capturer').css({"display": "none"});
+    $('#pc-event-capturer').css({"display": "none"});
 
     var elem = document.elementFromPoint(pageX, pageY);
     
-    $('#polychrome-event-capturer').css({ "display": "initial" });
+    $('#pc-event-capturer').css({ "display": "initial" });
 
     if (elem == null) {
         var items = document.getElementsByTagName("*");
@@ -308,7 +308,7 @@ $(document).ready(function () {
     var eventHandler = function (evt) {
         if (evt.isPolyChrome) {
             return;
-        } else if (evt.target.id.indexOf('polychrome') != -1) {
+        } else if (evt.target.id.indexOf('polychrome') == -1 && evt.target.className.indexOf('polychrome') == -1) {
             if (evt.type == "mousemove") {
                 if (!isMouseDown) {
                     
@@ -456,10 +456,6 @@ $(document).ready(function () {
             });
         }
     }
-
-
-
-
 
     /* handle checkbox changes */
     $('#polychrome-checkbox-click').change(function () {
