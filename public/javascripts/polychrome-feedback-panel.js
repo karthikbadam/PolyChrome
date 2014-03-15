@@ -7,6 +7,11 @@ var screenCount = 1;
 var screenIndex = 1;
 var myclick = false;
 var deviceId = "";
+var scaleX = 1;
+var scaleY = 1;
+var screenWidth = 10;
+var screenHeight = 10;
+var documentOrigin = { x: 0, y: 0 };
 
 /* define event capture state */
 var eventCapture = {};
@@ -93,6 +98,8 @@ function simulateMouseEvent(element, eventType, options)
         
         /* recognize that this is PolyChrome event */
         oEvent.isPolyChrome = true; 
+        options.pointerX = (options.pointerX)/scaleX - documentOrigin.x/scaleX;
+        options.pointerY = (options.pointerY)/scaleY - documentOrigin.y/scaleY;
         oEvent.initMouseEvent(eventType, options.bubbles, options.cancelable, document.defaultView,
         1, options.pointerX, options.pointerY, options.pointerX, options.pointerY,
         options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, element);
@@ -147,8 +154,8 @@ function extend(destination, source) {
 /* Method to execute an event */
 var executeEventOnPosition = function (eventType, eventName, posX, posY, targetName) {
 
-    var pageX = posX - window.pageXOffset;
-    var pageY = posY - window.pageYOffset;
+    var pageX = posX + $('body').position().left;
+    var pageY = posY + $('body').position().top;
 
     $('#pc-event-capturer').css({"display": "none"});
 
@@ -171,7 +178,25 @@ var executeEventOnPosition = function (eventType, eventName, posX, posY, targetN
 
     //var closestToPoint = $.nearest({ x: pageX, y: pageY });
     //elem = closestToPoint.get(0);
-    console.log(pageX + ", " + pageY + ", " + elem.nodeName);
+    //console.log(pageX + ", " + pageY + ", " + elem.nodeName);
+
+    /* fix the positionX based on the screen Configuration */
+
+    //if (scaleX == 2) {
+    //    if (screenIndex == 1) {
+    //        pageX = pageX / 2;
+    //    } else if (screenIndex == 2) {
+    //        pageX = pageX / 2 + screenWidth / 2 ;
+    //    } 
+    //}
+
+    //if (scaleY == 2) {
+    //    if (screenIndex == 1) {
+    //        pageY = pageY / 2;
+    //    } else if (screenIndex == 2) {
+    //        pageY = pageY / 2;
+    //    } 
+    //}
 
 
     if (eventName == "HTMLEvents") {
@@ -236,8 +261,27 @@ function onData(connectedDeviceId, data) {
         var targetName = data.target;
 		var posX = data.posX;
 		var posY = data.posY;
-        
-        executeEventOnPosition(eventType, eventName, posX, posY, targetName); 
+		var globalX = data.globalX;
+		var globalY = data.globalY;
+
+        // if (scaleX == 2) {
+        //    if (screenIndex == 1) {
+        //        posX = posX / 2;
+        //    } else if (screenIndex == 2) {
+        //        posX = posX / 2 + screenWidth / 2 ;
+        //    } 
+        //}
+
+        //if (scaleY == 2) {
+        //    if (screenIndex == 1) {
+        //        posY = posY / 2;
+        //    } else if (screenIndex == 2) {
+        //        posY = posY / 2;
+        //    } 
+        //}
+
+
+        executeEventOnPosition(eventType, eventName, posX, posY, globalX, globalY, targetName); 
         addEventFeedback(connectedDeviceId, eventType, posX, posY); 
 
     } else {
@@ -302,16 +346,17 @@ socket.on('MouseEvents', function (data) {
 
 /* on document load */
 $(document).ready(function () {
-
-    window.devicePixelRatio = 2;
+    screenWidth = $(window).width();
+    screenHeight = $(window).height();
 
     var eventHandler = function (evt) {
         if (evt.isPolyChrome) {
             return;
-        } else if (evt.target.id.indexOf('polychrome') == -1 && evt.target.className.indexOf('polychrome') == -1) {
+
+        } else if ((evt.target.id.indexOf('polychrome') == -1) && (evt.target.className.indexOf('polychrome') == -1)) {
             if (evt.type == "mousemove") {
                 if (!isMouseDown) {
-                    
+
                 }
             }
 
@@ -319,8 +364,10 @@ $(document).ready(function () {
             var toSend = new Object();
             toSend.eventType = evt.type;
             toSend.target = evt.target.nodeName;
-            toSend.posX = evt.pageX;
-            toSend.posY = evt.pageY;
+            toSend.posX = evt.pageX - + $('body').position().left;
+            toSend.posY = evt.pageY - + $('body').position().top;
+            toSend.globalX = evt.pageX + documentOrigin.x/scaleX;
+            toSend.globalY = evt.pageY + documentOrigin.y/scaleY;
             toSend.deviceId = deviceId;
 
 
@@ -353,53 +400,53 @@ $(document).ready(function () {
         }
     };
 
-    var eventHandler1 = function (evt) {
-        if (evt.isPolyChrome) {
-            return;
-        } else if (evt.target.id.indexOf('polychrome') == -1) {
-            if (evt.type == "mousemove") {
-                if (!isMouseDown) {
-                    return;
-                }
-            }
+    //var eventHandler1 = function (evt) {
+    //    if (evt.isPolyChrome) {
+    //        return;
+    //    } else if (evt.target.id.indexOf('polychrome') == -1) {
+    //        if (evt.type == "mousemove") {
+    //            if (!isMouseDown) {
+    //                return;
+    //            }
+    //        }
 
-            var elem = document.elementFromPoint(evt.pageX, evt.pageY);
-            var toSend = new Object();
-            toSend.eventType = evt.type;
-            toSend.target = evt.target.nodeName;
-            toSend.posX = evt.pageX;
-            toSend.posY = evt.pageY;
-            toSend.deviceId = deviceId;
+    //        var elem = document.elementFromPoint(evt.pageX, evt.pageY);
+    //        var toSend = new Object();
+    //        toSend.eventType = evt.type;
+    //        toSend.target = evt.target.nodeName;
+    //        toSend.posX = evt.pageX;
+    //        toSend.posY = evt.pageY;
+    //        toSend.deviceId = deviceId;
 
 
-            /* send event to other peers */
-            if (eventCapture[evt.type]) {
-                addEventFeedback(deviceId, toSend.eventType, toSend.posX, toSend.posY);
+    //        /* send event to other peers */
+    //        if (eventCapture[evt.type]) {
+    //            addEventFeedback(deviceId, toSend.eventType, toSend.posX, toSend.posY);
 
-                connections.forEach(function (connection) {
-                    connection.send(toSend);
-                });
+    //            connections.forEach(function (connection) {
+    //                connection.send(toSend);
+    //            });
 
-                /* also send the event to server */
-                socket.emit('MouseEvents', toSend);
+    //            /* also send the event to server */
+    //            socket.emit('MouseEvents', toSend);
 
-                /* execute the event on current machine */
-                //onData(deviceId, toSend);
-            }
+    //            /* execute the event on current machine */
+    //            //onData(deviceId, toSend);
+    //        }
 
-            //evt.preventDefault();
-            //evt.stopPropagation();
-            //evt.stopImmediatePropagation();
+    //        //evt.preventDefault();
+    //        //evt.stopPropagation();
+    //        //evt.stopImmediatePropagation();
 
-            if (evt.type == "mousedown") {
-                isMouseDown = true;
-            }
+    //        if (evt.type == "mousedown") {
+    //            isMouseDown = true;
+    //        }
 
-            if (evt.type == "mouseup") {
-                isMouseDown = false;
-            }
-        }
-    };
+    //        if (evt.type == "mouseup") {
+    //            isMouseDown = false;
+    //        }
+    //    }
+    //};
 
 
     document.addEventListener("click", eventHandler);
@@ -422,34 +469,55 @@ $(document).ready(function () {
     if (screenCount == 1) {
 
     } else if (screenCount == 2) {
+        scaleX = 2;
+        scaleY = 1;
         if (screenIndex == 1) {
             $('#chrome_body').css({
                 "-webkit-transform": "scale(2, 1)",
                 "-webkit-transform-origin": "0% 0%"
             });
+            documentOrigin.x = 0;
+            documentOrigin.y = 0;
         } else {
             $('#chrome_body').css({
                 "-webkit-transform": "scale(2, 1)",
                 "-webkit-transform-origin": "100% 0%"
             });
+            documentOrigin.x = screenWidth;
+            documentOrigin.y = 0;
+
         }
     } else if (screenCount == 4) {
+        scaleX = 2;
+        scaleY = 2;
         if (screenIndex == 1) {
+            documentOrigin.x = 0;
+            documentOrigin.y = 0;
+
             $('#chrome_body').css({
                 "-webkit-transform": "scale(2, 2)",
                 "-webkit-transform-origin": "0% 0%"
             });
         } else if (screenIndex == 2) {
+            documentOrigin.x = screenWidth;
+            documentOrigin.y = 0;
+
             $('#chrome_body').css({
                 "-webkit-transform": "scale(2, 2)",
                 "-webkit-transform-origin": "100% 0%"
             });
         } else if (screenIndex == 3) {
+            documentOrigin.x = 0;
+            documentOrigin.y = screenHeight;
+
             $('#chrome_body').css({
                 "-webkit-transform": "scale(2, 2)",
                 "-webkit-transform-origin": "0% 100%"
             });
-        } else {
+        } else {            
+            documentOrigin.x = screenWidth;
+            documentOrigin.y = screenHeight;
+
             $('#chrome_body').css({
                 "-webkit-transform": "scale(2, 2)",
                 "-webkit-transform-origin": "100% 100%"

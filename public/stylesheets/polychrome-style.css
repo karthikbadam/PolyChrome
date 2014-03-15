@@ -27,14 +27,14 @@
     top: 0px;
     z-index: 100;
     background-color: transparent;
-    width: 100%;
-    height: 100%;
+    width: 1920px;
+    height: 1080px;
 }
 
 #chrome_body{
 	position: absolute;
-	width: 100%;
-	height: 100%;
+	width: 1920px;
+	height: 1080px;
     margin: 0px;
     -webkit-transform: scale(1, 1);
     -webkit-transform-origin: 0% 0%;
@@ -370,6 +370,7 @@
 	font-weight: 500;
     font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
     cursor: pointer;
+    color: white;
     height: 5%;
 }
 

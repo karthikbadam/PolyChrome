@@ -177,30 +177,30 @@ app.get('/img/*', function (req, res) {
 });
 
 /* js files requested by the webpage */
-app.get('/js/*', function (req, res) {
+//app.get('/js/*', function (req, res) {
 
-    console.log("JS request captured: " + req.url);
-    var urlString = currentPage.url + req.url;
-    if (req.url.charAt(0) === '/') {
-        var baseUrl = currentPage.getCurrentBaseUrl();
-        urlString = baseUrl + req.url;
-        if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-            urlString = baseUrl + req.url.substr(1);
-        }
-    }
-    request({
-        uri: urlString
-    }, function (err, response, body) {
-        if (err) {
-            res.writeHead(400);
-        } else {
-            res.writeHead(200);
-        }
-        res.write(response.body);
-        res.end();
-    });
+//    console.log("JS request captured: " + req.url);
+//    var urlString = currentPage.url + req.url;
+//    if (req.url.charAt(0) === '/') {
+//        var baseUrl = currentPage.getCurrentBaseUrl();
+//        urlString = baseUrl + req.url;
+//        if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+//            urlString = baseUrl + req.url.substr(1);
+//        }
+//    }
+//    request({
+//        uri: urlString
+//    }, function (err, response, body) {
+//        if (err) {
+//            res.writeHead(400);
+//        } else {
+//            res.writeHead(200);
+//        }
+//        res.write(response.body);
+//        res.end();
+//    });
 
-});
+//});
 
 /* load url from login page */
 app.post('/loadUrl', function (req, res) {
