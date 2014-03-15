@@ -12,6 +12,8 @@ var scaleY = 1;
 var screenWidth = 10;
 var screenHeight = 10;
 var documentOrigin = { x: 0, y: 0 };
+var hostname = '192.168.7.101';
+var port = '3000';
 
 /* define event capture state */
 var eventCapture = {};
@@ -304,7 +306,7 @@ function connect(conn) {
 }
 
 var peer = new Peer(deviceId, {
-	host: 'localhost',
+	host: hostname,
 	port: '8000'    
 });
 
@@ -334,7 +336,7 @@ peer.on('connection', connect);
 
 
 /* sockets to connect to server */
-var socket = io.connect('http://localhost:3000');
+var socket = io.connect('http://'+hostname+":"+port);
 
 /* socket handle incoming messages */
 socket.on('MouseEvents', function (data) {

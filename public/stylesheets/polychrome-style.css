@@ -468,6 +468,9 @@
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 	-moz-box-sizing: border-box;
     background-color: #777;  
+    background-image: url(/images/polychrome-cache.png);
+    background-size:100% 66%;
+    background-repeat: no-repeat;
 }
 
 .polychrome-display-element{

@@ -13,15 +13,18 @@ var cheerio = require('cheerio');
 var mime = require('mime');
 var querystring = require('querystring');
 var webshot = require('webshot');
-       
+
+/* TODO: should find this automatically */
+var hostname = '192.168.7.101:3000';
+
 var screenshot_options = {
   screenSize: {
-    width: 1387, 
-    height: 780 
+    width: 1280, 
+    height: 800 
   }, 
   shotSize: {
-    width: 1387, 
-    height: 780
+    width: 1280, 
+    height: 800
   }
 }
         
@@ -100,23 +103,56 @@ app.get('/data/*', function (req, res) {
 /* image requests captured */
 app.get('/images/*', function (req, res) {
     console.log("image request captured: " + req.url);
-    var urlString = currentPage.url + req.url;
-    if (req.url.charAt(0) === '/') {
-        var baseUrl = currentPage.getCurrentBaseUrl();
-        urlString = baseUrl + req.url;
-        if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-            urlString = baseUrl + req.url.substr(1);
+    if (req.url.indexOf("polychrome-cache.png") >= 0) {
+        var filename = "cache/polychrome-cache.png";
+        if (fs.existsSync(filename)) {
+            fs.readFile(filename, function (err, data) {
+                if (err) throw err; // Fail if the file can't be read.
+                res.writeHead(200, { 'Content-Type': 'image/png' });
+                res.end(data); // Send the file data to the browser.
+                return;
+            });
         }
-    }
-    request({ uri: urlString }, function (err, response, body) {
-        if (err) {
-            res.writeHead(400);
+    } else {
+
+
+        var urlString = currentPage.url + req.url;
+        if (req.url.charAt(0) === '/') {
+            var baseUrl = currentPage.getCurrentBaseUrl();
+            urlString = baseUrl + req.url;
+            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                urlString = baseUrl + req.url.substr(1);
+            }
+        }
+
+        /* download and cache image in file system */
+        var filename = "cache/" + url.parse(urlString).pathname.split("/").pop();
+        if (fs.existsSync(filename)) {
+            fs.readFile(filename, function (err, data) {
+                if (err) throw err; // Fail if the file can't be read.
+                res.writeHead(200, { 'Content-Type': 'image/png' });
+                res.end(data); // Send the file data to the browser.
+            });
+
         } else {
-            res.writeHead(200);
-        }
-        res.write(response.body);
-        res.end();
-    });
+            var download = function (uri, filename, callback) {
+                request.head(uri, function (err, res, body) {
+                    console.log('content-type:', res.headers['content-type']);
+                    console.log('content-length:', res.headers['content-length']);
+
+                    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+                });
+            };
+
+            download(urlString, filename, function () {
+                fs.readFile(filename, function (err, data) {
+                    if (err) throw err; // Fail if the file can't be read.
+                    res.writeHead(200, { 'Content-Type': 'image/png' });
+                    res.end(data); // Send the file data to the browser.
+                });
+            });
+        } 
+    }
 
 });
 
@@ -231,7 +267,7 @@ app.post('/loadUrl', function (req, res) {
     peerIds.push(peerId);
 
     var urlEncoding = { 'url': selectedUrl, 'peerId': peerId, 'spaceConfig': spaceConfiguration, 'displayConfig': displayConfiguration };
-    var toOpen = 'http://localhost:3000/polychrome?' + querystring.stringify(urlEncoding);
+    var toOpen = 'http://'+hostname+'/polychrome?' + querystring.stringify(urlEncoding);
 
     res.write(toOpen);
     res.end();
@@ -273,7 +309,7 @@ app.get('/polychrome', function (req, res) {
     } else {
 
         /* capture a screenshot using node-webshot */
-        webshot(selectedUrl, 'cache/google.png', screenshot_options, function (err) {
+        webshot(selectedUrl, 'cache/polychrome-cache.png', screenshot_options, function (err) {
             if (err)
                 console.log(err);
         });
@@ -315,7 +351,7 @@ app.get('/polychrome', function (req, res) {
 
             jsdom.env({
                 html: body1,
-                scripts: ['http://code.jquery.com/jquery-2.1.0.js', 'http://localhost:3000/javascripts/jquery.panzoom.js', 'http://localhost:3000/javascripts/jquery.nearest.js','http://localhost:3000/javascripts/polychrome-peer.js', 'http://localhost:3000/socket.io/socket.io.js', 'http://localhost:3000/javascripts/polychrome-feedback-panel.js'],
+                scripts: ['http://code.jquery.com/jquery-2.1.0.js', 'http://'+hostname+'/javascripts/jquery.panzoom.js', 'http://'+hostname+'/javascripts/jquery.nearest.js','http://'+hostname+'/javascripts/polychrome-peer.js', 'http://'+hostname+'/socket.io/socket.io.js', 'http://'+hostname+'/javascripts/polychrome-feedback-panel.js'],
                 done: function (err, window) {
 
                     var $ = window.jQuery;
@@ -400,7 +436,12 @@ app.get('/polychrome', function (req, res) {
                                 }
                             }
                             console.log(url);
-                            $(this).attr('href', url);
+
+                            var urlEncoding = { 'url': url, 'peerId': peerId, 'spaceConfig': spaceConfiguration, 'displayConfig': displayConfiguration };
+                            var toOpen = 'http://'+hostname+'/polychrome?' + querystring.stringify(urlEncoding);
+
+
+                            $(this).attr('href', toOpen);
                         }
                     });
 
@@ -486,6 +527,17 @@ var io = require('socket.io').listen(httpserver);
 // Delete this row if you want to see debug messages
 io.set('log level', 1);
 
+var hashCode = function(str){
+    var hash = 0;
+    if (str.length == 0) return hash;
+    for (i = 0; i < str.length; i++) {
+        char = str.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+}
+
 // Listen for incoming connections from clients
 io.sockets.on('connection', function (socket) {
 
@@ -493,7 +545,10 @@ io.sockets.on('connection', function (socket) {
     socket.on('MouseEvents', function (data) {
         //console.log(JSON.stringify(data));
 
-        fs.appendFile('interaction.json', JSON.stringify(data)+'\n', function (err) {
+        var date = new Date();
+        data['date'] = date.toString();
+
+        fs.appendFile('cache/interaction-' + hashCode(currentPage.url) + '.json', JSON.stringify(data) + '\n', function (err) {
             if (err)
                 console.log(err);
         });
