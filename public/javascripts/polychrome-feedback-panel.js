@@ -97,9 +97,7 @@ function simulateMouseEvent(element, eventType, options)
         oEvent = document.createEvent("MouseEvents");
         
         /* recognize that this is PolyChrome event */
-        oEvent.isPolyChrome = true; 
-        options.pointerX = (options.pointerX)/scaleX - documentOrigin.x/scaleX;
-        options.pointerY = (options.pointerY)/scaleY - documentOrigin.y/scaleY;
+        oEvent.isPolyChrome = true;
         oEvent.initMouseEvent(eventType, options.bubbles, options.cancelable, document.defaultView,
         1, options.pointerX, options.pointerY, options.pointerX, options.pointerY,
         options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, element);
@@ -154,13 +152,13 @@ function extend(destination, source) {
 /* Method to execute an event */
 var executeEventOnPosition = function (eventType, eventName, posX, posY, targetName) {
 
-    var pageX = posX + $('body').position().left;
-    var pageY = posY + $('body').position().top;
+    var pageX = posX;
+    var pageY = posY;
 
-    $('#pc-event-capturer').css({"display": "none"});
+    $('#pc-event-capturer').css({ "display": "none" });
 
     var elem = document.elementFromPoint(pageX, pageY);
-    
+
     $('#pc-event-capturer').css({ "display": "initial" });
 
     if (elem == null) {
@@ -365,8 +363,8 @@ $(document).ready(function () {
             var toSend = new Object();
             toSend.eventType = evt.type;
             toSend.target = evt.target.nodeName;
-            toSend.posX = evt.pageX - +$('body').position().left;
-            toSend.posY = evt.pageY - +$('body').position().top;
+            toSend.posX = evt.clientX;
+            toSend.posY = evt.clientY;
             toSend.globalX = evt.pageX + documentOrigin.x / scaleX;
             toSend.globalY = evt.pageY + documentOrigin.y / scaleY;
             toSend.deviceId = deviceId;
@@ -471,8 +469,7 @@ $(document).ready(function () {
 
     /* change display configuration based on read value */
     if (screenCount == 1) {
-         $('#chrome_body').css('zoom', ' ' + 200 + '%');
-
+        document.body.style.zoom = 2;
     } else if (screenCount == 2) {
         scaleX = 2;
         scaleY = 1;
@@ -498,27 +495,31 @@ $(document).ready(function () {
         if (screenIndex == 1) {
             documentOrigin.x = 0;
             documentOrigin.y = 0;
-            
+
             //$('#chrome_body').css({
             //    "-webkit-transform": "scale(2, 2)",
             //    "-webkit-transform-origin": "0% 0%"
             //});
 
-            $('#chrome_body').css({
-                'zoom': '200%'
-            });
+            //$('#chrome_body').css({
+            //    'zoom': '200%'
+            //});
 
             //$("body").panzoom();
-            //$("body").panzoom("zoom", 2, { silent: true });
+            $("body").panzoom("zoom", 2, { silent: true });
 
         } else if (screenIndex == 2) {
             documentOrigin.x = screenWidth;
             documentOrigin.y = 0;
 
-            $('#chrome_body').css({
-                "-webkit-transform": "scale(2, 2)",
-                "-webkit-transform-origin": "100% 0%"
-            });
+            $("body").panzoom("zoom", 2, { silent: true });
+
+            window.scrollTo(screenWidth / 2, 0);
+
+            //$('#chrome_body').css({
+            //    "-webkit-transform": "scale(2, 2)",
+            //    "-webkit-transform-origin": "100% 0%"
+            //});
         } else if (screenIndex == 3) {
             documentOrigin.x = 0;
             documentOrigin.y = screenHeight;
@@ -601,4 +602,5 @@ $(document).ready(function () {
             eventCapture.touchend = false;
         }
     });
+
 });

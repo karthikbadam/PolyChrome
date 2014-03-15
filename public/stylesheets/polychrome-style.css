@@ -12,14 +12,15 @@
   	-moz-transform: scale(2, 1);
 }
 
-/*#chrome_body{
+#chrome_body{
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	left: 50%; 
-	top: 50%;
-    -webkit-transform: scale(2, 2);
-}*/
+    margin: 0px;
+    left: 0%;
+    top: 0%;
+    overflow: hidden;
+}
 
 #pc-event-capturer {
     position: absolute;
@@ -27,19 +28,8 @@
     top: 0px;
     z-index: 100;
     background-color: transparent;
-    width: 100%;
-    height: 100%;
-}
-
-#chrome_body{
-	position: absolute;
-	width: 100%;
-	height: 100%;
-    margin: 0px;
-    -webkit-transform: scale(1, 1);
-    -webkit-transform-origin: 0% 0%;
-    left: 0%;
-    top: 0%;
+    width: 2500px;
+    height: 1800px;
 }
 
 
