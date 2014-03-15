@@ -353,23 +353,27 @@ $(document).ready(function () {
         if (evt.isPolyChrome) {
             return;
 
-        } else if ((evt.target.id.indexOf('polychrome') == -1) && (evt.target.className.indexOf('polychrome') == -1)) {
+        } else if (evt.target.id && (evt.target.id.indexOf('polychrome') == -1) && (evt.target.className.indexOf('polychrome') == -1)) {
             if (evt.type == "mousemove") {
                 if (!isMouseDown) {
 
                 }
             }
 
+
             var elem = document.elementFromPoint(evt.pageX, evt.pageY);
             var toSend = new Object();
             toSend.eventType = evt.type;
             toSend.target = evt.target.nodeName;
-            toSend.posX = evt.pageX - + $('body').position().left;
-            toSend.posY = evt.pageY - + $('body').position().top;
-            toSend.globalX = evt.pageX + documentOrigin.x/scaleX;
-            toSend.globalY = evt.pageY + documentOrigin.y/scaleY;
+            toSend.posX = evt.pageX - +$('body').position().left;
+            toSend.posY = evt.pageY - +$('body').position().top;
+            toSend.globalX = evt.pageX + documentOrigin.x / scaleX;
+            toSend.globalY = evt.pageY + documentOrigin.y / scaleY;
             toSend.deviceId = deviceId;
 
+
+            // list of elements 
+            var elemList = $.touching({ x: evt.pageX, y: evt.pageY });
 
             /* send event to other peers */
             if (eventCapture[evt.type]) {
@@ -467,6 +471,7 @@ $(document).ready(function () {
 
     /* change display configuration based on read value */
     if (screenCount == 1) {
+         $('#chrome_body').css('zoom', ' ' + 200 + '%');
 
     } else if (screenCount == 2) {
         scaleX = 2;
@@ -493,11 +498,19 @@ $(document).ready(function () {
         if (screenIndex == 1) {
             documentOrigin.x = 0;
             documentOrigin.y = 0;
+            
+            //$('#chrome_body').css({
+            //    "-webkit-transform": "scale(2, 2)",
+            //    "-webkit-transform-origin": "0% 0%"
+            //});
 
             $('#chrome_body').css({
-                "-webkit-transform": "scale(2, 2)",
-                "-webkit-transform-origin": "0% 0%"
+                'zoom': '200%'
             });
+
+            //$("body").panzoom();
+            //$("body").panzoom("zoom", 2, { silent: true });
+
         } else if (screenIndex == 2) {
             documentOrigin.x = screenWidth;
             documentOrigin.y = 0;
@@ -514,7 +527,7 @@ $(document).ready(function () {
                 "-webkit-transform": "scale(2, 2)",
                 "-webkit-transform-origin": "0% 100%"
             });
-        } else {            
+        } else {
             documentOrigin.x = screenWidth;
             documentOrigin.y = screenHeight;
 
