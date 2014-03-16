@@ -15,7 +15,7 @@ How to download:
     * git clone https://github.com/karthikbadam/PolyChrome.git
 
   
-How to install and run:
+###How to install and run:
 
 - PolyChrome has numerous dependencies, but thanks to node.js, there can all be installed through a single command. Open the PolyChrome folder in your command prompt or terminal and type in:
 
@@ -32,7 +32,7 @@ How to install and run:
 - PolyChrome has two components: (1) A proxy server to handle requests from the clients (running at port 3000), and (2) a modified version of [PeerJS](http://peerjs.com/) server to handle the connections between peers/clients (running at port 8080).
     
 
-How to use PolyChrome:
+###How to use PolyChrome:
 
 - Open your browser and enter the url "localhost:3000" or "<ip>:3000", depending on where you are running the server. This will open the following page:
 <br><br>
@@ -54,6 +54,8 @@ Resources for Newcomers
 ---
 - [The Wiki](https://github.com/karthikbadam/polychrome/wiki)
 - A simple multi-device drawing application is also provided with this framework. It can be opened by running PolyChrome and opening "<ip>:3000/drawing" in your browser.
-
+<br><br>
+<img src="https://github.com/karthikbadam/PolyChrome/blob/master/screenshots/screenshot-3.PNG?raw=true">
+ 
 
 
