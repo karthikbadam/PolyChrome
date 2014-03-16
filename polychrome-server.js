@@ -15,7 +15,7 @@ var querystring = require('querystring');
 var webshot = require('webshot');
 
 /* TODO: should find this automatically */
-var hostname = '192.168.7.101:3000';
+var hostname = 'localhost:3000';
 
 var screenshot_options = {
   screenSize: {
@@ -241,6 +241,14 @@ app.get('/img/*', function (req, res) {
 /* load url from login page */
 app.post('/loadUrl', function (req, res) {
 
+    hostname = req.headers.host;
+    var arrayOfStrings = hostname.split(":");
+    var host = arrayOfStrings[0];
+    var port = '3000';
+    if (arrayOfStrings.length >= 2) {
+        port = arrayOfStrings[1];
+    }
+
     var selectedUrl = String(req.body.url);
     var spaceConfiguration = parseInt(req.body.space);
     var displayConfiguration = parseInt(req.body.display);
@@ -266,8 +274,8 @@ app.post('/loadUrl', function (req, res) {
     sessions[peerId] = session;
     peerIds.push(peerId);
 
-    var urlEncoding = { 'url': selectedUrl, 'peerId': peerId, 'spaceConfig': spaceConfiguration, 'displayConfig': displayConfiguration };
-    var toOpen = 'http://'+hostname+'/polychrome?' + querystring.stringify(urlEncoding);
+    var urlEncoding = { 'url': selectedUrl, 'peerId': peerId, 'spaceConfig': spaceConfiguration, 'displayConfig': displayConfiguration, 'host': host, 'port': port };
+    var toOpen = 'http://' + hostname + '/polychrome?' + querystring.stringify(urlEncoding);
 
     res.write(toOpen);
     res.end();

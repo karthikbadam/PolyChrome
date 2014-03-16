@@ -12,8 +12,8 @@ var scaleY = 1;
 var screenWidth = 10;
 var screenHeight = 10;
 var documentOrigin = { x: 0, y: 0 };
-var hostname = '192.168.7.101';
-var port = '3000';
+var hostname = '';
+var port = '';
 
 /* define event capture state */
 var eventCapture = {};
@@ -24,12 +24,15 @@ eventCapture.touchend = true;
 eventCapture.mousedown = true; 
 eventCapture.mousemove = true; 
 eventCapture.mouseup = true;
+var isMouseDown = false; 
 
 /* parse page URL to get peerId and screen details*/
 var selfUrl = document.URL;
 var idCheck = /[?&]peerId=([^&]+)/i;
 var spaceCheck = /[?&]spaceConfig=([^&]+)/i;
 var displayCheck = /[?&]displayConfig=([^&]+)/i;
+var hostCheck = /[?&]host=([^&]+)/i;
+var portCheck = /[?&]port=([^&]+)/i;
 
 /* get peerId */
 var match = idCheck.exec(selfUrl);
@@ -38,8 +41,6 @@ if (match != null) {
 } else {
     deviceId = randomString(10);
 }
-
-var isMouseDown = false; 
 
 /* get peer configurations */
 match = spaceCheck.exec(selfUrl);
@@ -54,6 +55,20 @@ if (match != null) {
     screenIndex = parseInt(match[1]);
 } else {
     screenIndex = 1;
+}
+
+match = hostCheck.exec(selfUrl);
+if (match != null) {
+    hostname = match[1];
+} else {
+    hostname = "localhost";
+}
+
+match = portCheck.exec(selfUrl);
+if (match != null) {
+    port = ''+match[1];
+} else {
+    port = "3000";
 }
 
 /* arraylist of all connections */
