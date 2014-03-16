@@ -31,11 +31,16 @@ How to install and run:
 
 - PolyChrome has two components: (1) A proxy server to handle requests from the clients (running at port 3000), and (2) a modified version of [PeerJS](http://peerjs.com/) server to handle the connections between peers/clients (running at port 8080).
     
--  Open your browser and enter the url "localhost:3000" or "<ip>:3000", depending on where you are running the server. This will open the following page:
+
+How to use PolyChrome:
+
+- Open your browser and enter the url "localhost:3000" or "<ip>:3000", depending on where you are running the server. This will open the following page:
 <br><br>
 <img src="https://github.com/karthikbadam/PolyChrome/blob/master/screenshots/screenshot-0.PNG?raw=true">
 
-- Type in a URL in the respective bar, and click the triangular icon to submit. Now, PolyChrome fetches the content of this URL by acting as a proxy, and opens it in a new window as follows: 
+- Note that if you want to try out PolyChrome collaboration on the same device, you have to open the above URL ("<ip>:3000") in two tabs, as each tab gets a unique peerID. 
+
+- Type in a URL in the respective space, and click the triangular icon to submit. Now, PolyChrome fetches the content of this URL by acting as a proxy, and opens it in a new window as follows: 
 <br><br>
 <img src="https://github.com/karthikbadam/PolyChrome/blob/master/screenshots/screenshot-1.PNG?raw=true">
 
@@ -45,7 +50,10 @@ How to install and run:
 <img src="https://github.com/karthikbadam/PolyChrome/blob/master/screenshots/screenshot-2.PNG?raw=true">
   
 
-
+Resources for Newcomers
+---
+- [The Wiki](https://github.com/karthikbadam/polychrome/wiki)
+- A simple multi-device drawing application is also provided with this framework. It can be opened by running PolyChrome and opening "<ip>:3000/drawing" in your browser.
 
 
 
