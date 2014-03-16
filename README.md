@@ -8,7 +8,7 @@ A web application framework for collaborative web browsing of both static web pa
 Prerequisites (both Windows and Unix):
     
     * Python 2.6 or 2.7  
-    * Visual Studio 2010 or 2012
+    * Visual Studio 2010 or 2012 (Windows) or GCC 4.2 or newer (Unix) 
     * Node.js (http://nodejs.org/download/)
     
    
