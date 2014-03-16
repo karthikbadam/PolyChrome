@@ -22,6 +22,8 @@ How to download:
 
     * npm install
     
+    "npm" is the package manager for node.js
+    
 - This should take care of the dependencies. Note that PolyChrome is built to use [Express](http://expressjs.com/), a web application framework for node.js.
     
 - Now, you can run PolyChrome using:
@@ -52,6 +54,7 @@ How to download:
 
 Resources for Newcomers
 ---
+-- [How to install node.js on Windows](http://dailyjs.com/2012/05/03/windows-and-node-1/)
 - [The Wiki](https://github.com/karthikbadam/polychrome/wiki)
 - A simple multi-device drawing application is also provided with this framework. You can try it out by running PolyChrome and opening "[hostname]:3000/drawing" in your browser.
 <br><br>
