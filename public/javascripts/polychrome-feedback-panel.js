@@ -15,6 +15,9 @@ var documentOrigin = { x: 0, y: 0 };
 var hostname = '';
 var port = '';
 
+var idealWidth = 1920;
+var idealHeight = 1080;
+
 /* define event capture state */
 var eventCapture = {};
 eventCapture.click = true;
@@ -61,7 +64,7 @@ match = hostCheck.exec(selfUrl);
 if (match != null) {
     hostname = match[1];
 } else {
-    hostname = "localhost";
+    hostname = window.location.hostname.split(":")[0];
 }
 
 match = portCheck.exec(selfUrl);
@@ -274,8 +277,8 @@ function onData(connectedDeviceId, data) {
 
     if (eventType && eventName) {
         var targetName = data.target;
-		var posX = data.posX;
-		var posY = data.posY;
+		var posX = data.posX * screenWidth/idealWidth;
+		var posY = data.posY  * screenHeight/idealHeight;
 		var globalX = data.globalX;
 		var globalY = data.globalY;
 
@@ -297,7 +300,7 @@ function onData(connectedDeviceId, data) {
 
 
         executeEventOnPosition(eventType, eventName, posX, posY, globalX, globalY, targetName); 
-        addEventFeedback(connectedDeviceId, eventType, posX, posY); 
+        addEventFeedback(connectedDeviceId, eventType, parseInt(posX), parseInt(posY)); 
 
     } else {
         /* It is not an event but a message*/
@@ -371,28 +374,44 @@ $(document).ready(function () {
         } else if (evt.target.id && (evt.target.id.indexOf('polychrome') == -1) && (evt.target.className.indexOf('polychrome') == -1)) {
             if (evt.type == "mousemove") {
                 if (!isMouseDown) {
-
+                    return;
                 }
             }
 
-
             var elem = document.elementFromPoint(evt.pageX, evt.pageY);
             var toSend = new Object();
+            toSend.posX = evt.clientX * idealWidth / screenWidth;
+            toSend.posY = evt.clientY * idealHeight / screenHeight;
             toSend.eventType = evt.type;
+
+            if (evt.type == "touchmove") {
+                toSend.eventType = "mousemove";
+                toSend.posX = evt.touches[0].pageX * idealWidth / screenWidth;
+                toSend.posY = evt.touches[0].pageY * idealHeight / screenHeight;
+            }
+
+            if (evt.type == "touchstart") {
+                toSend.eventType = "mousedown";
+                toSend.posX = evt.touches[0].pageX * idealWidth / screenWidth;
+                toSend.posY = evt.touches[0].pageY * idealHeight / screenHeight;
+            }
+
+            if (evt.type == "touchend") {
+                toSend.eventType = "mouseup";
+                toSend.posX = evt.touches[0].pageX * idealWidth / screenWidth;
+                toSend.posY = evt.touches[0].pageY * idealHeight / screenHeight;
+            }
+
             toSend.target = evt.target.nodeName;
-            toSend.posX = evt.clientX;
-            toSend.posY = evt.clientY;
             toSend.globalX = evt.pageX + documentOrigin.x / scaleX;
             toSend.globalY = evt.pageY + documentOrigin.y / scaleY;
             toSend.deviceId = deviceId;
 
-
             // list of elements 
-            var elemList = $.touching({ x: evt.pageX, y: evt.pageY });
+            //var elemList = $.touching({ x: evt.pageX, y: evt.pageY });
 
             /* send event to other peers */
             if (eventCapture[evt.type]) {
-                addEventFeedback(deviceId, toSend.eventType, toSend.posX, toSend.posY);
 
                 connections.forEach(function (connection) {
                     connection.send(toSend);
@@ -486,7 +505,7 @@ $(document).ready(function () {
 
     /* change display configuration based on read value */
     if (screenCount == 1) {
-        document.body.style.zoom = 2;
+        //document.body.style.zoom = 2;
     } else if (screenCount == 2) {
         scaleX = 2;
         scaleY = 1;

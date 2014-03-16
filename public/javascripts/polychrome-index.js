@@ -34,7 +34,8 @@ $(document).ready(function () {
         $.post("/loadUrl", sendData, function (data, error) {
             if (error)
                 console.log(error)
-            var win = window.open(data, 'about:blank');
+            var win = window.open(data, '_blank');
+            win.focus();
             console.log("URL --" + url + " loaded");
         });
     });

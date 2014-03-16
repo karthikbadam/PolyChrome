@@ -359,7 +359,7 @@ app.get('/polychrome', function (req, res) {
 
             jsdom.env({
                 html: body1,
-                scripts: ['http://code.jquery.com/jquery-2.1.0.js', 'http://'+hostname+'/javascripts/jquery.panzoom.js', 'http://'+hostname+'/javascripts/jquery.nearest.js','http://'+hostname+'/javascripts/polychrome-peer.js', 'http://'+hostname+'/socket.io/socket.io.js', 'http://'+hostname+'/javascripts/polychrome-feedback-panel.js'],
+                scripts: ['http://code.jquery.com/jquery-2.1.0.js', 'http://'+hostname+'/javascripts/jquery.panzoom.js',  'http://'+hostname+'/javascripts/html2canvas.js','http://'+hostname+'/javascripts/jquery.nearest.js','http://'+hostname+'/javascripts/polychrome-peer.js', 'http://'+hostname+'/socket.io/socket.io.js', 'http://'+hostname+'/javascripts/polychrome-feedback-panel.js'],
                 done: function (err, window) {
 
                     var $ = window.jQuery;
@@ -556,11 +556,21 @@ io.sockets.on('connection', function (socket) {
         var date = new Date();
         data['date'] = date.toString();
 
-        fs.appendFile('cache/interaction-' + hashCode(currentPage.url) + '.json', JSON.stringify(data) + '\n', function (err) {
-            if (err)
-                console.log(err);
-        });
+        if (currentPage && currentPage.url) {
 
+            fs.appendFile('cache/interaction-' + hashCode(currentPage.url) + '.json', JSON.stringify(data) + '\n', function (err) {
+                if (err)
+                    console.log(err);
+            });
+
+        } else {
+            
+            fs.appendFile('cache/interaction' + '.json', JSON.stringify(data) + '\n', function (err) {
+                if (err)
+                    console.log(err);
+            });
+
+        }
         // This line sends the event (broadcasts it)
         // to everyone except the originating client.
         socket.broadcast.emit('MouseEvents', data);
