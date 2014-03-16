@@ -34,11 +34,11 @@ How to download:
 
 ###How to use PolyChrome:
 
-- Open your browser and enter the url "localhost:3000" or "<ip>:3000", depending on where you are running the server. This will open the following page:
+- Open your browser and enter the url "localhost:3000" or "serverIP:3000", depending on where you are running the server. This will open the following page:
 <br><br>
 <img src="https://github.com/karthikbadam/PolyChrome/blob/master/screenshots/screenshot-0.PNG?raw=true">
 
-- Note that if you want to try out PolyChrome collaboration on the same device, you have to open the above URL ("<ip>:3000") in two tabs, as each tab gets a unique peerID. 
+- Note that if you want to try out PolyChrome collaboration on the same device, you have to open the above URL ("serverIP:3000") in two tabs, as each tab gets a unique peerID. 
 
 - Type in a URL in the respective space, and click the triangular icon to submit. Now, PolyChrome fetches the content of this URL by acting as a proxy, and opens it in a new window as follows: 
 <br><br>
@@ -53,7 +53,7 @@ How to download:
 Resources for Newcomers
 ---
 - [The Wiki](https://github.com/karthikbadam/polychrome/wiki)
-- A simple multi-device drawing application is also provided with this framework. It can be opened by running PolyChrome and opening "<ip>:3000/drawing" in your browser.
+- A simple multi-device drawing application is also provided with this framework. It can be opened by running PolyChrome and opening "serverIP:3000/drawing" in your browser.
 <br><br>
 <img src="https://github.com/karthikbadam/PolyChrome/blob/master/screenshots/screenshot-3.PNG?raw=true">
  
