@@ -76,6 +76,7 @@ if (match != null) {
 
 /* arraylist of all connections */
 var connections = [];
+var globalElement = null;
 
 /* generate a random string if no ID is present */
 function randomString(len, charSet) {
@@ -175,22 +176,26 @@ var executeEventOnPosition = function (eventType, eventName, posX, posY, targetN
     var pageX = posX;
     var pageY = posY;
 
-    var elem = null;
+    if (eventType == "mousedown" || eventType == "click") {
+        //var removeElements = [];
+        //removeElements.push("#pc-event-capturerSVG");
+        //removeElements.push("#pc-event-capturer");
+        //var hits = $.nearest({ x: pageX, y: pageY, removeElements: removeElements });
 
-    var removeElements = [];
-    removeElements.push("#pc-event-capturerSVG");
-    removeElements.push("#pc-event-capturer");
-    var hits = $.nearest({ x: pageX, y: pageY, removeElements: removeElements }, targetName);
+        //for (var i = 0; i < hits.length; i++) {
+        //    globalElement = hits[i];
+        //    
+        //}
 
-    for (var i = 0; i < hits.length; i++) {
-        elem = hits[i];
+        $('#pc-event-capturer').css({ "display": "none" });
+        globalElement = document.elementFromPoint(pageX, pageY);
+        $('#pc-event-capturer').css({ "display": "initial" });
+
     }
 
+    var elem = globalElement;
 
-    $('#pc-event-capturer').css({ "display": "none" });
-    elem = document.elementFromPoint(pageX, pageY);
-    $('#pc-event-capturer').css({ "display": "initial" });
-
+    
     if (elem && eventName == "HTMLEvents") {
         /* copying the defaultOptions */
         var options = new Object();
@@ -343,7 +348,7 @@ $(document).ready(function () {
 
             var toSend = new Object();
 
-            
+
             toSend.posX = (evt.pageX) * idealWidth / screenWidth;
             toSend.posY = (evt.pageY) * idealHeight / screenHeight;
             toSend.eventType = evt.type;

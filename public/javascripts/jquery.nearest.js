@@ -37,7 +37,7 @@
 	var rPerc = /^([\d.]+)%$/;
 	function nearest(selector, options, thisObj) {
 		// Normalise selector and dimensions
-		selector || (selector = 'svg'); // I STRONGLY recommend passing in a selector
+		selector || (selector = 'rect'); // I STRONGLY recommend passing in a selector
 		var $container = $(options.container),
 			containerOffset = $container.offset() || {left: 0, top: 0},
 			containerWH = [
@@ -69,8 +69,8 @@
 		}
 
 		// Get elements and work out x/y points
-		var $all = $container.find(selector),
-			cache = [],
+		var $all = $container.find('rect'),
+            cache = [],
 			furthest = !!options.furthest,
 			checkX = !options.sameX,
 			checkY = !options.sameY,
@@ -87,12 +87,15 @@
 			min = Math.min,
 			max = Math.max;
 
+        
         // remove element
         if (options.removeElements) {
             for (var i = 0; i < options.removeElements.length; i++) {
                 var element = $(options.removeElements[i]);
                 $all = $all.not(element);
             }
+            $all = $all.not($("html"));
+            $all = $all.not($("body"));
         }
 
 		// Normalise the remaining options
