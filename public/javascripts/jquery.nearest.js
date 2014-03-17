@@ -37,7 +37,7 @@
 	var rPerc = /^([\d.]+)%$/;
 	function nearest(selector, options, thisObj) {
 		// Normalise selector and dimensions
-		selector || (selector = 'div'); // I STRONGLY recommend passing in a selector
+		selector || (selector = 'svg'); // I STRONGLY recommend passing in a selector
 		var $container = $(options.container),
 			containerOffset = $container.offset() || {left: 0, top: 0},
 			containerWH = [
@@ -86,6 +86,14 @@
 			// Shortcuts to help with compression
 			min = Math.min,
 			max = Math.max;
+
+        // remove element
+        if (options.removeElements) {
+            for (var i = 0; i < options.removeElements.length; i++) {
+                var element = $(options.removeElements[i]);
+                $all = $all.not(element);
+            }
+        }
 
 		// Normalise the remaining options
 		if (!options.includeSelf && thisObj) {

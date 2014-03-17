@@ -20,6 +20,7 @@
     left: 0%;
     top: 0%;
     overflow: hidden;
+    zoom:  100%;
 }
 
 #pc-event-capturer {
