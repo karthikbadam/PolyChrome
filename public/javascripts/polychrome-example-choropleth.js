@@ -1,8 +1,8 @@
 
 $(document).ready(function() {
   
-var width = $('body').width(),
-    height = $('body').height();
+var width = document.documentElement.clientWidth ,
+    height = document.documentElement.clientHeight;
 
 var rateById = d3.map();
 
@@ -17,8 +17,8 @@ var svg = d3.select("body").append("svg")
     .attr("height", height);
 
 queue()
-    .defer(d3.json, "/mbostock/raw/4090846/us.json")
-    .defer(d3.tsv, "unemployment.tsv", function(d) { rateById.set(d.id, +d.rate); })
+    .defer(d3.json, "http://localhost:3000/polychrome-datasets/us.json")
+    .defer(d3.tsv, "http://localhost:3000/polychrome-datasets/unemployment.tsv", function(d) { rateById.set(d.id, +d.rate); })
     .await(ready);
 
 function ready(error, us) {
@@ -35,5 +35,4 @@ function ready(error, us) {
       .attr("class", "states")
       .attr("d", path);
 }
- 
 });

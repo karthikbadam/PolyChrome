@@ -76,6 +76,9 @@ app.get('/', routes.index);
 /* app1 drawing */
 app.get('/drawing', routes.drawing);
 
+/* app1 drawing */
+app.get('/choropleth', routes.choropleth);
+
 /* requests for data */
 app.get('/data/*', function (req, res) {
     console.log("data request captured: " + req.url);
