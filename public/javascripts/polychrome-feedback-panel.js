@@ -171,12 +171,13 @@ function extend(destination, source) {
 }
 
 /* Method to execute an event */
-var executeEventOnPosition = function (eventType, eventName, posX, posY, targetName) {
+var executeEventOnPosition = function (eventType, eventName, posX, posY, targetName, targetId) {
 
     var pageX = posX;
     var pageY = posY;
+    var elem = $("#"+targetId).get(0);
 
-    if (eventType == "mousedown" || eventType == "click") {
+    if (targetId == null || eventType == "mousedown" || eventType == "click") {
         //var removeElements = [];
         //removeElements.push("#pc-event-capturerSVG");
         //removeElements.push("#pc-event-capturer");
@@ -193,8 +194,7 @@ var executeEventOnPosition = function (eventType, eventName, posX, posY, targetN
 
     }
 
-    var elem = globalElement;
-
+    
     
     if (elem && eventName == "HTMLEvents") {
         /* copying the defaultOptions */
@@ -260,8 +260,9 @@ function onData(connectedDeviceId, data) {
 		var posY = data.posY  * screenHeight/idealHeight - document.body.scrollTop;
 		var globalX = data.globalX;
 		var globalY = data.globalY;
+		var targetId = data.targetId;
 
-        executeEventOnPosition(eventType, eventName, posX, posY, targetName); 
+        executeEventOnPosition(eventType, eventName, posX, posY, targetName, targetId); 
         addEventFeedback(connectedDeviceId, eventType, parseInt(posX), parseInt(posY)); 
 
     } else {
@@ -352,6 +353,7 @@ $(document).ready(function () {
             toSend.posX = (evt.pageX) * idealWidth / screenWidth;
             toSend.posY = (evt.pageY) * idealHeight / screenHeight;
             toSend.eventType = evt.type;
+            toSend.targetId = globalElement ? globalElement.id : "";
 
             if (evt.type == "touchmove") {
                 toSend.eventType = "mousemove";
@@ -369,6 +371,30 @@ $(document).ready(function () {
                 toSend.eventType = "mouseup";
                 toSend.posX = evt.touches[0].pageX * idealWidth / screenWidth;
                 toSend.posY = evt.touches[0].pageY * idealHeight / screenHeight;
+            }
+
+            if (evt.type == "mousedown") {
+                isMouseDown = true;
+                $('#pc-event-capturer').css({ "display": "none" });
+                globalElement = document.elementFromPoint(evt.clientX, evt.clientY);
+                $('#pc-event-capturer').css({ "display": "initial" });
+                toSend.targetId = globalElement.id;
+            }
+
+            if (evt.type == "click") {
+                $('#pc-event-capturer').css({ "display": "none" });
+                globalElement = document.elementFromPoint(evt.clientX, evt.clientY);
+                $('#pc-event-capturer').css({ "display": "initial" });
+                toSend.targetId = globalElement.id;
+            }
+
+
+            if (evt.type == "mouseup") {
+                isMouseDown = false;
+                $('#pc-event-capturer').css({ "display": "none" });
+                globalElement = document.elementFromPoint(evt.clientX, evt.clientY);
+                $('#pc-event-capturer').css({ "display": "initial" });
+                toSend.targetId = globalElement.id;
             }
 
             toSend.target = evt.nodeName;
@@ -397,13 +423,6 @@ $(document).ready(function () {
             evt.stopPropagation();
             evt.stopImmediatePropagation();
 
-            if (evt.type == "mousedown") {
-                isMouseDown = true;
-            }
-
-            if (evt.type == "mouseup") {
-                isMouseDown = false;
-            }
         }
     };
 
@@ -536,13 +555,22 @@ $(document).ready(function () {
         }
     });
 
-    $('#polychrome-checkbox-touchend').change(function () {
-        var $checkbox = $(this);
-        if ($checkbox.prop('checked')) {
-            eventCapture.touchend = true;
-        } else {
-            eventCapture.touchend = false;
+    $(window).on("load", function () {
+        $('#polychrome-checkbox-touchend').change(function () {
+            var $checkbox = $(this);
+            if ($checkbox.prop('checked')) {
+                eventCapture.touchend = true;
+            } else {
+                eventCapture.touchend = false;
+            }
+        });
+
+        var items = document.getElementsByTagName("*");
+        for (var i = 0; i < items.length; i++) {
+            elem = items[i];
+            if (elem.id == null || elem.id == "") {
+                elem.id = "pchrome" + i;
+            }
         }
     });
-
 });
