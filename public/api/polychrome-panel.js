@@ -3,8 +3,8 @@
 var screenCount = 1;
 var screenIndex = 1;
 var deviceId = "";
-var screenWidth = 10;
-var screenHeight = 10;
+var pageWidth = 10;
+var pageHeight = 10;
 var hostname = '';
 var port = '';
 
@@ -19,41 +19,15 @@ var displayCheck = /[?&]displayConfig=([^&]+)/i;
 var hostCheck = /[?&]host=([^&]+)/i;
 var portCheck = /[?&]port=([^&]+)/i;
 
-/* get peerId */
-var match = idCheck.exec(selfUrl);
-if (match != null) {
-    deviceId = match[1];
-} else {
-    deviceId = randomString(10);
-}
-
-/* get peer configurations */
-match = spaceCheck.exec(selfUrl);
-if (match != null) {
-    screenCount = parseInt(match[1]);
-} else {
-    screenCount = 1;
-}
-
-match = displayCheck.exec(selfUrl);
-if (match != null) {
-    screenIndex = parseInt(match[1]);
-} else {
-    screenIndex = 1;
-}
-
-match = hostCheck.exec(selfUrl);
-if (match != null) {
-    hostname = match[1];
-} else {
-    hostname = window.location.hostname.split(":")[0];
-}
-
-match = portCheck.exec(selfUrl);
-if (match != null) {
-    port = '' + match[1];
-} else {
-    port = "3000";
+/* generate a random string if no ID is present */
+function randomString(len, charSet) {
+	charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+	var randomString = '';
+	for (var i = 0; i < len; i++) {
+		var randomPoz = Math.floor(Math.random() * charSet.length);
+		randomString += charSet.substring(randomPoz, randomPoz + 1);
+	}
+	return randomString;
 }
 
 /* define event capture states */
@@ -103,12 +77,50 @@ var ServerConnection = {
 
 /* Link to other clients */
 var PeerConnection = {
-    peer: new Peer(deviceId, { host: hostname, port: '8000' }),
+    peer: null,
     connections: [],
 
     init: function () {
         var _self = this;
+ 
+        /* get peerId */
+        var match = idCheck.exec(selfUrl);
+        if (match != null) {
+            deviceId = match[1];
+        } else {
+            deviceId = randomString(10);
+        }
 
+        /* get peer configurations */
+        match = spaceCheck.exec(selfUrl);
+        if (match != null) {
+            screenCount = parseInt(match[1]);
+        } else {
+            screenCount = 1;
+        }
+
+        match = displayCheck.exec(selfUrl);
+        if (match != null) {
+            screenIndex = parseInt(match[1]);
+        } else {
+            screenIndex = 1;
+        }
+
+        match = hostCheck.exec(selfUrl);
+        if (match != null) {
+            hostname = match[1];
+        } else {
+            hostname = window.location.hostname.split(":")[0];
+        }
+
+        match = portCheck.exec(selfUrl);
+        if (match != null) {
+            port = '' + match[1];
+        } else {
+            port = "3000";
+        }
+
+        _self.peer = new Peer(deviceId, { host: hostname, port: '8000' });
 
         _self.peer.on('open', function (id, clientIds) {
             $('#polychrome-id').text("CLIENT ID: " + id);
@@ -132,7 +144,7 @@ var PeerConnection = {
         });
 
         /* make sure that peerjs connections are handled by the connect function */
-        peer.on('connection', connect);
+        _self.peer.on('connection', connect);
 
         /* on connection */
         function connect(conn) {
@@ -176,7 +188,7 @@ var PeerConnection = {
             var posY = data.posY * screenHeight / idealHeight - document.body.scrollTop;
             var targetId = data.targetId;
             var targetName = data.target;
-            var element = document.getElementById(data.targetId);
+            var element = document.getElementById(targetId);
 
             var event = new PolyChromeEvent({
                 deviceId: connectedDeviceId,
@@ -184,8 +196,8 @@ var PeerConnection = {
                 posY: posY,
                 eventType: eventType,
                 element: element,
-                pageWidth: pageWidth,
-                pageHeight: pageHeight,
+                pageWidth: screenWidth,
+                pageHeight: screenHeight,
                 isNative: true
             });
 
@@ -201,10 +213,21 @@ var PeerConnection = {
 var PolyChromeEventHandler = {
     event: null,
 
+    init: function () {
+      
+    },
+
     polyChromify: function () {
         /* get screen width and height */
         screenWidth = $(window).width();
         screenHeight = $(window).height();
+
+        /* toggle to open up PolyChrome feedback */
+        $("#polychrome-toggle").click(function () {
+            $('#polychrome-toggle').toggleClass('active');
+            $("#polychrome-actions").slideToggle("slow");
+        });
+
 
         /* assign unique ids to each dom element -- for retrieval */
         var items = document.getElementsByTagName("*");
@@ -227,8 +250,8 @@ var PolyChromeEventHandler = {
             eventType: eventType,
             element: element,
             nativeEvent: nativeEvent,
-            pageWidth: pageWidth,
-            pageHeight: pageHeight,
+            pageWidth: screenWidth,
+            pageHeight: screenHeight,
             isNative: true
         });
     },

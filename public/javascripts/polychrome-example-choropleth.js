@@ -94,10 +94,8 @@ var Panel = {
                     }
                 } else {
                     
-                    var event = d3.event;
-
                     /* recycle event and send it to other peers */
-                    PolyChromeEventHandler.wrapEvent(event.type, evt.pageX, evt.pageY, Panel.panel, event);
+                    PolyChromeEventHandler.wrapEvent(event.type, event.pageX, event.pageY, event.target, event);
                     PolyChromeEventHandler.shareEvent();
                        
                 }
@@ -106,6 +104,8 @@ var Panel = {
 
 
             Panel.panel.on("mouseup", function () {
+
+                var event = d3.event;
 
                 if (event.isPolyChrome) {
                      if (Panel.inUse) {
@@ -123,10 +123,9 @@ var Panel = {
                 
                 else {
                     
-                    var event = d3.event;
-
+              
                     /* recycle event and send it to other peers */
-                    PolyChromeEventHandler.wrapEvent(event.type, evt.pageX, evt.pageY, Panel.panel, event);
+                    PolyChromeEventHandler.wrapEvent(event.type, event.pageX, event.pageY, event.target, event);
                     PolyChromeEventHandler.shareEvent();
 
                 }
@@ -134,10 +133,9 @@ var Panel = {
 
         } else {
 
-            var event = d3.event;
-
+            
             /* recycle event and send it to other peers */
-            PolyChromeEventHandler.wrapEvent(event.type, evt.pageX, evt.pageY, Panel.panel, event);
+            PolyChromeEventHandler.wrapEvent(event.type, event.pageX, event.pageY, event.target, event);
             PolyChromeEventHandler.shareEvent();
         }
 
@@ -189,6 +187,8 @@ $(document).ready(function () {
 
     var viewport = Panel.init(svg, width, height);
     Panel.install();
+    PolyChromeEventHandler.init();
+    PeerConnection.init();
 
     queue()
     .defer(d3.json, "http://localhost:3000/polychrome-datasets/us.json")
@@ -212,9 +212,8 @@ $(document).ready(function () {
 
         /* call polychromify */
         PolyChromeEventHandler.polyChromify();
-        PeerConnection.init();
         ServerConnection.init();
-        
+
     }
 });
 

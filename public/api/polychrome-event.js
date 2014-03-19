@@ -29,7 +29,7 @@ function PolyChromeEvent(options) {
     _self.peerId = options.deviceId;
     _self.posX = options.posX;
     _self.posY = options.posY;
-    _self.element = element; 
+    _self.element = options.element; 
     
     if (options.isNative == null) {
         /* raise error */
@@ -110,7 +110,7 @@ PolyChromeEvent.prototype.execute = function () {
     var options = new Object();
     options = extend(options, defaultOptions);
 
-    if (_self.eventType == "MouseEvents") {
+    if (_self.eventName == "MouseEvents") {
         
         if (document.createEvent) {
             oEvent = document.createEvent("MouseEvents");
@@ -118,7 +118,7 @@ PolyChromeEvent.prototype.execute = function () {
             /* recognize that this is PolyChrome event */
             oEvent.isPolyChrome = true;
 
-            oEvent.initMouseEvent(eventType, options.bubbles, options.cancelable, document.defaultView,
+            oEvent.initMouseEvent(_self.eventType, options.bubbles, options.cancelable, document.defaultView,
             1, _self.posX, _self.posY, _self.posX, _self.posY,
             options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, _self.element);
 
@@ -132,16 +132,16 @@ PolyChromeEvent.prototype.execute = function () {
             var evt = document.createEventObject();
             evt.isPolyChrome = true;
             oEvent = extend(evt, options);
-            element.fireEvent('on' + eventType, oEvent);
+            element.fireEvent('on' + _self.eventType, oEvent);
             return true;
         }
 
-    } else if (_self.eventType == "HTMLEvents") {
+    } else if (_self.eventName == "HTMLEvents") {
 
         if (document.createEvent) {
             oEvent = document.createEvent("HTMLEvents");
             oEvent.isPolyChrome = true;
-            oEvent.initEvent(eventType, options.bubbles, options.cancelable);
+            oEvent.initEvent(_self.eventType, options.bubbles, options.cancelable);
             element.dispatchEvent(oEvent);
             return true;
 
@@ -152,7 +152,7 @@ PolyChromeEvent.prototype.execute = function () {
             var evt = document.createEventObject();
             evt.isPolyChrome = true;
             oEvent = extend(evt, options);
-            element.fireEvent('on' + eventType, oEvent);
+            element.fireEvent('on' + _self.eventType, oEvent);
             return true;
         }
     }

@@ -4,7 +4,13 @@
         <meta charset="utf-8" />
         <title>PolyChrome-choropleth</title>
 
-        <style>     
+
+        <link rel="stylesheet" href="stylesheets/polychrome-style.css"></link>
+        <link rel="shortcut icon" href="images/polychrome-icon.png" />
+
+        <style>
+
+            
             
             html {
                 padding: 0px;
@@ -18,7 +24,7 @@
                 margin: 0px;
                 overflow: hidden;
             }
-               
+            
             .counties {
                 fill: transparent;
             }
@@ -48,10 +54,70 @@
         <script src="http://d3js.org/topojson.v1.min.js"></script>
         <script src="/javascripts/polychrome-2D.js"></script>
         <script src="/javascripts/polychrome-visdock.utils.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
         <script src="/api/polychrome-feedback-svg.js"></script>
+        <script src="/api/polychrome-peer.js"></script>
+        <script src="/api/polychrome-event.js"></script>
         <script src="/api/polychrome-panel.js"></script>
         <script src="/javascripts/polychrome-example-choropleth.js"></script>
 
+        <button id="polychrome-toggle" class="normal"></button>
 
+        <div id="polychrome-actions">
+            <div id="polychrome-id">
+        Peer ID:
+            </div>
+
+            <div id="polychrome-checkbox-div">
+                <div id="polychrome-eventtypes-text">EVENT TYPES</div>
+                <div class="polychrome-checkbox">Click
+                    <input type="checkbox" value="click" id="polychrome-checkbox-click" checked></div>
+                <div class="polychrome-checkbox">Scroll
+                    <input type="checkbox" value="scroll" id="polychrome-checkbox-scroll" checked></div>
+                <div class="polychrome-checkbox">Mouse Down
+                    <input type="checkbox" value="mousedown" id="polychrome-checkbox-mousedown" checked></div>
+                <div class="polychrome-checkbox">Mouse Move
+                    <input type="checkbox" value="mousemove" id="polychrome-checkbox-mousemove" checked></div>
+                <div class="polychrome-checkbox">Mouse Up
+                    <input type="checkbox" value="mouseup" id="polychrome-checkbox-mouseup" checked></div>
+                <div class="polychrome-checkbox">Touch Start
+                    <input type="checkbox" value="touchstart" id="polychrome-checkbox-touchstart" checked></div>
+                <div class="polychrome-checkbox">Touch Move
+                    <input type="checkbox" value="touchmove" id="polychrome-checkbox-touchmove" checked></div>
+                <div class="polychrome-checkbox">Touch End
+                    <input type="checkbox" value="touchend" id="polychrome-checkbox-touchend" checked></div>
+            </div>
+
+
+            <div id="polychrome-event-config">
+                <div id="polychrome-event-text">EVENTS</div>
+                <div id="polychrome-events-div">
+                    <div id="polychrome-events-list">
+                        <div class="polychrome-event-button" id="polychrome-self-event-tab">
+                    My events
+                        </div>
+                    </div>
+                    <div id="polychrome-events-dump">
+                    </div>
+                </div>
+            </div>
+
+            <div id="polychrome-display-config">
+                <div id="polychrome-display-text">DISPLAY</div>
+                <div id="polychrome-display-div">
+                    <div id="polychrome-display-list">
+                        <div class="polychrome-display-button" id="polychrome-self-display-tab">
+                    My display
+                        </div>
+                    </div>
+                    <div id="polychrome-display-dump">
+                    </div>
+                </div>
+            </div>
+
+            <div id="polychrome-disconnect">
+        DISCONNECT
+            </div>
+        </div>
     </body>
 </html>
