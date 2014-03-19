@@ -35,7 +35,11 @@ How to download:
     * node polychrome-server.js
 
 - PolyChrome has two server components: (1) A proxy server to handle requests from the clients (running at port 3000), and (2) a modified version of [PeerJS](http://peerjs.com/) server to handle the connections between peers/clients (running at port 8080).
-    
+
+
+###PolyChrome API modules:
+
+- PolyChrome API is now available in _public/api/_ folder. Please take a look at the examples for reference. (documentation is in progress.)
 
 ###How to use PolyChrome:
 
