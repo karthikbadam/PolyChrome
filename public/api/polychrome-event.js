@@ -23,11 +23,17 @@ function PolyChromeEvent (options) {
 
     /* check if eventType is known type */
     var eventName = _self.checkEvent(_self.eventType);
+    
     if (eventName == null) {
         /* raise error */
     }
 
     _self.eventName = eventName.name;
+
+    /* if custom event */
+    if (options.isNative == false) {
+        _self.customContent = options.customContent;
+    }
 
 }
 
@@ -61,9 +67,9 @@ PolyChromeEvent.prototype.shareWithServer = function () {
 }
 
 
-/* A custom event -- can be a combination of native events or totally new sort of event */
-PolyChromeEvent.prototype.createCustomEvent = function () {
-    var _self = this; 
-
+/* A custom event -- can be a combination of native events or a totally new sort of event */
+PolyChromeEvent.prototype.CustomEventBehavior = function (Handler) {
+    var _self = this;
+    Handler(_self.customContent);
 }
 

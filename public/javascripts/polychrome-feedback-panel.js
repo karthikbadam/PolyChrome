@@ -555,8 +555,7 @@ $(document).ready(function () {
         }
     });
 
-    $(window).on("load", function () {
-        $('#polychrome-checkbox-touchend').change(function () {
+     $('#polychrome-checkbox-touchend').change(function () {
             var $checkbox = $(this);
             if ($checkbox.prop('checked')) {
                 eventCapture.touchend = true;
@@ -565,6 +564,9 @@ $(document).ready(function () {
             }
         });
 
+
+    $(window).on("load", function () {
+       
         var items = document.getElementsByTagName("*");
         for (var i = 0; i < items.length; i++) {
             elem = items[i];
