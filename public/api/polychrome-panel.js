@@ -128,10 +128,10 @@ var PeerConnection = {
             if (clientIds) {
                 var peers = clientIds.split(",");
                 peers.forEach(function (peerid) {
-                    var conn = peer.connect(peerid);
+                    var conn = _self.peer.connect(peerid);
                     conn.on('open', function () {
                         _self.connections.push(conn);
-                        addNewPeer(conn.peer);
+                        FeedbackPanel.addNewPeer(conn.peer);
                         console.log("connected to " + conn.peer);
                     });
 
@@ -150,7 +150,7 @@ var PeerConnection = {
         function connect(conn) {
             conn.on('open', function () {
                 _self.connections.push(conn);
-                addNewPeer(conn.peer);
+                FeedbackPanel.addNewPeer(conn.peer);
                 console.log("connected to " + conn.peer);
             });
 
