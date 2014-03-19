@@ -39,7 +39,9 @@ How to download:
 
 ###PolyChrome API modules:
 
-- PolyChrome API is now available in _public/api/_ folder. Please take a look at the examples for reference. (documentation is in progress.)
+- PolyChrome API is now available in _public/api/_ folder. Please take a look at the examples for reference (documentation is in progress). 
+ 
+    * [hostname]:3000/choropleth
 
 ###How to use PolyChrome:
 
