@@ -255,14 +255,16 @@ var Toolbox = {
         var shapebound = new createPolygon(points);
         _self.captured = selectionLoop(shapebound, inclusive);
 
+
+        var currentColor = getRandomColor();
         var hits = _self.captured;
         var query = brushed(hits)
         for (var i = 0; i < query.length; i++) {
-            _self.addEllipseLayer(query[i], null);
+            _self.addEllipseLayer(query[i], currentColor);
         }
     },
 
-    addEllipseLayer: function (ellipse, style) {
+    addEllipseLayer: function (ellipse, currentColor) {
         var T = ellipse.getAttributeNS(null, "transform")
         var cx = parseFloat(ellipse.getAttributeNS(null, "cx"));
         if (ellipse.getAttributeNS(null, "cx") == "") {
@@ -284,26 +286,24 @@ var Toolbox = {
         var C = Panel.viewport.append("ellipse")
 				.attr("cx", cx)
 				.attr("cy", cy)
-				.attr("rx", rx + 2)
-				.attr("ry", ry + 2)
+				.attr("rx", rx)
+				.attr("ry", ry)
 				.attr("display", "inline")
-				.style("stroke-width", '3px')   
-				.style("fill-color", getRandomColor())
-				.style("opacity", 0.1)
+				.style("fill", currentColor)
+				.style("opacity", 1)
 				.attr("pointer-events", "none")
 				.attr("transform", T)
     }
 }
 
 function getRandomColor() {
-    var letters = '123456789ABCDE'.split('');
+    var letters = '0123456789ABCDEF'.split('');
     var color = '#';
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 6; i++ ) {
         color += letters[Math.round(Math.random() * 15)];
     }
     return color;
 }
-
 
 var width = document.documentElement.clientWidth,
     height = document.documentElement.clientHeight;
@@ -343,7 +343,7 @@ var yAxis = d3.svg.axis()
     .ticks(5);
 
 var color = d3.scale.category10();
-var radius = 3.5;
+var radius = 3;
 
 d3.csv("/polychrome-datasets/flowers.csv", function (error, data) {
     var domainByTrait = {},
