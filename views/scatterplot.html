@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>PolyChrome-choropleth</title>
+        <title>PolyChrome-scatterplot</title>
 
 
         <link rel="stylesheet" href="stylesheets/polychrome-style.css"></link>
@@ -22,27 +22,37 @@
                 height:  100%;
                 padding:  0px;
                 margin: 0px;
+                overflow: hidden;
             }
             
-            .counties {
-                fill: transparent;
+            svg {
+              font: 10px sans-serif;
+              Padding: 10px;
             }
-            
-            .states {
-                fill: transparent;
-                stroke: #fff;
-                stroke-linejoin: round;
+
+            .axis,
+            .frame {
+              shape-rendering: crispEdges;
             }
-            
-            .q0-9 { fill:rgb(247,251,255); }
-            .q1-9 { fill:rgb(222,235,247); }
-            .q2-9 { fill:rgb(198,219,239); }
-            .q3-9 { fill:rgb(158,202,225); }
-            .q4-9 { fill:rgb(107,174,214); }
-            .q5-9 { fill:rgb(66,146,198); }
-            .q6-9 { fill:rgb(33,113,181); }
-            .q7-9 { fill:rgb(8,81,156); }
-            .q8-9 { fill:rgb(8,48,107); }
+
+            .axis line {
+              stroke: #ddd;
+            }
+
+            .axis path {
+              display: none;
+            }
+
+            .frame {
+              fill: none;
+              stroke: #aaa;
+            }
+
+            circle {
+              fill-opacity: .7;
+               
+                  
+            }
             
         </style>
     </head>
@@ -58,7 +68,7 @@
         <script src="/api/polychrome-peer.js"></script>
         <script src="/api/polychrome-event.js"></script>
         <script src="/api/polychrome-panel.js"></script>
-        <script src="/javascripts/polychrome-example-choropleth.js"></script>
+        <script src="/javascripts/polychrome-example-scatterplot.js"></script>
 
         <button id="polychrome-toggle" class="normal"></button>
 

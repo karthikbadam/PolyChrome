@@ -76,8 +76,11 @@ app.get('/', routes.index);
 /* app1 drawing */
 app.get('/drawing', routes.drawing);
 
-/* app1 drawing */
+/* app2 choropleth */
 app.get('/choropleth', routes.choropleth);
+
+/* app3 scatterplot */
+app.get('/scatterplot', routes.scatterplot);
 
 /* requests for data */
 app.get('/data/*', function (req, res) {

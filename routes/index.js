@@ -16,3 +16,8 @@ exports.drawing = function(req, res){
 exports.choropleth = function(req, res){
   res.render('choropleth', {});
 };
+
+
+exports.scatterplot = function(req, res){
+  res.render('scatterplot', {});
+};
