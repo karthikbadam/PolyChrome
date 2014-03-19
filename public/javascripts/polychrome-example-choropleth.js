@@ -44,12 +44,21 @@ var Panel = {
 
     install: function () {
         Panel.panel.on("mousedown", Panel.mousedown);
+        Panel.panel.on("mousemove", Panel.mousemove);
+        Panel.panel.on("mouseup", Panel.mouseup);
+
+        Panel.panel.on("touchstart", Panel.touchstart);
+        Panel.panel.on("touchmove", Panel.touchmove);
+        Panel.panel.on("touchend", Panel.touchend);
     },
 
     uninstall: function () {
         Panel.panel.on("mouseup", null);
         Panel.panel.on("mousemove", null);
         Panel.panel.on("mousedown", null);
+        Panel.panel.on("touchend", null);
+        Panel.panel.on("touchmove", null);
+        Panel.panel.on("touchstart", null);
     },
 
     getBoundingBox: function (curr) {
@@ -80,66 +89,152 @@ var Panel = {
                                     .style("fill-opacity", 0.4);
             Panel.inUse = true;
 
-            // Install event handlers
-            Panel.panel.on("mousemove", function () {
-
-                var event = d3.event; 
-
-                if (event.isPolyChrome) {
-                     if (Panel.inUse) {
-                        // Update the selection
-                        var box = Panel.getBoundingBox(d3.mouse(this));
-                        if (Panel.bbox)
-                            Panel.bbox.attr("x", box[0]).attr("y", box[1]).attr("width", box[2]).attr("height", box[3]);
-                    }
-                } else {
-                    
-                    /* recycle event and send it to other peers */
-                    PolyChromeEventHandler.wrapEvent(event.type, event.pageX, event.pageY, event.target, event);
-                    PolyChromeEventHandler.shareEvent();
-                       
-                }
-               
-            });
-
-
-            Panel.panel.on("mouseup", function () {
-
-                var event = d3.event;
-
-                if (event.isPolyChrome) {
-                     if (Panel.inUse) {
-
-                        // Forward the selection
-                        var box = Panel.getBoundingBox(d3.mouse(this));
-                        Toolbox.select([[(box[0] - Panel.x), (box[1] - Panel.y)], [(box[0] - Panel.x), (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y)]], Toolbox.inclusive);
-
-                        // Remove the bounding box
-                        Panel.bbox.remove();
-                        Panel.bbox = null;
-                        Panel.inUse = false;                     
-                     }
-                }
-                
-                else {
-                    
-              
-                    /* recycle event and send it to other peers */
-                    PolyChromeEventHandler.wrapEvent(event.type, event.pageX, event.pageY, event.target, event);
-                    PolyChromeEventHandler.shareEvent();
-
-                }
-            });
-
         } else {
 
-            
             /* recycle event and send it to other peers */
             PolyChromeEventHandler.wrapEvent(event.type, event.pageX, event.pageY, event.target, event);
             PolyChromeEventHandler.shareEvent();
         }
 
+    },
+
+    mousemove: function () {
+        var event = d3.event;
+        d3.event.preventDefault();
+
+        if (event.isPolyChrome) {
+            if (Panel.inUse) {
+                // Update the selection
+                var box = Panel.getBoundingBox(d3.mouse(this));
+                if (Panel.bbox)
+                    Panel.bbox.attr("x", box[0]).attr("y", box[1]).attr("width", box[2]).attr("height", box[3]);
+            }
+        } else {
+            if (Panel.inUse) {
+
+                /* recycle event and send it to other peers */
+                PolyChromeEventHandler.wrapEvent(event.type, event.pageX, event.pageY, event.target, event);
+                PolyChromeEventHandler.shareEvent();
+            }
+        }
+    },
+
+    mouseup: function () {
+        var event = d3.event;
+        d3.event.preventDefault();
+
+        if (event.isPolyChrome) {
+            if (Panel.inUse) {
+
+                // Forward the selection
+                var box = Panel.getBoundingBox(d3.mouse(this));
+                Toolbox.select([[(box[0] - Panel.x), (box[1] - Panel.y)], [(box[0] - Panel.x), (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y)]], Toolbox.inclusive);
+
+                // Remove the bounding box
+                Panel.bbox.remove();
+                Panel.bbox = null;
+                Panel.inUse = false;
+            }
+        }
+
+        else {
+            if (Panel.inUse) {
+                /* recycle event and send it to other peers */
+                PolyChromeEventHandler.wrapEvent(event.type, event.pageX, event.pageY, event.target, event);
+                PolyChromeEventHandler.shareEvent();
+
+            }
+        }
+    },
+
+    touchstart: function () {
+        // Prevent Browser's default behaviour
+        d3.event.preventDefault();
+        Panel.start = d3.mouse(this);
+
+        var event = d3.event;
+
+        if (event.isPolyChrome) {
+            // bounding box
+            Panel.bbox = Panel.panel.append("rect")
+                                    .attr("id", "polychrome-selection")
+                                    .attr("x", Panel.start[0])
+                                    .attr("y", Panel.start[1])
+                                    .attr("width", "5")
+                                    .attr("height", "5")
+                                    .style("fill", "#aaa")
+                                    .style("fill-opacity", 0.4);
+            Panel.inUse = true;
+
+        } else {
+
+            /* recycle event and send it to other peers */
+            PolyChromeEventHandler.wrapEvent("mousedown", event.touches[0].pageX, event.touches[0].pageY, event.target, event);
+            PolyChromeEventHandler.shareEvent();
+        }
+    },
+
+    lastX: 0,
+    lastY: 0,
+    
+    touchmove: function () {
+
+        var event = d3.event;
+        d3.event.preventDefault();
+
+        if (event.isPolyChrome) {
+            if (Panel.inUse) {
+                // Update the selection
+                var c = d3.mouse(this);
+                Panel.lastX = c[0];
+                Panel.lastY = c[1];
+                var box = Panel.getBoundingBox(d3.mouse(this));
+                if (Panel.bbox)
+                    Panel.bbox.attr("x", box[0]).attr("y", box[1]).attr("width", box[2]).attr("height", box[3]);
+            }
+        } else {
+            if (Panel.inUse) {
+                Panel.lastX = event.touches[0].pageX;
+                Panel.lastY = event.touches[0].pageY;
+                
+                /* recycle event and send it to other peers */
+                PolyChromeEventHandler.wrapEvent("mousemove", event.touches[0].pageX, event.touches[0].pageY, event.target, event);
+                PolyChromeEventHandler.shareEvent();
+            }
+        }
+    },
+
+  
+
+    touchend: function () {
+        var event = d3.event;
+        d3.event.preventDefault();
+
+        if (event.isPolyChrome) {
+            if (Panel.inUse) {
+
+                // Forward the selection
+                var box = Panel.getBoundingBox(d3.mouse(this));
+                Toolbox.select([[(box[0] - Panel.x), (box[1] - Panel.y)], [(box[0] - Panel.x), (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y)]], Toolbox.inclusive);
+
+                // Remove the bounding box
+                Panel.bbox.remove();
+                Panel.bbox = null;
+                Panel.inUse = false;
+            }
+        }
+
+        else {
+            if (Panel.inUse) {
+
+                /* recycle event and send it to other peers */
+                PolyChromeEventHandler.wrapEvent("mouseup", Panel.lastX, Panel.lastY, event.target, event);
+                PolyChromeEventHandler.shareEvent();
+
+            }
+        }
     }
+
 };
 
 
@@ -186,13 +281,17 @@ $(document).ready(function () {
     .attr("height", height);
 
     var viewport = Panel.init(svg, width, height);
+
+    /* initializing PolyChrome */
     Panel.install();
     PolyChromeEventHandler.init();
     PeerConnection.init();
+    FeedbackPanel.init();
+    ServerConnection.init();
 
     queue()
-    .defer(d3.json, "http://localhost:3000/polychrome-datasets/us.json")
-    .defer(d3.tsv, "http://localhost:3000/polychrome-datasets/unemployment.tsv", function (d) { rateById.set(d.id, +d.rate); })
+    .defer(d3.json, "/polychrome-datasets/us.json")
+    .defer(d3.tsv, "/polychrome-datasets/unemployment.tsv", function (d) { rateById.set(d.id, +d.rate); })
     .await(ready);
 
     function ready(error, us) {
@@ -212,8 +311,7 @@ $(document).ready(function () {
 
         /* call polychromify */
         PolyChromeEventHandler.polyChromify();
-        ServerConnection.init();
-
+        FeedbackPanel.setDisplayBackground();
     }
 });
 

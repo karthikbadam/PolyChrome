@@ -26,7 +26,7 @@ function PolyChromeEvent(options) {
     _self.pageWidth = options.pageWidth;
     _self.pageHeight = options.pageHeight;
     _self.eventType = options.eventType;
-    _self.peerId = options.deviceId;
+    _self.deviceId = options.deviceId;
     _self.posX = options.posX;
     _self.posY = options.posY;
     _self.element = options.element; 
@@ -74,7 +74,7 @@ PolyChromeEvent.prototype.shareEvent = function () {
     toSend.eventType = _self.eventType;
     toSend.targetId = _self.element.id;
     toSend.target = _self.nodeName;
-    toSend.deviceId = deviceId;
+    toSend.deviceId = _self.deviceId;
 
     PeerConnection.send(toSend);
 }
@@ -111,7 +111,7 @@ PolyChromeEvent.prototype.execute = function () {
     options = extend(options, defaultOptions);
 
     if (_self.eventName == "MouseEvents") {
-        
+
         if (document.createEvent) {
             oEvent = document.createEvent("MouseEvents");
 
@@ -123,8 +123,7 @@ PolyChromeEvent.prototype.execute = function () {
             options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, _self.element);
 
             _self.element.dispatchEvent(oEvent);
-            return true;
-
+        
         } else {
 
             options.clientX = _self.posX;
@@ -133,8 +132,10 @@ PolyChromeEvent.prototype.execute = function () {
             evt.isPolyChrome = true;
             oEvent = extend(evt, options);
             element.fireEvent('on' + _self.eventType, oEvent);
-            return true;
         }
+
+        FeedbackPanel.addEventFeedback(_self.deviceId, _self.eventType, parseInt(_self.posX), parseInt(_self.posY));
+        
 
     } else if (_self.eventName == "HTMLEvents") {
 
@@ -143,8 +144,7 @@ PolyChromeEvent.prototype.execute = function () {
             oEvent.isPolyChrome = true;
             oEvent.initEvent(_self.eventType, options.bubbles, options.cancelable);
             element.dispatchEvent(oEvent);
-            return true;
-
+            
         } else {
 
             options.clientX = options.pointerX;
@@ -153,9 +153,7 @@ PolyChromeEvent.prototype.execute = function () {
             evt.isPolyChrome = true;
             oEvent = extend(evt, options);
             element.fireEvent('on' + _self.eventType, oEvent);
-            return true;
         }
-    }
 
-    return false;
+    }    
 }

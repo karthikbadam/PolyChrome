@@ -21,13 +21,13 @@ var portCheck = /[?&]port=([^&]+)/i;
 
 /* generate a random string if no ID is present */
 function randomString(len, charSet) {
-	charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-	var randomString = '';
-	for (var i = 0; i < len; i++) {
-		var randomPoz = Math.floor(Math.random() * charSet.length);
-		randomString += charSet.substring(randomPoz, randomPoz + 1);
-	}
-	return randomString;
+    charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var randomString = '';
+    for (var i = 0; i < len; i++) {
+        var randomPoz = Math.floor(Math.random() * charSet.length);
+        randomString += charSet.substring(randomPoz, randomPoz + 1);
+    }
+    return randomString;
 }
 
 /* define event capture states */
@@ -42,33 +42,47 @@ eventCapture.mouseup = true;
 
 
 var FeedbackPanel = {
-    
+
     init: function () {
-        
-    }, 
-    
+        $('#polychrome-display-dump').css({ 'background-color': 'rgba(100, 100, 100, 1)' });
+        $('#polychrome-display-dump').css('background-image', 'none');
+    },
+
+    setDisplayBackground: function () {
+
+        $('#polychrome-display-dump').empty();
+
+        html2canvas(document.body, {
+            onrendered: function (canvas) {
+                canvas.style.width = 200 + 'px';
+                canvas.style.height = 100 + 'px';
+                $('#polychrome-display-dump').append(canvas);
+            },
+            allowTaint: true
+        });
+    },
+
     /* Method for adding event details to UI */
-    addNewPeer: function(connectedPeer) {
+    addNewPeer: function (connectedPeer) {
         $('#polychrome-events-list').append('<div class="polychrome-event-button" id="polychrome-' + connectedPeer + '-tab">' + connectedPeer + '</div>');
         $('#polychrome-display-list').append('<div class="polychrome-display-button" id="polychrome-' + connectedPeer + '-tab">' + connectedPeer + '</div>');
-    }, 
+    },
 
     /* Method to add new peer details to the UI when connected */
-    addEventFeedback: function(connectedClientId, eventType, posX, posY) {
+    addEventFeedback: function (connectedClientId, eventType, posX, posY) {
         $('#polychrome-events-dump').prepend('<div class="polychrome-event-element">' + eventType + ' for ' + connectedClientId + ' at ' + posX + ", " + posY + ' </div>');
     }
 }
 
 /* Link to the server */
 var ServerConnection = {
-    socket:  io.connect('http://' + hostname + ":" + port),
-    
+    socket: io.connect('http://' + hostname + ":" + port),
+
     init: function () {
-        
+
         var _self = this;
-        _self.socket.on('MouseEvents', function(data) {
-           
-            
+        _self.socket.on('MouseEvents', function (data) {
+
         });
 
     }
@@ -82,7 +96,7 @@ var PeerConnection = {
 
     init: function () {
         var _self = this;
- 
+
         /* get peerId */
         var match = idCheck.exec(selfUrl);
         if (match != null) {
@@ -202,8 +216,7 @@ var PeerConnection = {
             });
 
             event.execute();
-            FeedbackPanel.addEventFeedback(connectedDeviceId, eventType, parseInt(posX), parseInt(posY));
-
+            
         } else {
 
         }
@@ -212,9 +225,9 @@ var PeerConnection = {
 
 var PolyChromeEventHandler = {
     event: null,
-
+   
     init: function () {
-      
+
     },
 
     polyChromify: function () {
@@ -240,7 +253,7 @@ var PolyChromeEventHandler = {
     },
 
     wrapEvent: function (eventType, posX, posY, element, nativeEvent) {
-        var deviceId = deviceId;
+        
         var _self = this;
 
         _self.event = new PolyChromeEvent({
