@@ -67,89 +67,48 @@ eventCapture.mousemove = true;
 eventCapture.mouseup = true;
 
 
-/* simulate the Mouse event */
-function simulateMouseEvent(element, eventType, options) {
-    var oEvent = null;
+var FeedbackPanel = {
+    
+    init: function () {
+        
+    }, 
+    
+    /* Method for adding event details to UI */
+    addNewPeer: function(connectedPeer) {
+        $('#polychrome-events-list').append('<div class="polychrome-event-button" id="polychrome-' + connectedPeer + '-tab">' + connectedPeer + '</div>');
+        $('#polychrome-display-list').append('<div class="polychrome-display-button" id="polychrome-' + connectedPeer + '-tab">' + connectedPeer + '</div>');
+    }, 
 
-    if (document.createEvent) {
-        oEvent = document.createEvent("MouseEvents");
-
-        /* recognize that this is PolyChrome event */
-        oEvent.isPolyChrome = true;
-        oEvent.initMouseEvent(eventType, options.bubbles, options.cancelable, document.defaultView,
-        1, options.pointerX, options.pointerY, options.pointerX, options.pointerY,
-        options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, element);
-        element.dispatchEvent(oEvent);
-        return true;
-
-    } else {
-
-        options.clientX = options.pointerX;
-        options.clientY = options.pointerY;
-        var evt = document.createEventObject();
-        evt.isPolyChrome = true;
-        oEvent = extend(evt, options);
-        element.fireEvent('on' + eventType, oEvent);
-        return true;
+    /* Method to add new peer details to the UI when connected */
+    addEventFeedback: function(connectedClientId, eventType, posX, posY) {
+        $('#polychrome-events-dump').prepend('<div class="polychrome-event-element">' + eventType + ' for ' + connectedClientId + ' at ' + posX + ", " + posY + ' </div>');
     }
-    return false;
 }
 
-/* simulate the HTML event */
-function simulateHTMLEvent(element, eventType, options) {
-    var oEvent = null;
+/* Link to the server */
+var ServerConnection = {
+    socket:  io.connect('http://' + hostname + ":" + port),
+    
+    init: function () {
+        
+        var _self = this;
+        _self.socket.on('MouseEvents', function(data) {
+           
+            
+        });
 
-    if (document.createEvent) {
-        oEvent = document.createEvent("HTMLEvents");
-        oEvent.isPolyChrome = true;
-        oEvent.initEvent(eventType, options.bubbles, options.cancelable);
-        element.dispatchEvent(oEvent);
-        return true;
-
-    } else {
-
-        options.clientX = options.pointerX;
-        options.clientY = options.pointerY;
-        var evt = document.createEventObject();
-        evt.isPolyChrome = true;
-        oEvent = extend(evt, options);
-        element.fireEvent('on' + eventType, oEvent);
-        return true;
     }
-    return false;
 }
 
-function extend(destination, source) {
-    for (var property in source)
-        destination[property] = source[property];
-    return destination;
-}
 
-/* Method for adding event details to UI */
-var addEventFeedback = function (connectedClientId, eventType, posX, posY) {
-    $('#polychrome-events-dump').prepend('<div class="polychrome-event-element">' + eventType + ' for ' + connectedClientId + ' at ' + posX + ", " + posY + ' </div>');
-}
-
-/* Method to add new peer details to the UI when connected */
-var addNewPeer = function (connectedPeer) {
-    $('#polychrome-events-list').append('<div class="polychrome-event-button" id="polychrome-' + connectedPeer + '-tab">' + connectedPeer + '</div>');
-    $('#polychrome-display-list').append('<div class="polychrome-display-button" id="polychrome-' + connectedPeer + '-tab">' + connectedPeer + '</div>');
-}
-
-/* sockets to connect to server */
-var socket = io.connect('http://' + hostname + ":" + port);
-
-/* socket handle incoming messages */
-socket.on('MouseEvents', function (data) {
-
-});
-
-
-var peerConnection = {
+/* Link to other clients */
+var PeerConnection = {
     peer: new Peer(deviceId, { host: hostname, port: '8000' }),
+    connections: [],
 
     init: function () {
         var _self = this;
+
 
         _self.peer.on('open', function (id, clientIds) {
             $('#polychrome-id').text("CLIENT ID: " + id);
@@ -159,8 +118,9 @@ var peerConnection = {
                 peers.forEach(function (peerid) {
                     var conn = peer.connect(peerid);
                     conn.on('open', function () {
-                        connections.push(conn);
+                        _self.connections.push(conn);
                         addNewPeer(conn.peer);
+                        console.log("connected to " + conn.peer);
                     });
 
                     conn.on('data', function (data) {
@@ -177,8 +137,9 @@ var peerConnection = {
         /* on connection */
         function connect(conn) {
             conn.on('open', function () {
-                connections.push(conn);
+                _self.connections.push(conn);
                 addNewPeer(conn.peer);
+                console.log("connected to " + conn.peer);
             });
 
             conn.on('data', function (data) {
@@ -186,6 +147,13 @@ var peerConnection = {
                     _self.onData(conn.peer, data);
             });
         }
+    },
+
+    send: function (toSend) {
+        var _self = this;
+        _self.connections.forEach(function (connection) {
+            connection.send(toSend);
+        });
     },
 
     onData: function (connectedDeviceId, data) {
@@ -204,18 +172,28 @@ var peerConnection = {
             throw new SyntaxError('Only HTMLEvents and MouseEvents interfaces are supported');
 
         if (eventType && eventName) {
-            var targetName = data.target;
             var posX = data.posX * screenWidth / idealWidth - document.body.scrollLeft;
             var posY = data.posY * screenHeight / idealHeight - document.body.scrollTop;
-            var globalX = data.globalX;
-            var globalY = data.globalY;
             var targetId = data.targetId;
+            var targetName = data.target;
+            var element = document.getElementById(data.targetId);
 
-            executeEventOnPosition(eventType, eventName, posX, posY, targetName, targetId);
-            addEventFeedback(connectedDeviceId, eventType, parseInt(posX), parseInt(posY));
+            var event = new PolyChromeEvent({
+                deviceId: connectedDeviceId,
+                posX: posX,
+                posY: posY,
+                eventType: eventType,
+                element: element,
+                pageWidth: pageWidth,
+                pageHeight: pageHeight,
+                isNative: true
+            });
+
+            event.execute();
+            FeedbackPanel.addEventFeedback(connectedDeviceId, eventType, parseInt(posX), parseInt(posY));
 
         } else {
-            /* It is not an event but a message*/
+
         }
     }
 }
@@ -224,6 +202,9 @@ var PolyChromeEventHandler = {
     event: null,
 
     polyChromify: function () {
+        /* get screen width and height */
+        screenWidth = $(window).width();
+        screenHeight = $(window).height();
 
         /* assign unique ids to each dom element -- for retrieval */
         var items = document.getElementsByTagName("*");
@@ -252,8 +233,10 @@ var PolyChromeEventHandler = {
         });
     },
 
-    shareCurrentEvent: function () {
-        event.shareEvent();
+    shareEvent: function () {
+        var _self = this;
+        _self.event.shareEvent();
+        _self.event.execute();
     },
 
     createCustomEvent: function (eventName) {
