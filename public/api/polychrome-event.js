@@ -51,9 +51,7 @@ PolyChromeEvent.prototype.checkEvent = function (eventType) {
 
 PolyChromeEvent.prototype.shareEvent = function () {
     var _self = this; 
-
     
-
 }
 
 PolyChromeEvent.prototype.shareEventToSelected = function () {
