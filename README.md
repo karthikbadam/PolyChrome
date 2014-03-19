@@ -42,6 +42,7 @@ How to download:
 - PolyChrome API is now available in _public/api/_ folder. Please take a look at the examples for reference (documentation is in progress). 
  
     * [hostname]:3000/choropleth
+    * [hostname]:3000/scatterplot
 
 ###How to use PolyChrome:
 
