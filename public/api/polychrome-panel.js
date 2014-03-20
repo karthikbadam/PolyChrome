@@ -76,18 +76,22 @@ var FeedbackPanel = {
 
 /* Link to the server */
 var ServerConnection = {
-    socket: io.connect('http://' + hostname + ":" + port),
+    socket: null,
+    url: null,
 
-    init: function () {
+    init: function (url) {
 
         var _self = this;
+        _self.url = url;
+        _self.socket = io.connect('http://' + hostname + ":" + port);
+
         _self.socket.on('MouseEvent', function (data) {
 
 
 
         });
 
-        _self.socket.on('MouseEvents', function (data) {
+        _self.socket.on('MouseEvents', function (events) {
 
 
 
@@ -95,17 +99,18 @@ var ServerConnection = {
     },
 
     send: function (event) {
+        var _self = this;
         var toSend = event.getPacket();
-        toSend = 
+        toSend['url'] = _self.url;
         _self.socket.emit('MouseEvents', toSend);
     },
 
-    replayEvents: function(events) {
-        
+    replayEvents: function (events) {
+
     },
 
-    replayEvent: function(event) {
-        
+    replayEvent: function (event) {
+
     }
 
 }
@@ -240,7 +245,7 @@ var PeerConnection = {
             });
 
             event.execute();
-
+            
         } else {
 
         }
@@ -297,6 +302,8 @@ var PolyChromeEventHandler = {
         var _self = this;
         _self.event.shareEvent();
         _self.event.execute();
+        ServerConnection.send(_self.event);
+
     },
 
     createCustomEvent: function (eventName) {

@@ -325,7 +325,7 @@ Panel.install();
 PolyChromeEventHandler.init();
 PeerConnection.init();
 FeedbackPanel.init();
-ServerConnection.init();
+ServerConnection.init("scatterplot");
 /* end PolyChrome block */
 
 var circle_query = [];

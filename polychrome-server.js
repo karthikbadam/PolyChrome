@@ -560,29 +560,39 @@ io.sockets.on('connection', function (socket) {
 
     // Start listening for mouse events
     socket.on('MouseEvents', function (data) {
-        //console.log(JSON.stringify(data));
+        console.log(JSON.stringify(data));
 
         var date = new Date();
         data['date'] = date.toString();
 
-        if (currentPage && currentPage.url) {
+        //if (currentPage && currentPage.url) {
 
-            fs.appendFile('cache/interaction-' + hashCode(currentPage.url) + '.json', JSON.stringify(data) + '\n', function (err) {
+        //    fs.appendFile('cache/interaction-' + hashCode(currentPage.url) + '.json', JSON.stringify(data) + '\n', function (err) {
+        //        if (err)
+        //            console.log(err);
+        //    });
+
+        //} else {
+
+            fs.appendFile('cache/interaction-'+data.url+ '.json', JSON.stringify(data) + ',\n', function (err) {
                 if (err)
                     console.log(err);
             });
 
-        } else {
-
-            fs.appendFile('cache/interaction' + data.url +'.json', JSON.stringify(data) + '\n', function (err) {
-                if (err)
-                    console.log(err);
-            });
-
-        }
+        //}
+        
         // This line sends the event (broadcasts it)
         // to everyone except the originating client.
-        socket.broadcast.emit('MouseEvents', data);
+        //socket.broadcast.emit('MouseEvents', data);
+    });
+
+
+    socket.on('getMouseEvents', function (data) {
+        console.log(JSON.stringify(data));
+
+        var events = fs.readFileSync('cache/interaction-'+data.url+ '.json', 'utf8')
+        var parsedEvents = JSON.parse("["+ events +"]");
+        socket.emit('MouseEvents',parsedEvents);
     });
 });
 
