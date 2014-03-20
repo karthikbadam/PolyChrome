@@ -81,11 +81,33 @@ var ServerConnection = {
     init: function () {
 
         var _self = this;
-        _self.socket.on('MouseEvents', function (data) {
+        _self.socket.on('MouseEvent', function (data) {
+
+
 
         });
 
+        _self.socket.on('MouseEvents', function (data) {
+
+
+
+        });
+    },
+
+    send: function (event) {
+        var toSend = event.getPacket();
+        toSend = 
+        _self.socket.emit('MouseEvents', toSend);
+    },
+
+    replayEvents: function(events) {
+        
+    },
+
+    replayEvent: function(event) {
+        
     }
+
 }
 
 
@@ -146,6 +168,7 @@ var PeerConnection = {
                     conn.on('open', function () {
                         _self.connections.push(conn);
                         FeedbackPanel.addNewPeer(conn.peer);
+                        alert("Connected to -" + conn.peer);
                         console.log("connected to " + conn.peer);
                     });
 
@@ -166,6 +189,7 @@ var PeerConnection = {
                 _self.connections.push(conn);
                 FeedbackPanel.addNewPeer(conn.peer);
                 console.log("connected to " + conn.peer);
+                alert("Connected to -" + conn.peer);
             });
 
             conn.on('data', function (data) {
@@ -216,7 +240,7 @@ var PeerConnection = {
             });
 
             event.execute();
-            
+
         } else {
 
         }

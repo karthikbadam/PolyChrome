@@ -79,6 +79,20 @@ PolyChromeEvent.prototype.shareEvent = function () {
     PeerConnection.send(toSend);
 }
 
+PolyChromeEvent.prototype.getPacket = function () {
+    var _self = this;
+
+    var toSend = new Object();
+    toSend.posX = (_self.posX) * idealWidth / screenWidth;
+    toSend.posY = (_self.posY) * idealHeight / screenHeight;
+    toSend.eventType = _self.eventType;
+    toSend.targetId = _self.element.id;
+    toSend.target = _self.nodeName;
+    toSend.deviceId = _self.deviceId;
+
+    return toSend;
+}
+
 PolyChromeEvent.prototype.shareEventToSelected = function () {
     var _self = this;
 
