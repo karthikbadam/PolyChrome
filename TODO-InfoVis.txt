@@ -1,4 +1,4 @@
-[ ] Event Replay 
+[X] Event Replay 
 [ ] Control the display settings
 [ ] A mutliview viz for teaser
 [ ] Demo?
