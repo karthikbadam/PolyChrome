@@ -1,16 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="en">
-    <head>
+     <head>
         <meta charset="utf-8" />
-        <title>PolyChrome-scatterplot</title>
+        <title>PolyChrome-Iris-Explorer</title>
 
 
         <link rel="stylesheet" href="stylesheets/polychrome-style.css"></link>
         <link rel="shortcut icon" href="images/polychrome-icon.png" />
 
         <style>
-
-            
             
             html {
                 padding: 0px;
@@ -18,61 +17,184 @@
             }
             
             body {
+                font: 300 36px "Helvetica Neue";
+                height: 640px;
+                margin: 80px 160px 80px 160px;
+                overflow: hidden;
+                position: relative;
                 width:  100%;
                 height:  100%;
                 padding:  0px;
                 margin: 0px;
-                overflow: hidden;
+            }
+
+            a:link, a:visited {
+                color: #777;
+                text-decoration: none;
+            }
+
+            a:hover {
+                color: #666;
+            }
+
+            blockquote {
+                margin: 0;
+            }
+
+            blockquote:before {
+                content: "“";
+                position: absolute;
+                left: -.4em;
+            }
+
+            blockquote:after {
+                content: "”";
+                position: absolute;
+            }
+
+            body > ul {
+                margin: 0;
+                padding: 0;
+            }
+
+            h1 {
+                font-size: 64px;
+            }
+
+            h1, h2, h3 {
+                font-weight: inherit;
+                margin: 0;
+            }
+
+            h2, h3 {
+                text-align: right;
+                font-size: inherit;
+                position: absolute;
+                bottom: 0;
+                right: 0;
+            }
+
+            h2 {
+                font-size: 24px;
+                position: absolute;
+            }
+
+            h3 {
+                bottom: -20px;
+                font-size: 18px;
+            }
+
+            .invert {
+                background: #1f1f1f;
+                color: #dcdccc;
+            }
+
+            .invert h2, .invert h3 {
+                color: #7f9f7f;
+            }
+
+            .string, .regexp {
+                color: #f39;
+            }
+
+            .keyword {
+                color: #00c;
+            }
+
+            .comment {
+                color: #777;
+                font-style: oblique;
+            }
+
+            .number {
+                color: #369;
+            }
+
+            .class, .special {
+                color: #1181B8;
+            }
+
+            body > svg {
+                position: absolute;
+                top: -80px;
+                left: -160px;
             }
             
             svg {
-              position: absolute;
-              left: 25%;
-              font: 10px sans-serif;
-              Padding: 10px;
+              font-size: 14px;
             }
 
-            .axis,
-            .frame {
+            .axis {
               shape-rendering: crispEdges;
             }
 
             .axis line {
               stroke: #ddd;
+              stroke-width: .5px;
             }
 
             .axis path {
               display: none;
             }
 
-            .frame {
-              fill: none;
+            rect.extent {
+              fill: #000;
+              fill-opacity: .125;
+              stroke: #fff;
+            }
+
+            rect.frame {
+              fill: #fff;
+              fill-opacity: .7;
               stroke: #aaa;
             }
 
             circle {
-              fill-opacity: .7;
-               
-                  
+              fill: #ccc;
+              fill-opacity: .5;
             }
-            
+
+            .legend circle {
+              fill-opacity: 1;
+            }
+
+            .legend text {
+              font-size: 18px;
+              font-style: oblique;
+            }
+
+            .cell text {
+              pointer-events: none;
+            }
+
+            .setosa {
+              fill: #800;
+            }
+
+            .versicolor {
+              fill: #080;
+            }
+
+            .virginica {
+              fill: #008;
+            }
+
         </style>
     </head>
     <body>
+
         <script src="http://code.jquery.com/jquery-2.1.0.js"></script>
         <script src="http://d3js.org/d3.v3.min.js"></script>
         <script src="http://d3js.org/queue.v1.min.js"></script>
         <script src="http://d3js.org/topojson.v1.min.js"></script>
-        <script src="/javascripts/polychrome-2D.js"></script>
-        <script src="/javascripts/polychrome-visdock.utils.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="javascripts/html2canvas.js"></script>
         <script src="/api/polychrome-peer.js"></script>
         <script src="/api/polychrome-event.js"></script>
         <script src="/api/polychrome-panel.js"></script>
-        <script src="/javascripts/polychrome-example-scatterplot.js"></script>
-
-        <button id="polychrome-toggle" class="normal"></button>
+        <script src="/javascripts/polychrome-example-iris-scatterplot.js"></script>
+        
+         <button id="polychrome-toggle" class="normal"></button>
 
         <div id="polychrome-actions">
             <div id="polychrome-id">
@@ -130,5 +252,6 @@
         DISCONNECT
             </div>
         </div>
+
     </body>
 </html>

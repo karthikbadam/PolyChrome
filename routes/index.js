@@ -21,3 +21,8 @@ exports.choropleth = function(req, res){
 exports.scatterplot = function(req, res){
   res.render('scatterplot', {});
 };
+
+
+exports.iris = function(req, res){
+  res.render('iris-scatterplot', {});
+};

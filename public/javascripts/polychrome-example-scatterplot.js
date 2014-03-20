@@ -258,7 +258,10 @@ var Toolbox = {
 
         var currentColor = getRandomColor();
         var hits = _self.captured;
-        var query = brushed(hits)
+        var query = brushed(hits);
+        
+        Panel.viewport.selectAll("circle").style("fill", "#CCC");
+
         for (var i = 0; i < query.length; i++) {
             _self.addEllipseLayer(query[i], currentColor);
         }
@@ -282,14 +285,15 @@ var Toolbox = {
             var ry = rx;
         }
 
-       
-        var C = Panel.viewport.append("ellipse")
+        var class1 = ellipse.getAttributeNS(null, "class");
+        var id = ellipse.getAttributeNS(null, "id");
+        
+        var C = Panel.viewport.select("#"+id)
 				.attr("cx", cx)
 				.attr("cy", cy)
-				.attr("rx", rx)
-				.attr("ry", ry)
+				.attr("r", rx)
 				.attr("display", "inline")
-				.style("fill", currentColor)
+				.style("fill", color(class1))
 				.style("opacity", 1)
 				.attr("pointer-events", "none")
 				.attr("transform", T)
@@ -306,15 +310,15 @@ function getRandomColor() {
 }
 
 var width = document.documentElement.clientWidth,
-    height = document.documentElement.clientHeight;
-size = width / 6,
+    height = document.documentElement.clientHeight - 25;
+    size = height / 4 ,
     Padding = 20;
 
 var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", width);
+    .attr("width", height)
+    .attr("height", height+Padding);
 
-var viewport = Panel.init(svg, width, width);
+var viewport = Panel.init(svg, height, height+Padding);
 Panel.install();
 
 /* initializing PolyChrome */
@@ -406,10 +410,12 @@ d3.csv("/polychrome-datasets/flowers.csv", function (error, data) {
 
         cell.selectAll("circle")
         .data(data)
-      .enter().append("circle")
+        .enter().append("circle")
+        .attr("class", function (d) { return d.species })
         .attr("cx", function (d) { return (n - p.i - 1) * size + x(d[p.x]); })
         .attr("cy", function (d) { return p.j * size + y(d[p.y]); })
         .attr("r", radius)
+        //.style("fill", function (d) { return "#CCC"; });
         .style("fill", function (d) { return color(d.species); });
     }
 
@@ -427,43 +433,6 @@ d3.csv("/polychrome-datasets/flowers.csv", function (error, data) {
 
 });
 
-//VisDock.eventHandler = {
-//    getHitsPolygon: function (points, inclusive) {
-//        var shapebound = new createPolygon(points);
-//        return selectionLoop(shapebound, inclusive);
-//    },
-//    getHitsEllipse: function (points, inclusive) {
-//        var shapebound = new createEllipse(points);
-//        return selectionLoop(shapebound, inclusive);
-//    },
-
-//    getHitsLine: function (points, inclusive) {
-//        alert("Please use a different selection tool")
-//    },
-//    setColor: function (hits) {
-//        var query = brushed(hits)
-//        for (var i = 0; i < query.length; i++) {
-//            VisDock.utils.addEllipseLayer(query[i], null, num - 1);
-//        }
-//    },
-//    changeColor: function (color, query, index) {
-//        var visibility = VisDock.utils.getQueryVisibility(index);
-//        for (var i = 0; i < query.length; i++) {
-//            query[i].attr("style", "opacity:" + visibility + "; fill: " + color)
-//        }
-//    },
-//    changeVisibility: function (vis, query, index) {
-//        var color = VisDock.utils.getQueryColor(index);
-//        for (var i = 0; i < query.length; i++) {
-//            query[i].attr("style", "opacity: " + vis + ";fill: " + color)
-//        }
-//    },
-//    removeColor: function (hits, index) {
-//        for (var i = 0; i < hits.length; i++) {
-//            hits[i].remove();
-//        }
-//    }
-//}
 
 function selectionLoop(shapebound, inclusive) {
     var num = 0;

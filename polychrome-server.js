@@ -82,6 +82,9 @@ app.get('/choropleth', routes.choropleth);
 /* app3 scatterplot */
 app.get('/scatterplot', routes.scatterplot);
 
+/* app4 iris */
+app.get('/iris', routes.iris);
+
 /* requests for data */
 app.get('/data/*', function (req, res) {
     console.log("data request captured: " + req.url);
