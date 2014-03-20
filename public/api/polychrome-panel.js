@@ -54,12 +54,63 @@ var FeedbackPanel = {
 
         html2canvas(document.body, {
             onrendered: function (canvas) {
-                canvas.style.width = 200 + 'px';
-                canvas.style.height = 100 + 'px';
+                var ctx = canvas.getContext('2d'),
+                rect = {},
+                drag = false;
+
+                var width = 200; 
+                var height = 100;
+                $(canvas).attr("width", width);
+                $(canvas).attr("height", height);
+                $(canvas).css("background-color", "#FFF");
+                
+                ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
+                ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+                ctx.lineWidth = '5';
+
                 $('#polychrome-display-dump').append(canvas);
+
+                canvas.addEventListener('mousedown', mouseDown, false);
+                canvas.addEventListener('mouseup', mouseUp, false);
+                canvas.addEventListener('mousemove', mouseMove, false);
+                
+                function getMousePos(canvas, evt) {
+                    var rect1 = canvas.getBoundingClientRect();
+                    return {
+                      x: evt.clientX - rect1.left,
+                      y: evt.clientY - rect1.top
+                    };
+                  }
+
+                function mouseDown(e) {
+                    var mousePos = getMousePos(canvas, e);
+                    rect.startX = mousePos.x;
+                    rect.startY = mousePos.y ;
+                    drag = true;
+                }
+
+                function mouseUp() {
+                    
+                  
+                    drag = false;
+                }
+
+                function mouseMove(e) {
+                    var mousePos = getMousePos(canvas, e);
+                    if (drag) {
+                        rect.w = (mousePos.x - rect.startX);
+                        rect.h = (mousePos.y - rect.startY);
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.fillRect(rect.startX, rect.startY, rect.w , rect.h);
+                    }
+                }
+
+
             },
             allowTaint: true
         });
+
+
     },
 
     /* Method for adding event details to UI */
@@ -131,6 +182,7 @@ var ServerConnection = {
                 element: element,
                 pageWidth: screenWidth,
                 pageHeight: screenHeight,
+                name: "MouseEvents",
                 isNative: true
             });
 
@@ -337,6 +389,44 @@ var PolyChromeEventHandler = {
 
     createCustomEvent: function (eventName) {
 
+    }
+
+}
+
+
+var Display = {
+    MIRROR : 0,
+    SPLIT : 1
+}
+
+var SCREEN = {
+    NW: 0,
+    NM: 1,
+    NW: 2,
+    SW: 3,
+    SM: 4,
+    SW: 5
+}
+
+/* Display modules */
+var DisplayConfiguration = {
+    spaceType: 0,
+    screenType: 0,
+
+    init: function (space, type) {
+        var _self = this;
+
+        if (space && type) {
+            _self.spaceType = DISPLAY[space];
+            _self.screenType = SCREEN[type];
+        
+        } else {
+            
+            /* prepare the canvas in display configuration */
+
+
+
+        }
     }
 
 }
