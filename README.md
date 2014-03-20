@@ -43,6 +43,7 @@ How to download:
  
     * [hostname]:3000/choropleth
     * [hostname]:3000/scatterplot
+    * [hostname]:3000/iris
 
 ###How to use PolyChrome:
 
