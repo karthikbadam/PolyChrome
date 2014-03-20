@@ -92,8 +92,8 @@ var ServerConnection = {
         });
 
         _self.socket.on('MouseEvents', function (events) {
-
-
+            _self.replayEvents(events);
+            events.splice(events.length - 1, 1);
 
         });
     },
@@ -105,8 +105,37 @@ var ServerConnection = {
         _self.socket.emit('MouseEvents', toSend);
     },
 
-    replayEvents: function (events) {
+    get: function () {
+        var _self = this;
+        var toSend = new Object();
+        toSend.url = _self.url;
+        _self.socket.emit('getMouseEvents', toSend);
+    },
 
+    replayEvents: function (events) {
+        console.log("got events " + events.length);
+        for (var i = 0; i < events.length; i++) {
+            var data = events[i];
+            var posX = data.posX * screenWidth / idealWidth - document.body.scrollLeft;
+            var posY = data.posY * screenHeight / idealHeight - document.body.scrollTop;
+            var targetId = data.targetId;
+            var targetName = data.target;
+            var element = document.getElementById(targetId);
+            var eventType = data.eventType;
+
+            var event = new PolyChromeEvent({
+                deviceId: data.deviceId,
+                posX: posX,
+                posY: posY,
+                eventType: eventType,
+                element: element,
+                pageWidth: screenWidth,
+                pageHeight: screenHeight,
+                isNative: true
+            });
+
+            event.execute();
+        }
     },
 
     replayEvent: function (event) {

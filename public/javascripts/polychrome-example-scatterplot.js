@@ -430,7 +430,7 @@ d3.csv("/polychrome-datasets/flowers.csv", function (error, data) {
     /* call polychromify */
     PolyChromeEventHandler.polyChromify();
     FeedbackPanel.setDisplayBackground();
-
+    ServerConnection.get();
 });
 
 
