@@ -131,13 +131,15 @@ PolyChromeEvent.prototype.execute = function () {
 
             /* recognize that this is PolyChrome event */
             oEvent.isPolyChrome = true;
+            var px = _self.posX - DisplayConfiguration.xTranslate; 
+            var py = _self.posY - DisplayConfiguration.yTranslate; 
 
             oEvent.initMouseEvent(_self.eventType, options.bubbles, options.cancelable, document.defaultView,
-            1, _self.posX, _self.posY, _self.posX, _self.posY,
-            options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, _self.element);
+            1, px, py, px, py, options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, 
+            options.button, _self.element);
 
             _self.element.dispatchEvent(oEvent);
-        
+
         } else {
 
             options.clientX = _self.posX;
@@ -149,7 +151,7 @@ PolyChromeEvent.prototype.execute = function () {
         }
 
         FeedbackPanel.addEventFeedback(_self.deviceId, _self.eventType, parseInt(_self.posX), parseInt(_self.posY));
-        
+
 
     } else if (_self.eventName == "HTMLEvents") {
 
@@ -158,7 +160,7 @@ PolyChromeEvent.prototype.execute = function () {
             oEvent.isPolyChrome = true;
             oEvent.initEvent(_self.eventType, options.bubbles, options.cancelable);
             element.dispatchEvent(oEvent);
-            
+
         } else {
 
             options.clientX = options.pointerX;
@@ -169,5 +171,5 @@ PolyChromeEvent.prototype.execute = function () {
             element.fireEvent('on' + _self.eventType, oEvent);
         }
 
-    }    
+    }
 }

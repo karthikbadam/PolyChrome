@@ -574,10 +574,10 @@ io.sockets.on('connection', function (socket) {
 
         //} else {
 
-        fs.appendFile('cache/interaction-'+data.url+ '.json', JSON.stringify(data) + ',\n', function (err) {
-            if (err)
-                console.log(err);
-        });
+        //fs.appendFile('cache/interaction-'+data.url+ '.json', JSON.stringify(data) + ',\n', function (err) {
+        //    if (err)
+        //        console.log(err);
+        //});
 
         //}
         

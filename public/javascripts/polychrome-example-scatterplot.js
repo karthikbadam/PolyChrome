@@ -315,10 +315,11 @@ var width = document.documentElement.clientWidth,
     Padding = 20;
 
 var svg = d3.select("body").append("svg")
-    .attr("width", height)
+    .attr("width", width)
     .attr("height", height+Padding);
 
-var viewport = Panel.init(svg, height, height+Padding);
+var viewport = Panel.init(svg, width, height+Padding);
+viewport.attr("transform", "translate(" + width / 4 + ", 0)");
 Panel.install();
 
 /* initializing PolyChrome */
@@ -430,6 +431,9 @@ d3.csv("/polychrome-datasets/flowers.csv", function (error, data) {
     /* call polychromify */
     PolyChromeEventHandler.polyChromify();
     FeedbackPanel.setDisplayBackground();
+    DisplayConfiguration.init('SPLIT', 1, 'IMPLICIT', [2,1]);
+    
+    /* state synchronization */
     ServerConnection.get();
 });
 

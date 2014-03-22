@@ -3,8 +3,8 @@
 var screenCount = 1;
 var screenIndex = 1;
 var deviceId = "";
-var pageWidth = 10;
-var pageHeight = 10;
+var screenWidth = 10;
+var screenHeight = 10;
 var hostname = '';
 var port = '';
 
@@ -64,7 +64,7 @@ var FeedbackPanel = {
                 $(canvas).attr("height", height);
                 $(canvas).css("background-color", "#FFF");
                 
-                ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
+                ctx.strokeStyle = "rgba(255 , 0, 0, 0.2)";
                 ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
                 ctx.lineWidth = '5';
 
@@ -91,7 +91,6 @@ var FeedbackPanel = {
 
                 function mouseUp() {
                     
-                  
                     drag = false;
                 }
 
@@ -308,8 +307,8 @@ var PeerConnection = {
             throw new SyntaxError('Only HTMLEvents and MouseEvents interfaces are supported');
 
         if (eventType && eventName) {
-            var posX = data.posX * screenWidth / idealWidth - document.body.scrollLeft;
-            var posY = data.posY * screenHeight / idealHeight - document.body.scrollTop;
+            var posX = data.posX * screenWidth / idealWidth;
+            var posY = data.posY * screenHeight / idealHeight;
             var targetId = data.targetId;
             var targetName = data.target;
             var element = document.getElementById(targetId);
@@ -368,8 +367,8 @@ var PolyChromeEventHandler = {
 
         _self.event = new PolyChromeEvent({
             deviceId: deviceId,
-            posX: posX,
-            posY: posY,
+            posX: (posX + DisplayConfiguration.xTranslate)/DisplayConfiguration.hScaling,
+            posY: (posY + DisplayConfiguration.yTranslate)/DisplayConfiguration.vScaling,
             eventType: eventType,
             element: element,
             nativeEvent: nativeEvent,
@@ -393,40 +392,78 @@ var PolyChromeEventHandler = {
 
 }
 
+/* 
+*  Leader -> share all events - receive no events,
+*  Lagger -> share no events - receive all events, 
+*  implicit -> share and receive all events,
+*  explicit -> pile events on the client and wait for an explicit register 
+*/
 
-var Display = {
+var SHARING = {
+    LEADER: 0,
+    LAGGER: 1,
+    IMPLICIT: 2,
+    EXPLICIT: 3
+}
+
+var DISPLAY = {
     MIRROR : 0,
     SPLIT : 1
 }
 
-var SCREEN = {
-    NW: 0,
-    NM: 1,
-    NW: 2,
-    SW: 3,
-    SM: 4,
-    SW: 5
-}
-
 /* Display modules */
 var DisplayConfiguration = {
-    spaceType: 0,
+    DisplayType: 0,
     screenType: 0,
+    sharingType: 2,
+    numberOfScreens: [1, 1],
+    hScaling: 1,
+    vScaling: 1,
+    screen: 0,
+    xTranslate: 0,
+    yTranslate: 0, 
 
-    init: function (space, type) {
+    init: function (space, screen, sharing, numberOfScreens) {
         var _self = this;
 
-        if (space && type) {
+        if (space) {
             _self.spaceType = DISPLAY[space];
-            _self.screenType = SCREEN[type];
-        
-        } else {
-            
-            /* prepare the canvas in display configuration */
-
-
-
         }
+
+        if (sharing) {
+            _self.sharingType = SHARING[sharing];
+        }
+
+        if (screen) {
+            _self.screen = screen;
+        }
+
+        if (numberOfScreens) {
+            _self.numberOfScreens = numberOfScreens;
+        }
+
+        /* prepare the background in the display configuration panel */
+
+
+        /* change css in case of split */
+        if (_self.spaceType == 1) {
+
+            /* scaling */
+            _self.hScaling = _self.numberOfScreens[0];
+            _self.vScaling = _self.numberOfScreens[1];
+           
+            /* translation */
+            _self.xTranslate = (Math.floor(_self.screen % _self.hScaling)) * screenWidth;
+            _self.yTranslate = (Math.floor(_self.screen / _self.hScaling)) * screenHeight;
+            $('html').css({ '-webkit-transform-origin': (_self.xTranslate) +"px " + (_self.yTranslate)+"px"});
+            $('html').css({ '-webkit-transform': "scale(" + _self.hScaling + "," + _self.vScaling + ")" });
+            
+
+            //$('html').css('left', -_self.xTranslate);
+            //$('html').css('top', -_self.yTranslate);
+
+            
+        } 
     }
 
 }
