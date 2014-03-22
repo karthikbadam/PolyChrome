@@ -421,7 +421,7 @@ var DisplayConfiguration = {
     vScaling: 1,
     screen: 0,
     xTranslate: 0,
-    yTranslate: 0, 
+    yTranslate: 0,
 
     init: function (space, screen, sharing, numberOfScreens) {
         var _self = this;
@@ -451,14 +451,62 @@ var DisplayConfiguration = {
             /* scaling */
             _self.hScaling = _self.numberOfScreens[0];
             _self.vScaling = _self.numberOfScreens[1];
-           
+
             /* translation */
             _self.xTranslate = (Math.floor(_self.screen % _self.hScaling)) * screenWidth;
             _self.yTranslate = (Math.floor(_self.screen / _self.hScaling)) * screenHeight;
-            $('html').css({ '-webkit-transform-origin': (_self.xTranslate) +"px " + (_self.yTranslate)+"px"});
+            $('html').css({ '-webkit-transform-origin': (_self.xTranslate) + "px " + (_self.yTranslate) + "px" });
             $('html').css({ '-webkit-transform': "scale(" + _self.hScaling + "," + _self.vScaling + ")" });
-            
-        } 
+
+        } else {
+            _self.numberOfScreens = [1, 1];
+            _self.hScaling = 1;
+            _self.vScaling = 1;
+            _self.screen = 0;
+            _self.xTranslate = 0;
+            _self.yTranslate = 0;
+              /* scaling */
+            _self.hScaling = _self.numberOfScreens[0];
+            _self.vScaling = _self.numberOfScreens[1];
+
+            /* translation */
+            $('html').css({ '-webkit-transform-origin': (_self.xTranslate) + "px " + (_self.yTranslate) + "px" });
+            $('html').css({ '-webkit-transform': "scale(" + _self.hScaling + "," + _self.vScaling + ")" });
+        }
     }
 
 }
+
+
+$(document).ready(function () {
+    /* selection handlers - need a better place */
+    //Clone 
+    $("#one-screen").click(function () {
+        numberOfScreens = [1, 1];
+        DisplayConfiguration.init('MIRROR', 0, 'IMPLICIT', numberOfScreens);
+    });
+
+    //four screen left top
+    $("#four-screen-left-top").click(function () {
+        numberOfScreens = [2, 2];
+        DisplayConfiguration.init('SPLIT', 0, 'IMPLICIT', numberOfScreens);
+    });
+
+    //four screen right top
+    $("#four-screen-right-top").click(function () {
+        numberOfScreens = [2, 2];
+        DisplayConfiguration.init('SPLIT', 1, 'IMPLICIT', numberOfScreens);
+    });
+
+    //four screen left bottom
+    $("#four-screen-left-bottom").click(function () {
+        numberOfScreens = [2, 2];
+        DisplayConfiguration.init('SPLIT', 2, 'IMPLICIT', numberOfScreens);
+    });
+
+    //four screen right bottom
+    $("#four-screen-right-bottom").click(function () {
+        numberOfScreens = [2, 2];
+        DisplayConfiguration.init('SPLIT', 3, 'IMPLICIT', numberOfScreens);
+    });
+});
