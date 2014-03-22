@@ -239,10 +239,15 @@
 
 #screen-options {
 	display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: #808080;
 }
 
-#multiple-screen {
+.multiple-screen {
 	display: inline-block;
+    padding-left: 40px;
+    padding-right: 20px;
 }
 
 #one-screen {

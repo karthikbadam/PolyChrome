@@ -10,6 +10,9 @@
 
         <style>
 
+
+
+            
             
             
             html {
@@ -28,29 +31,29 @@
               font: 10px sans-serif;
               Padding:  0px;
             }
-
+            
             .axis,
             .frame {
               shape-rendering: crispEdges;
             }
-
+            
             .axis line {
               stroke: #ddd;
             }
-
+            
             .axis path {
               display: none;
             }
-
+            
             .frame {
               fill: none;
               stroke: #aaa;
             }
-
+            
             circle {
               fill-opacity: .7;
-               
-                  
+            
+            
             }
             
         </style>
@@ -74,6 +77,25 @@
         <div id="polychrome-actions">
             <div id="polychrome-id">
         Peer ID:
+            </div>
+
+            <div id="screen-options">
+
+                <div class="multiple-screen">
+                    <input type="button" id="one-screen">    
+                </div>
+
+                <div class="multiple-screen">
+                    <div>
+                        <input type="button" class="multiple-screen-element" id="four-screen-left-top">
+                        <input type="button" class="multiple-screen-element" id="four-screen-right-top">
+                    </div>
+                    <div>
+                        <input type="button" class="multiple-screen-element" id="four-screen-left-bottom">
+                        <input type="button" class="multiple-screen-element" id="four-screen-right-bottom">
+                    </div>
+                </div>
+
             </div>
 
             <div id="polychrome-checkbox-div">
@@ -109,7 +131,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div id="polychrome-display-config">
                 <div id="polychrome-display-text">DISPLAY</div>
                 <div id="polychrome-display-div">
@@ -122,7 +144,6 @@
                     </div>
                 </div>
             </div>
-
             <div id="polychrome-disconnect">
         DISCONNECT
             </div>

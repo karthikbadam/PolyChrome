@@ -587,9 +587,9 @@ io.sockets.on('connection', function (socket) {
     socket.on('getMouseEvents', function (data) {
         console.log(JSON.stringify(data));
 
-        var events = fs.readFileSync('cache/interaction-'+data.url+ '.json', 'utf8')
-        var parsedEvents = JSON.parse("["+ events +"{}]");
-        socket.emit('MouseEvents',parsedEvents);
+        //var events = fs.readFileSync('cache/interaction-'+data.url+ '.json', 'utf8')
+        //var parsedEvents = JSON.parse("["+ events +"{}]");
+        //socket.emit('MouseEvents',parsedEvents);
     });
 });
 
