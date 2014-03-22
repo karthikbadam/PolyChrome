@@ -166,8 +166,8 @@ var ServerConnection = {
         console.log("got events " + events.length);
         for (var i = 0; i < events.length; i++) {
             var data = events[i];
-            var posX = data.posX * screenWidth / idealWidth - document.body.scrollLeft;
-            var posY = data.posY * screenHeight / idealHeight - document.body.scrollTop;
+            var posX = data.posX * screenWidth / idealWidth;
+            var posY = data.posY * screenHeight / idealHeight;
             var targetId = data.targetId;
             var targetName = data.target;
             var element = document.getElementById(targetId);
@@ -457,11 +457,6 @@ var DisplayConfiguration = {
             _self.yTranslate = (Math.floor(_self.screen / _self.hScaling)) * screenHeight;
             $('html').css({ '-webkit-transform-origin': (_self.xTranslate) +"px " + (_self.yTranslate)+"px"});
             $('html').css({ '-webkit-transform': "scale(" + _self.hScaling + "," + _self.vScaling + ")" });
-            
-
-            //$('html').css('left', -_self.xTranslate);
-            //$('html').css('top', -_self.yTranslate);
-
             
         } 
     }

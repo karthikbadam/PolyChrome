@@ -431,7 +431,7 @@ d3.csv("/polychrome-datasets/flowers.csv", function (error, data) {
     /* call polychromify */
     PolyChromeEventHandler.polyChromify();
     FeedbackPanel.setDisplayBackground();
-    DisplayConfiguration.init('SPLIT', 1, 'IMPLICIT', [2,1]);
+    DisplayConfiguration.init('SPLIT', 0, 'IMPLICIT', [2, 2]);
     
     /* state synchronization */
     ServerConnection.get();

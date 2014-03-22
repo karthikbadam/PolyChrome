@@ -42,10 +42,14 @@ function PolyChromeEvent(options) {
 
     if (eventName == null) {
         /* raise error */
+    } 
+
+    if (eventName && eventName.name) {
+        _self.eventName = eventName.name;
+    } else {
+        _self.eventName = "MouseEvents";
     }
-
-    _self.eventName = eventName.name;
-
+    
     /* if custom event */
     if (options.isNative == false) {
         _self.customContent = options.customContent;
@@ -137,8 +141,8 @@ PolyChromeEvent.prototype.execute = function () {
             oEvent.initMouseEvent(_self.eventType, options.bubbles, options.cancelable, document.defaultView,
             1, px, py, px, py, options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, 
             options.button, _self.element);
-
-            _self.element.dispatchEvent(oEvent);
+            if (_self.element && oEvent)
+                _self.element.dispatchEvent(oEvent);
 
         } else {
 
