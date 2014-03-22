@@ -58,12 +58,12 @@ var FeedbackPanel = {
                 rect = {},
                 drag = false;
 
-                var width = 200; 
+                var width = 200;
                 var height = 100;
                 $(canvas).attr("width", width);
                 $(canvas).attr("height", height);
                 $(canvas).css("background-color", "#FFF");
-                
+
                 ctx.strokeStyle = "rgba(255 , 0, 0, 0.2)";
                 ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
                 ctx.lineWidth = '5';
@@ -73,24 +73,24 @@ var FeedbackPanel = {
                 canvas.addEventListener('mousedown', mouseDown, false);
                 canvas.addEventListener('mouseup', mouseUp, false);
                 canvas.addEventListener('mousemove', mouseMove, false);
-                
+
                 function getMousePos(canvas, evt) {
                     var rect1 = canvas.getBoundingClientRect();
                     return {
-                      x: evt.clientX - rect1.left,
-                      y: evt.clientY - rect1.top
+                        x: evt.clientX - rect1.left,
+                        y: evt.clientY - rect1.top
                     };
-                  }
+                }
 
                 function mouseDown(e) {
                     var mousePos = getMousePos(canvas, e);
                     rect.startX = mousePos.x;
-                    rect.startY = mousePos.y ;
+                    rect.startY = mousePos.y;
                     drag = true;
                 }
 
                 function mouseUp() {
-                    
+
                     drag = false;
                 }
 
@@ -100,7 +100,7 @@ var FeedbackPanel = {
                         rect.w = (mousePos.x - rect.startX);
                         rect.h = (mousePos.y - rect.startY);
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.fillRect(rect.startX, rect.startY, rect.w , rect.h);
+                        ctx.fillRect(rect.startX, rect.startY, rect.w, rect.h);
                     }
                 }
 
@@ -253,7 +253,7 @@ var PeerConnection = {
                     conn.on('open', function () {
                         _self.connections.push(conn);
                         FeedbackPanel.addNewPeer(conn.peer);
-                        alert("Connected to -" + conn.peer);
+                        //alert("Connected to -" + conn.peer);
                         console.log("connected to " + conn.peer);
                     });
 
@@ -274,7 +274,7 @@ var PeerConnection = {
                 _self.connections.push(conn);
                 FeedbackPanel.addNewPeer(conn.peer);
                 console.log("connected to " + conn.peer);
-                alert("Connected to -" + conn.peer);
+                //alert("Connected to -" + conn.peer);
             });
 
             conn.on('data', function (data) {
@@ -325,7 +325,7 @@ var PeerConnection = {
             });
 
             event.execute();
-            
+
         } else {
 
         }
@@ -334,7 +334,7 @@ var PeerConnection = {
 
 var PolyChromeEventHandler = {
     event: null,
-   
+
     init: function () {
 
     },
@@ -350,6 +350,14 @@ var PolyChromeEventHandler = {
             $("#polychrome-actions").slideToggle("slow");
         });
 
+        $(document).keyup(function (e) {
+            //escape
+            if (e.keyCode == 27) {
+                $('#polychrome-toggle').toggleClass('active');
+                $("#polychrome-actions").slideToggle("slow");
+            } 
+        });
+
 
         /* assign unique ids to each dom element -- for retrieval */
         var items = document.getElementsByTagName("*");
@@ -362,13 +370,13 @@ var PolyChromeEventHandler = {
     },
 
     wrapEvent: function (eventType, posX, posY, element, nativeEvent) {
-        
+
         var _self = this;
 
         _self.event = new PolyChromeEvent({
             deviceId: deviceId,
-            posX: (posX + DisplayConfiguration.xTranslate)/DisplayConfiguration.hScaling,
-            posY: (posY + DisplayConfiguration.yTranslate)/DisplayConfiguration.vScaling,
+            posX: (posX + DisplayConfiguration.xTranslate) / DisplayConfiguration.hScaling,
+            posY: (posY + DisplayConfiguration.yTranslate) / DisplayConfiguration.vScaling,
             eventType: eventType,
             element: element,
             nativeEvent: nativeEvent,
@@ -407,8 +415,8 @@ var SHARING = {
 }
 
 var DISPLAY = {
-    MIRROR : 0,
-    SPLIT : 1
+    MIRROR: 0,
+    SPLIT: 1
 }
 
 /* Display modules */
@@ -475,7 +483,7 @@ var DisplayConfiguration = {
             /* translation */
             $('html').css({ '-webkit-transform-origin': (_self.xTranslate) + "px " + (_self.yTranslate) + "px" });
             $('html').css({ '-webkit-transform': "scale(" + _self.hScaling + "," + _self.vScaling + ")" });
-            
+
             _self.TAG = "TABLET";
         }
     }

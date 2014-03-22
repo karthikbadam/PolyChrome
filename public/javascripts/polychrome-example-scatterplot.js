@@ -82,16 +82,31 @@ var Panel = {
 
         if (event.isPolyChrome) {
 
-            // bounding box
-            Panel.bbox = Panel.panel.append("rect")
+            if (DisplayConfiguration.TAG == "TABLET" && Panel.bbox) {
+
+                Panel.bbox.remove();
+                Panel.bbox = null;
+            }
+
+            var color1 = "#aaa";
+
+            if (DisplayConfiguration.TAG == "PIVOTWALL" || event.deviceId == deviceId) {
+
+                if (deviceId != event.deviceId)
+                    color1 = Panel.color(event.deviceId);
+
+                // bounding box
+                Panel.bbox = Panel.panel.append("rect")
                                     .attr("id", "polychrome-selection")
                                     .attr("x", Panel.start[0])
                                     .attr("y", Panel.start[1])
                                     .attr("width", "5")
                                     .attr("height", "5")
-                                    .style("fill", Panel.color(event.deviceId))
+                                    .style("fill", color1)
                                     .style("fill-opacity", 0.3);
-            Panel.inUse = true;
+
+                Panel.inUse = true;
+            }
 
         } else {
 
@@ -136,10 +151,10 @@ var Panel = {
                     Toolbox.select([[(box[0] - Panel.x), (box[1] - Panel.y)], [(box[0] - Panel.x), (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y)]], Toolbox.inclusive);
 
                     // Remove the bounding box
-                
-                    Panel.bbox.remove();   
-                } 
-                Panel.bbox = null;
+
+                    //Panel.bbox.remove();   
+                }
+
                 Panel.inUse = false;
             }
         }
