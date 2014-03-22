@@ -135,11 +135,13 @@ PolyChromeEvent.prototype.execute = function () {
 
             /* recognize that this is PolyChrome event */
             oEvent.isPolyChrome = true;
-            var px = _self.posX - DisplayConfiguration.xTranslate; 
-            var py = _self.posY - DisplayConfiguration.yTranslate; 
+            oEvent.deviceId = _self.deviceId;
+
+            var px = _self.posX - DisplayConfiguration.xTranslate;
+            var py = _self.posY - DisplayConfiguration.yTranslate;
 
             oEvent.initMouseEvent(_self.eventType, options.bubbles, options.cancelable, document.defaultView,
-            1, px, py, px, py, options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, 
+            1, px, py, px, py, options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
             options.button, _self.element);
             if (_self.element && oEvent)
                 _self.element.dispatchEvent(oEvent);
@@ -150,6 +152,8 @@ PolyChromeEvent.prototype.execute = function () {
             options.clientY = _self.posY;
             var evt = document.createEventObject();
             evt.isPolyChrome = true;
+            evt.deviceId = _self.deviceId;
+
             oEvent = extend(evt, options);
             element.fireEvent('on' + _self.eventType, oEvent);
         }
@@ -162,6 +166,8 @@ PolyChromeEvent.prototype.execute = function () {
         if (document.createEvent) {
             oEvent = document.createEvent("HTMLEvents");
             oEvent.isPolyChrome = true;
+            oEvent.deviceId = _self.deviceId;
+
             oEvent.initEvent(_self.eventType, options.bubbles, options.cancelable);
             element.dispatchEvent(oEvent);
 
@@ -171,6 +177,8 @@ PolyChromeEvent.prototype.execute = function () {
             options.clientY = options.pointerY;
             var evt = document.createEventObject();
             evt.isPolyChrome = true;
+            evt.deviceId = _self.deviceId;
+
             oEvent = extend(evt, options);
             element.fireEvent('on' + _self.eventType, oEvent);
         }

@@ -422,6 +422,7 @@ var DisplayConfiguration = {
     screen: 0,
     xTranslate: 0,
     yTranslate: 0,
+    TAG: "TABLET",
 
     init: function (space, screen, sharing, numberOfScreens) {
         var _self = this;
@@ -458,6 +459,8 @@ var DisplayConfiguration = {
             $('html').css({ '-webkit-transform-origin': (_self.xTranslate) + "px " + (_self.yTranslate) + "px" });
             $('html').css({ '-webkit-transform': "scale(" + _self.hScaling + "," + _self.vScaling + ")" });
 
+            _self.TAG = "PIVOTWALL";
+
         } else {
             _self.numberOfScreens = [1, 1];
             _self.hScaling = 1;
@@ -465,13 +468,15 @@ var DisplayConfiguration = {
             _self.screen = 0;
             _self.xTranslate = 0;
             _self.yTranslate = 0;
-              /* scaling */
+            /* scaling */
             _self.hScaling = _self.numberOfScreens[0];
             _self.vScaling = _self.numberOfScreens[1];
 
             /* translation */
             $('html').css({ '-webkit-transform-origin': (_self.xTranslate) + "px " + (_self.yTranslate) + "px" });
             $('html').css({ '-webkit-transform': "scale(" + _self.hScaling + "," + _self.vScaling + ")" });
+            
+            _self.TAG = "TABLET";
         }
     }
 

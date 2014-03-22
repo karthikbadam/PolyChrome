@@ -13,12 +13,15 @@ var Panel = {
     bbox: null,
     start: null,
     inUse: false,
+    color: null,
 
     init: function (svg, width, height) {
         var _self = this;
         _self.panel = svg.append("g");
         _self.width = width;
         _self.height = height;
+
+        _self.color = d3.scale.category10();
 
         /* viewport polychrome rectangle */
         _self.panel.append("rect")
@@ -78,6 +81,7 @@ var Panel = {
         var event = d3.event;
 
         if (event.isPolyChrome) {
+
             // bounding box
             Panel.bbox = Panel.panel.append("rect")
                                     .attr("id", "polychrome-selection")
@@ -85,8 +89,8 @@ var Panel = {
                                     .attr("y", Panel.start[1])
                                     .attr("width", "5")
                                     .attr("height", "5")
-                                    .style("fill", "#aaa")
-                                    .style("fill-opacity", 0.4);
+                                    .style("fill", Panel.color(event.deviceId))
+                                    .style("fill-opacity", 0.3);
             Panel.inUse = true;
 
         } else {
@@ -127,11 +131,14 @@ var Panel = {
             if (Panel.inUse) {
 
                 // Forward the selection
-                var box = Panel.getBoundingBox(d3.mouse(this));
-                Toolbox.select([[(box[0] - Panel.x), (box[1] - Panel.y)], [(box[0] - Panel.x), (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y)]], Toolbox.inclusive);
+                if (DisplayConfiguration.TAG == "TABLET") {
+                    var box = Panel.getBoundingBox(d3.mouse(this));
+                    Toolbox.select([[(box[0] - Panel.x), (box[1] - Panel.y)], [(box[0] - Panel.x), (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y) + box[3]], [(box[0] - Panel.x) + box[2], (box[1] - Panel.y)]], Toolbox.inclusive);
 
-                // Remove the bounding box
-                Panel.bbox.remove();
+                    // Remove the bounding box
+                
+                    Panel.bbox.remove();   
+                } 
                 Panel.bbox = null;
                 Panel.inUse = false;
             }
