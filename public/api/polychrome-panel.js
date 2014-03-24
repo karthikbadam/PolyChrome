@@ -103,8 +103,6 @@ var FeedbackPanel = {
                         ctx.fillRect(rect.startX, rect.startY, rect.w, rect.h);
                     }
                 }
-
-
             },
             allowTaint: true
         });
@@ -136,8 +134,6 @@ var ServerConnection = {
         _self.socket = io.connect('http://' + hostname + ":" + port);
 
         _self.socket.on('MouseEvent', function (data) {
-
-
 
         });
 
@@ -395,7 +391,6 @@ var PolyChromeEventHandler = {
     },
 
     createCustomEvent: function (eventName) {
-
     }
 
 }

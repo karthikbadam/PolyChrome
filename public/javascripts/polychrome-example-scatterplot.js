@@ -82,15 +82,15 @@ var Panel = {
 
         if (event.isPolyChrome) {
 
-            if (DisplayConfiguration.TAG == "TABLET" && Panel.bbox) {
-
-                Panel.bbox.remove();
-                Panel.bbox = null;
-            }
-
-            var color1 = "#aaa";
-
             if (DisplayConfiguration.TAG == "PIVOTWALL" || event.deviceId == deviceId) {
+
+                if (DisplayConfiguration.TAG == "TABLET" && Panel.bbox) {
+
+                    Panel.bbox.remove();
+                    Panel.bbox = null;
+                }
+
+                var color1 = "#aaa";
 
                 if (deviceId != event.deviceId)
                     color1 = Panel.color(event.deviceId);
