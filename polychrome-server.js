@@ -85,6 +85,9 @@ app.get('/scatterplot', routes.scatterplot);
 /* app4 iris */
 app.get('/iris', routes.iris);
 
+/* app5 map */
+app.get('/map', routes.map);
+
 /* requests for data */
 app.get('/data/*', function (req, res) {
     console.log("data request captured: " + req.url);

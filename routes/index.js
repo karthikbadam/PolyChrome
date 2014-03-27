@@ -26,3 +26,8 @@ exports.scatterplot = function(req, res){
 exports.iris = function(req, res){
   res.render('iris-scatterplot', {});
 };
+
+
+exports.map = function(req, res){
+  res.render('mapexplore', {});
+};
