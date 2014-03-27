@@ -122,10 +122,12 @@
                           .each(transform) // update existing markers
                           .enter().append("svg:svg")
                           .each(transform)
-                          .attr("class", "marker");
+                          .attr("class", "marker")
+                          .attr("id", function(d){return d.key;});
 
                         // Add a circle.
                         marker.append("svg:circle")
+                          .attr("id", "rand")
                           .attr("r", 4)
                           .attr("cx", padding)
                           .attr("cy", padding);
@@ -159,23 +161,30 @@
                         .style("left", (d.x - padding) + "px")
                         .style("top", (d.y - padding) + "px");
                         }
-                         PolyChromeEventHandler.polyChromify();
-
+                         
                     };
 
 
                 };
 
-                /* call polychromify */
-               
-                FeedbackPanel.setDisplayBackground();
-
-                /* state synchronization */
-                ServerConnection.get();
-
+              
                 // Bind our overlay to the map…
                 overlay.setMap(map);
-            });
+
+                google.maps.event.addListenerOnce(map, 'idle', function() {
+                        /* call polychromify */
+                        PolyChromeEventHandler.polyChromify();
+                        FeedbackPanel.setDisplayBackground();
+
+                        /* state synchronization */
+                        ServerConnection.get();
+ 
+                      //setTimeout(function() {
+                      //  // wait some more (...)
+                      //  google.maps.event.trigger(marker, 'click'); //still doesn't work
+                      //},2000);
+                });
+              });
 
         </script>
     </body>

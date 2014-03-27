@@ -283,7 +283,8 @@ var PeerConnection = {
     send: function (toSend) {
         var _self = this;
         _self.connections.forEach(function (connection) {
-            connection.send(toSend);
+            if (connection)
+                connection.send(toSend);
         });
     },
 
