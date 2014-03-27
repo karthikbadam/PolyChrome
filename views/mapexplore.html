@@ -1,97 +1,185 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
-    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.29.1"></script>
-    <style type="text/css">
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <script src="http://code.jquery.com/jquery-2.1.0.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="javascripts/html2canvas.js"></script>
+        <script src="/api/polychrome-peer.js"></script>
+        <script src="/api/polychrome-event.js"></script>
+        <script src="/api/polychrome-panel.js"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+        <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.29.1"></script>
+        <style type="text/css">
+                  
+            html, body, #map {
+              width: 100%;
+              height: 100%;
+              margin: 0;
+              padding: 0;
+            }
+            
+            .stations, .stations svg {
+              position: absolute;
+            }
+            
+            .stations svg {
+              width: 60px;
+              height: 20px;
+              font: 10px sans-serif;
+              border: 0px;
+            }
+            
+            .stations svg:hover {
+              width: 60px;
+              height: 20px;
+              font: 10px sans-serif;
+              border: 0px;
+              cursor: pointer;
+            }
+            
+            .stations circle {
+              fill: red;
+              pointer-events:   none;
+               stroke: black; 
+              stroke-width: 1.5px;
+            }
+            
+            .stations text {
+             
+              pointer-events:   none;
+            }
+            
+            .stations circle:hover {
+              fill: green;
+              stroke: black; 
+              stroke-width: 1.5px;
+              cursor: pointer;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+        <script type="text/javascript">
 
-html, body, #map {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
 
-.stations, .stations svg {
-  position: absolute;
-}
+            // Create the Google Map…
+            var map = new google.maps.Map(d3.select("#map").node(), {
+                zoom: 8,
+                center: new google.maps.LatLng(37.76487, -122.41948),
+                mapTypeId: google.maps.MapTypeId.TERRAIN,
+                scrollwheel: false,
+                scaleControl: false
+            });
 
-.stations svg {
-  width: 60px;
-  height: 20px;
-  padding-right: 100px;
-  font: 10px sans-serif;
-}
+            var marker1 = new google.maps.Marker({
+                position: map.getCenter(),
+                map: map,
+                title: 'Click to zoom'
+            });
 
-.stations circle {
-  fill: brown;
-  stroke: black;
-  stroke-width: 1.5px;
-}
 
-    </style>
-  </head>
-  <body>
-    <div id="map"></div>
-    <script type="text/javascript">
+            /* initializing PolyChrome */
+            PolyChromeEventHandler.init();
+            PeerConnection.init();
+            FeedbackPanel.init();
+            ServerConnection.init("maps");
+            /* end PolyChrome block */
 
-// Create the Google Map…
-var map = new google.maps.Map(d3.select("#map").node(), {
-  zoom: 8,
-  center: new google.maps.LatLng(37.76487, -122.41948),
-  mapTypeId: google.maps.MapTypeId.TERRAIN
-});
+            google.maps.event.addListener(map, 'center_changed', function () {
+                console.log("center changed");
 
-// Load the station data. When the data comes back, create an overlay.
-d3.json("/polychrome-datasets/stations.json", function(data) {
-  var overlay = new google.maps.OverlayView();
+                //create custom event and set handler 
+                map.setZoom(8);
+            });
 
-  // Add the container when the overlay is added to the map.
-  overlay.onAdd = function() {
-    var layer = d3.select(this.getPanes().overlayLayer).append("div")
-        .attr("class", "stations");
 
-    // Draw each marker as a separate SVG element.
-    // We could use a single SVG, but what size would it have?
-    overlay.draw = function() {
-      var projection = this.getProjection(),
-          padding = 10;
+            //google.maps.event.addListener(marker, 'click', function () {
+            //    map.setZoom(8);
+            //    map.setCenter(marker.getPosition());
+            //});
 
-      var marker = layer.selectAll("svg")
-          .data(d3.entries(data))
-          .each(transform) // update existing markers
-        .enter().append("svg:svg")
-          .each(transform)
-          .attr("class", "marker");
 
-      // Add a circle.
-      marker.append("svg:circle")
-          .attr("r", 4.5)
-          .attr("cx", padding)
-          .attr("cy", padding);
 
-      // Add a label.
-      marker.append("svg:text")
-          .attr("x", padding + 7)
-          .attr("y", padding)
-          .attr("dy", ".31em")
-          .text(function(d) { return d.key; });
+            // Load the station data. When the data comes back, create an overlay.
+            d3.json("/polychrome-datasets/stations.json", function (data) {
+                var overlay = new google.maps.OverlayView();
 
-      function transform(d) {
-        d = new google.maps.LatLng(d.value[1], d.value[0]);
-        d = projection.fromLatLngToDivPixel(d);
-        return d3.select(this)
-            .style("left", (d.x - padding) + "px")
-            .style("top", (d.y - padding) + "px");
-      }
-    };
-  };
+                // Add the container when the overlay is added to the map.
+                overlay.onAdd = function () {
+                    var layer = d3.select(this.getPanes().overlayMouseTarget).append("div")
+                    .attr("class", "stations");
 
-  // Bind our overlay to the map…
-  overlay.setMap(map);
-});
+                    // Draw each marker as a separate SVG element.
+                    // We could use a single SVG, but what size would it have?
+                    overlay.draw = function () {
+                        var projection = this.getProjection(),
+                        padding = 10;
 
-    </script>
-  </body>
+                        var marker = layer.selectAll("svg")
+                          .data(d3.entries(data))
+                          .each(transform) // update existing markers
+                          .enter().append("svg:svg")
+                          .each(transform)
+                          .attr("class", "marker");
+
+                        // Add a circle.
+                        marker.append("svg:circle")
+                          .attr("r", 4)
+                          .attr("cx", padding)
+                          .attr("cy", padding);
+
+                        marker.on("click", function () {
+                            var event = d3.event;
+                            var pos = $(event.target).position();
+                            if (event.isPolyChrome) {
+                                var latlng = overlay.getProjection().fromDivPixelToLatLng(new google.maps.Point(pos.left + padding, pos.top + padding));
+                                //map.setZoom(10);
+                                //map.setCenter(latlng);
+                                marker1.setPosition(latlng);
+                            } else {
+                                /* recycle event and send it to other peers */
+                                PolyChromeEventHandler.wrapEvent(event.type, pos.left, pos.top, event.target, event);
+                                PolyChromeEventHandler.shareEvent();
+                            }
+                        });
+
+                        // Add a label.
+                        marker.append("svg:text")
+                          .attr("x", padding + 7)
+                          .attr("y", padding)
+                          .attr("dy", ".31em")
+                          .text(function (d) { return d.key; });
+
+                        function transform(d) {
+                            d = new google.maps.LatLng(d.value[1], d.value[0]);
+                            d = projection.fromLatLngToDivPixel(d);
+                            return d3.select(this)
+                        .style("left", (d.x - padding) + "px")
+                        .style("top", (d.y - padding) + "px");
+                        }
+                         PolyChromeEventHandler.polyChromify();
+
+                    };
+
+
+                };
+
+                /* call polychromify */
+               
+                FeedbackPanel.setDisplayBackground();
+
+                /* state synchronization */
+                ServerConnection.get();
+
+                // Bind our overlay to the map…
+                overlay.setMap(map);
+            });
+
+        </script>
+    </body>
 </html>
+
+
+<!--Explore on mobile -- sync views -- the guy first opens is the master -- find the targets -- randomly around a source --keep a counter for each user--> 
