@@ -86,6 +86,7 @@
             FeedbackPanel.init();
             ServerConnection.init("maps");
             /* end PolyChrome block */
+            var isPolyChrome = false;
 
             var currentCenter = map.getCenter();
             google.maps.event.addListener(map, 'center_changed', function (event) {
@@ -94,20 +95,24 @@
                 var center = map.getCenter();
                 console.log(Math.abs(center.lat() - currentCenter.lat()));
                 console.log(Math.abs(center.lng() - currentCenter.lng()));
-                if (Math.abs(center.lat() - currentCenter.lat()) < 0.1 && Math.abs(center.lng() - currentCenter.lng()) < 0.1) {
+                if (isPolyChrome || (Math.abs(center.lat() - currentCenter.lat()) < 0.1 && Math.abs(center.lng() - currentCenter.lng()) < 0.1)) {
                     /* do nothing */
+                    isPolyChrome = false;
                 } else {
                     //create custom event and set handler 
                     map.setZoom(8);
                     PolyChromeEventHandler.createCustomEvent("center_changed", { lat: center.lat(), lng: center.lng() });
                     PolyChromeEventHandler.event.shareEvent();
                     currentCenter = center;
+                    isPolyChrome = true; 
                 }
 
             });
 
+
             PolyChromeEventHandler.setCustomEventHandler(function (content) {
                 map.setCenter(new google.maps.LatLng(content.lat, content.lng));
+                isPolyChrome = true;
             });
 
             //google.maps.event.addListener(marker, 'click', function () {
