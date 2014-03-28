@@ -289,7 +289,7 @@ var PeerConnection = {
     },
 
     onData: function (connectedDeviceId, data) {
-        var eventType = null;
+        var eventType = data.eventType;
         var eventName = null;
 
         for (var name in eventMatchers) {
@@ -300,8 +300,8 @@ var PeerConnection = {
             }
         }
 
-        if (!eventType)
-            throw new SyntaxError('Only HTMLEvents and MouseEvents interfaces are supported');
+        //if (!eventType)
+        //    throw new SyntaxError('Only HTMLEvents and MouseEvents interfaces are supported');
 
         if (eventType && eventName) {
             var posX = data.posX * screenWidth / idealWidth;
@@ -323,14 +323,24 @@ var PeerConnection = {
 
             event.execute();
 
-        } else {
+        } else if (eventType) {
 
+            /* custom event */
+            var event = new PolyChromeEvent({
+                deviceId: connectedDeviceId,
+                content: data.content,
+                eventType: data.eventType,
+                isNative: data.isNative
+            });
+
+            event.execute();
         }
     }
 }
 
 var PolyChromeEventHandler = {
     event: null,
+    customHandler: null,
 
     init: function () {
 
@@ -352,7 +362,7 @@ var PolyChromeEventHandler = {
             if (e.keyCode == 27) {
                 $('#polychrome-toggle').toggleClass('active');
                 $("#polychrome-actions").slideToggle("slow");
-            } 
+            }
         });
 
 
@@ -391,7 +401,19 @@ var PolyChromeEventHandler = {
 
     },
 
-    createCustomEvent: function (eventName) {
+    createCustomEvent: function (eventType, content) {
+        var _self = this;
+        _self.event = new PolyChromeEvent({
+            deviceId: deviceId, 
+            content: content, 
+            eventType: eventType, 
+            isNative: false
+        });
+    },
+
+    setCustomEventHandler: function (Handler) {
+        var _self = this;
+        _self.customHandler = Handler;
     }
 
 }

@@ -22,37 +22,42 @@ function PolyChromeEvent(options) {
 
     var _self = this;
 
-    //_self.nativeEvent = options.nativeEvent;
-    _self.pageWidth = options.pageWidth;
-    _self.pageHeight = options.pageHeight;
-    _self.eventType = options.eventType;
-    _self.deviceId = options.deviceId;
-    _self.posX = options.posX;
-    _self.posY = options.posY;
-    _self.element = options.element; 
-    
     if (options.isNative == null) {
         /* raise error */
     }
 
     _self.isNative = options.isNative;
 
-    /* check if eventType is known type */
-    var eventName = _self.checkEvent(_self.eventType);
-
-    if (eventName == null) {
-        /* raise error */
-    } 
-
-    if (eventName && eventName.name) {
-        _self.eventName = eventName.name;
-    } else {
-        _self.eventName = "MouseEvents";
-    }
+    if (options.isNative) {
+        //_self.nativeEvent = options.nativeEvent;
+        _self.pageWidth = options.pageWidth;
+        _self.pageHeight = options.pageHeight;
+        _self.eventType = options.eventType;
+        _self.deviceId = options.deviceId;
+        _self.posX = options.posX;
+        _self.posY = options.posY;
+        _self.element = options.element; 
     
+        /* check if eventType is known type */
+        var eventName = _self.checkEvent(_self.eventType);
+
+        if (eventName == null) {
+            /* raise error */
+        }
+
+        if (eventName && eventName.name) {
+            _self.eventName = eventName.name;
+        } else {
+            _self.eventName = "MouseEvents";
+        }
+    }
+
+
     /* if custom event */
     if (options.isNative == false) {
-        _self.customContent = options.customContent;
+        _self.eventType = options.eventType;
+        _self.deviceId = options.deviceId;    
+        _self.content = options.content;
     }
 
 }
@@ -71,29 +76,30 @@ PolyChromeEvent.prototype.checkEvent = function (eventType) {
 
 PolyChromeEvent.prototype.shareEvent = function () {
     var _self = this;
-
-    var toSend = new Object();
-    toSend.posX = (_self.posX) * idealWidth / screenWidth;
-    toSend.posY = (_self.posY) * idealHeight / screenHeight;
-    toSend.eventType = _self.eventType;
-    toSend.targetId = _self.element.id;
-    toSend.target = _self.nodeName;
-    toSend.deviceId = _self.deviceId;
-
+    var toSend = _self.getPacket();
     PeerConnection.send(toSend);
 }
 
 PolyChromeEvent.prototype.getPacket = function () {
     var _self = this;
-
     var toSend = new Object();
-    toSend.posX = (_self.posX) * idealWidth / screenWidth;
-    toSend.posY = (_self.posY) * idealHeight / screenHeight;
-    toSend.eventType = _self.eventType;
-    toSend.targetId = _self.element.id;
-    toSend.target = _self.nodeName;
-    toSend.deviceId = _self.deviceId;
+        
+   if (_self.isNative) {
+       toSend.posX = (_self.posX) * idealWidth / screenWidth;
+        toSend.posY = (_self.posY) * idealHeight / screenHeight;
+        toSend.eventType = _self.eventType;
+        toSend.targetId = _self.element.id;
+        toSend.target = _self.nodeName;
+        toSend.deviceId = _self.deviceId;
 
+        
+    } else {
+        toSend.content = _self.content;
+        toSend.eventType = _self.eventType;
+        toSend.isNative = _self.isNative;
+        toSend.deviceId = _self.deviceId;
+
+    }
     return toSend;
 }
 
@@ -123,65 +129,70 @@ function extend(destination, source) {
 
 PolyChromeEvent.prototype.execute = function () {
     var _self = this;
-    var oEvent = null;
 
-    var options = new Object();
-    options = extend(options, defaultOptions);
+    if (_self.isNative) {
+        var oEvent = null;
 
-    if (_self.eventName == "MouseEvents") {
+        var options = new Object();
+        options = extend(options, defaultOptions);
 
-        if (document.createEvent) {
-            oEvent = document.createEvent("MouseEvents");
+        if (_self.eventName == "MouseEvents") {
 
-            /* recognize that this is PolyChrome event */
-            oEvent.isPolyChrome = true;
-            oEvent.deviceId = _self.deviceId;
+            if (document.createEvent) {
+                oEvent = document.createEvent("MouseEvents");
 
-            var px = _self.posX - DisplayConfiguration.xTranslate;
-            var py = _self.posY - DisplayConfiguration.yTranslate;
+                /* recognize that this is PolyChrome event */
+                oEvent.isPolyChrome = true;
+                oEvent.deviceId = _self.deviceId;
 
-            oEvent.initMouseEvent(_self.eventType, options.bubbles, options.cancelable, document.defaultView,
+                var px = _self.posX - DisplayConfiguration.xTranslate;
+                var py = _self.posY - DisplayConfiguration.yTranslate;
+
+                oEvent.initMouseEvent(_self.eventType, options.bubbles, options.cancelable, document.defaultView,
             1, px, py, px, py, options.ctrlKey, options.altKey, options.shiftKey, options.metaKey,
             options.button, _self.element);
-            if (_self.element && oEvent)
-                _self.element.dispatchEvent(oEvent);
+                if (_self.element && oEvent)
+                    _self.element.dispatchEvent(oEvent);
 
-        } else {
+            } else {
 
-            options.clientX = _self.posX;
-            options.clientY = _self.posY;
-            var evt = document.createEventObject();
-            evt.isPolyChrome = true;
-            evt.deviceId = _self.deviceId;
+                options.clientX = _self.posX;
+                options.clientY = _self.posY;
+                var evt = document.createEventObject();
+                evt.isPolyChrome = true;
+                evt.deviceId = _self.deviceId;
 
-            oEvent = extend(evt, options);
-            element.fireEvent('on' + _self.eventType, oEvent);
+                oEvent = extend(evt, options);
+                element.fireEvent('on' + _self.eventType, oEvent);
+            }
+
+            FeedbackPanel.addEventFeedback(_self.deviceId, _self.eventType, parseInt(_self.posX), parseInt(_self.posY));
+
+        } else if (_self.eventName == "HTMLEvents") {
+
+            if (document.createEvent) {
+                oEvent = document.createEvent("HTMLEvents");
+                oEvent.isPolyChrome = true;
+                oEvent.deviceId = _self.deviceId;
+
+                oEvent.initEvent(_self.eventType, options.bubbles, options.cancelable);
+                element.dispatchEvent(oEvent);
+
+            } else {
+
+                options.clientX = options.pointerX;
+                options.clientY = options.pointerY;
+                var evt = document.createEventObject();
+                evt.isPolyChrome = true;
+                evt.deviceId = _self.deviceId;
+
+                oEvent = extend(evt, options);
+                element.fireEvent('on' + _self.eventType, oEvent);
+            }
+
         }
+    } else {
 
-        FeedbackPanel.addEventFeedback(_self.deviceId, _self.eventType, parseInt(_self.posX), parseInt(_self.posY));
-
-
-    } else if (_self.eventName == "HTMLEvents") {
-
-        if (document.createEvent) {
-            oEvent = document.createEvent("HTMLEvents");
-            oEvent.isPolyChrome = true;
-            oEvent.deviceId = _self.deviceId;
-
-            oEvent.initEvent(_self.eventType, options.bubbles, options.cancelable);
-            element.dispatchEvent(oEvent);
-
-        } else {
-
-            options.clientX = options.pointerX;
-            options.clientY = options.pointerY;
-            var evt = document.createEventObject();
-            evt.isPolyChrome = true;
-            evt.deviceId = _self.deviceId;
-
-            oEvent = extend(evt, options);
-            element.fireEvent('on' + _self.eventType, oEvent);
-        }
-
+        PolyChromeEventHandler.customHandler(_self.content);
     }
 }

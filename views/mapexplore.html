@@ -87,13 +87,28 @@
             ServerConnection.init("maps");
             /* end PolyChrome block */
 
-            google.maps.event.addListener(map, 'center_changed', function () {
+            var currentCenter = map.getCenter();
+            google.maps.event.addListener(map, 'center_changed', function (event) {
                 console.log("center changed");
 
-                //create custom event and set handler 
-                map.setZoom(8);
+                var center = map.getCenter();
+                console.log(Math.abs(center.lat() - currentCenter.lat()));
+                console.log(Math.abs(center.lng() - currentCenter.lng()));
+                if (Math.abs(center.lat() - currentCenter.lat()) < 0.1 && Math.abs(center.lng() - currentCenter.lng()) < 0.1) {
+                    /* do nothing */
+                } else {
+                    //create custom event and set handler 
+                    map.setZoom(8);
+                    PolyChromeEventHandler.createCustomEvent("center_changed", { lat: center.lat(), lng: center.lng() });
+                    PolyChromeEventHandler.event.shareEvent();
+                    currentCenter = center;
+                }
+
             });
 
+            PolyChromeEventHandler.setCustomEventHandler(function (content) {
+                map.setCenter(new google.maps.LatLng(content.lat, content.lng));
+            });
 
             //google.maps.event.addListener(marker, 'click', function () {
             //    map.setZoom(8);
@@ -123,7 +138,7 @@
                           .enter().append("svg:svg")
                           .each(transform)
                           .attr("class", "marker")
-                          .attr("id", function(d){return d.key;});
+                          .attr("id", function (d) { return d.key; });
 
                         // Add a circle.
                         marker.append("svg:circle")
@@ -161,30 +176,30 @@
                         .style("left", (d.x - padding) + "px")
                         .style("top", (d.y - padding) + "px");
                         }
-                         
+
                     };
 
 
                 };
 
-              
+
                 // Bind our overlay to the map…
                 overlay.setMap(map);
 
-                google.maps.event.addListenerOnce(map, 'idle', function() {
-                        /* call polychromify */
-                        PolyChromeEventHandler.polyChromify();
-                        FeedbackPanel.setDisplayBackground();
+                google.maps.event.addListenerOnce(map, 'idle', function () {
+                    /* call polychromify */
+                    PolyChromeEventHandler.polyChromify();
+                    FeedbackPanel.setDisplayBackground();
 
-                        /* state synchronization */
-                        ServerConnection.get();
- 
-                      //setTimeout(function() {
-                      //  // wait some more (...)
-                      //  google.maps.event.trigger(marker, 'click'); //still doesn't work
-                      //},2000);
+                    /* state synchronization */
+                    ServerConnection.get();
+
+                    //setTimeout(function() {
+                    //  // wait some more (...)
+                    //  google.maps.event.trigger(marker, 'click'); //still doesn't work
+                    //},2000);
                 });
-              });
+            });
 
         </script>
     </body>
