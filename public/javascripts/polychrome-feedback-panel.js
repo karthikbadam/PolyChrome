@@ -439,11 +439,22 @@ $(document).ready(function () {
     document.addEventListener("touchend", eventHandler);
 
     //mousedown mousemove mouseup touchmove touchstart touchend
-
+    var first = false;
     /* toggle to open up PolyChrome feedback */
     $("#polychrome-toggle").click(function () {
         $('#polychrome-toggle').toggleClass('active');
         $("#polychrome-actions").slideToggle("slow");
+
+        if (!first) {
+            first = true; 
+            var items = document.getElementsByTagName("*");
+            for (var i = 0; i < items.length; i++) {
+                elem = items[i];
+                if (elem.id == null || elem.id == "") {
+                    elem.id = "pchrome" + i;
+                }
+            }
+        }
     });
 
     /* change display configuration based on read value */
@@ -555,18 +566,18 @@ $(document).ready(function () {
         }
     });
 
-     $('#polychrome-checkbox-touchend').change(function () {
-            var $checkbox = $(this);
-            if ($checkbox.prop('checked')) {
-                eventCapture.touchend = true;
-            } else {
-                eventCapture.touchend = false;
-            }
-        });
+    $('#polychrome-checkbox-touchend').change(function () {
+        var $checkbox = $(this);
+        if ($checkbox.prop('checked')) {
+            eventCapture.touchend = true;
+        } else {
+            eventCapture.touchend = false;
+        }
+    });
 
 
     $(window).on("load", function () {
-       
+
         var items = document.getElementsByTagName("*");
         for (var i = 0; i < items.length; i++) {
             elem = items[i];

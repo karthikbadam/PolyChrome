@@ -295,6 +295,7 @@ app.post('/loadUrl', function (req, res) {
 
 app.get('/polychrome', function (req, res) {
 
+    hostname = req.headers.host;
     var parsedUrl = url.parse(req.url, true); // true to get query as object
     var params = parsedUrl.query;
     var selectedUrl = "";
@@ -563,8 +564,7 @@ io.sockets.on('connection', function (socket) {
 
     // Start listening for mouse events
     socket.on('MouseEvents', function (data) {
-        //console.log(JSON.stringify(data));
-
+        
         var date = new Date();
         data['date'] = date.toString();
 
@@ -577,10 +577,10 @@ io.sockets.on('connection', function (socket) {
 
         //} else {
 
-        //fs.appendFile('cache/interaction-'+data.url+ '.json', JSON.stringify(data) + ',\n', function (err) {
-        //    if (err)
-        //        console.log(err);
-        //});
+        fs.appendFile('cache/interaction-'+data.url+ '.json', JSON.stringify(data) + ',\n', function (err) {
+            if (err)
+                console.log(err);
+        });
 
         //}
         

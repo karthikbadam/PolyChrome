@@ -36,8 +36,9 @@ function PolyChromeEvent(options) {
         _self.deviceId = options.deviceId;
         _self.posX = options.posX;
         _self.posY = options.posY;
-        _self.element = options.element; 
-    
+        _self.element = options.element;
+        _self.time = options.time;
+
         /* check if eventType is known type */
         var eventName = _self.checkEvent(_self.eventType);
 
@@ -83,16 +84,16 @@ PolyChromeEvent.prototype.shareEvent = function () {
 PolyChromeEvent.prototype.getPacket = function () {
     var _self = this;
     var toSend = new Object();
-        
-   if (_self.isNative) {
-       toSend.posX = (_self.posX) * idealWidth / screenWidth;
+
+    if (_self.isNative) {
+        toSend.posX = (_self.posX) * idealWidth / screenWidth;
         toSend.posY = (_self.posY) * idealHeight / screenHeight;
         toSend.eventType = _self.eventType;
         toSend.targetId = _self.element.id;
         toSend.target = _self.nodeName;
         toSend.deviceId = _self.deviceId;
+        toSend.time = _self.time;
 
-        
     } else {
         toSend.content = _self.content;
         toSend.eventType = _self.eventType;
@@ -139,6 +140,8 @@ PolyChromeEvent.prototype.execute = function () {
         if (_self.eventName == "MouseEvents") {
 
             if (document.createEvent) {
+                console.log(_self.eventType + "," + (new Date().getTime() - _self.time));
+            
                 oEvent = document.createEvent("MouseEvents");
 
                 /* recognize that this is PolyChrome event */

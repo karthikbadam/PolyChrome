@@ -282,6 +282,7 @@ var PeerConnection = {
 
     send: function (toSend) {
         var _self = this;
+
         _self.connections.forEach(function (connection) {
             if (connection)
                 connection.send(toSend);
@@ -318,6 +319,7 @@ var PeerConnection = {
                 element: element,
                 pageWidth: screenWidth,
                 pageHeight: screenHeight,
+                time: data.time,
                 isNative: true
             });
 
@@ -389,7 +391,8 @@ var PolyChromeEventHandler = {
             nativeEvent: nativeEvent,
             pageWidth: screenWidth,
             pageHeight: screenHeight,
-            isNative: true
+            isNative: true, 
+            time: new Date().getTime()
         });
     },
 
