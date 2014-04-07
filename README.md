@@ -71,9 +71,10 @@ Resources for Newcomers
 <br><br>
 <img src="https://github.com/karthikbadam/PolyChrome/blob/master/screenshots/screenshot-3.PNG?raw=true">
  
+- Video demo available - [LINK](https://www.youtube.com/watch?v=pKnRloUAKps)
+
 - Some sample webpages that can be used with PolyChrome
 
    * http://bl.ocks.org/mbostock/raw/4343214/7156108135e543e2bc60543a05bc9e9abf4a928c/
    * http://multiviz.gforge.inria.fr/scatterdice/oscars/
    * http://bl.ocks.org/VisDockHub/raw/8973882/b0df0fe605374ad0a1950faf2dec5c21b235dd16/
-
