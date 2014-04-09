@@ -68,12 +68,10 @@ Resources for Newcomers
 - [How to install node.js on Windows](http://dailyjs.com/2012/05/03/windows-and-node-1/)
 - [The Wiki](https://github.com/karthikbadam/polychrome/wiki)
 - A simple multi-device drawing application is also provided with this framework. You can try it out by running PolyChrome and opening "[hostname]:3000/drawing" in your browser.
-<br><br>
-<img src="https://github.com/karthikbadam/PolyChrome/blob/master/screenshots/screenshot-3.PNG?raw=true">
- 
+
 - <a href="http://www.youtube.com/watch?feature=player_embedded&v=pKnRloUAKps
 " target="_blank"><img src="http://img.youtube.com/vi/pKnRloUAKps/0.jpg" 
-alt="PolyChrome Demo" width="240" height="180" border="10" /></a>
+alt="PolyChrome Demo" width="480" height="360" border="10" /></a>
 
 - Some sample webpages that can be used with PolyChrome
 
