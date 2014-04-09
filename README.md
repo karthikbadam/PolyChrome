@@ -71,7 +71,9 @@ Resources for Newcomers
 <br><br>
 <img src="https://github.com/karthikbadam/PolyChrome/blob/master/screenshots/screenshot-3.PNG?raw=true">
  
-- Video demo - [LINK](https://www.youtube.com/watch?v=pKnRloUAKps)
+- <a href="http://www.youtube.com/watch?feature=player_embedded&v=pKnRloUAKps
+" target="_blank"><img src="http://img.youtube.com/vi/pKnRloUAKps/0.jpg" 
+alt="PolyChrome Demo" width="240" height="180" border="10" /></a>
 
 - Some sample webpages that can be used with PolyChrome
 
