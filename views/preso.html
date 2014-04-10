@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>PolyChrome - Web-based Collaborative Visualizations</title>
+
+		<meta name="description" content="A framework for creating collaborative visualizations">
+		<meta name="author" content="Karthik Badam">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="/presentation/css/reveal.css">
+		<link rel="stylesheet" href="/presentation/css/theme/serif.css" id="theme">
+        <link rel="stylesheet" href="stylesheets/polychrome-style.css"></link>
+        <link rel="shortcut icon" href="images/polychrome-icon.png" />
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="/presentation/lib/css/zenburn.css">
+        <link href="http://vjs.zencdn.net/4.5/video-js.css" rel="stylesheet">
+        <script src="http://vjs.zencdn.net/4.5/video.js"></script>
+        <style type="text/css">
+          .vjs-default-skin .vjs-control-bar { font-size: 88% }
+        </style>
+
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h2>PolyChrome</h2>
+					Framework for Web-based Collaborative Visualizations
+					<br></br>
+                    <p>
+						<small>Created by <a href="">Karthik Badam</a> </small>
+					</p>
+				</section>
+
+				<section>
+					<h3>Collaboration over the web</h3>
+                    <br/>
+					<ol>
+						<li class="fragment">Co-located and synchronous: Sensemaking and visual exploration.</li><br/>
+						<li class="fragment">Distributed and synchronous: Presentations and design processes.</li><br/>
+						<li class="fragment">Co-located and asynchronous: Sensemaking for long-term tasks.</li><br/>
+						<li class="fragment">Distributed and asynchronous: Supporting discussion for data analysis (ManyEyes) </li><br/>
+					</ol>
+                    <aside class="notes">
+					</aside>
+				</section>
+
+                <section>
+                    <h3>Supporting web collaboration</h3>
+                    <br/>
+                    <ol>
+						<li class="fragment">Multiple display space configurations.</li><br/>
+						<li class="fragment">Different types of interaction sharing.</li><br/>
+                        <a class="teaser">
+							<img width="700" height="400" src="/presentation/images/teaser.png" alt="Teaser">
+						</a>
+					</ol>  
+                </section>
+
+                <section>
+                    <h3>Interaction event Sharing</h3>
+                    <br/>
+                    <a class="sharing">
+						<img width="900" height="400" src="/presentation/images/sharing.png" alt="Sharing">
+					</a>
+                    
+                </section>
+
+                
+                <section>
+                    <h3>Display space configuration</h3>
+                    <br/>
+                    <a class="display">
+						<img width="800" height="500" src="/presentation/images/display.png" alt="display">
+					</a>
+                    
+                </section>
+
+                
+                <section>
+                    <h3>PolyChrome philosophy</h3>
+                    <br/>
+                    <a class="interaction">
+						<img width="1300" height="150" src="/presentation/images/interaction.png" alt="Interaction">
+					</a>
+                    <p>
+                        An example interaction with a Choropleth map of unemployment rates in U.S from 2008, created using D3. Upon user interaction (by drawing a rectangular shape on the map), the counties within a selected region are highlighted. PolyChrome provides API-level support for capturing and sharing the browser events that are triggered during this interaction with other connected devices, thus supporting collaborative visualization and visual analytics. The interaction in this example happens by a combination of Mousedown, Mousemove, and Mouseup events that are part of modern web standards.
+                    </p>
+                </section>
+
+                <section>
+                    <h3>PolyChrome Contributions</h3>
+                    <br/>
+                    <ol>
+						<li class="fragment">A distributed web browser framework supporting co-browsing for both
+new collaborative visualizations as well as legacy websites (via proxy server)</li><br/>
+						<li class="fragment">A web developer API for building new collaborative
+web applications supporting multiple devices with different capabilities, displays, and modalities.</li><br/>
+						<li class="fragment">Server-side modules storing
+state and interaction events for consistency management in synchronous collaboration and for interaction replay in asynchronous
+collaboration.</li><br/>
+					</ol>
+                </section>
+
+				<section>
+                    <h3>PolyChrome Demo</h3>
+                    <a>
+                        <video id="my_video_1" class="video-js vjs-default-skin" controls
+                         preload="auto" width="1300" height="600" 
+                         data-setup="{}">
+                         <source src="/presentation/video/PC_infovis.mp4" type='video/mp4'>
+                        </video>
+                    </a>
+                </section>
+			</div>
+
+		</div>
+        <script src="http://code.jquery.com/jquery-2.1.0.js"></script>
+		<script src="/presentation/lib/js/head.min.js"></script>
+		<script src="/presentation/js/reveal.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/api/polychrome-peer.js"></script>
+        <script src="/javascripts/polychrome-feedback-panel.js"></script>
+        
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: '/presentation/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: '/presentation/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '/presentation/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '/presentation/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: '/presentation/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: '/presentation/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+                <button id="polychrome-toggle" class="normal"></button>
+
+        <div id="polychrome-actions">
+            <div id="polychrome-id">
+        Peer ID:
+            </div>
+
+            <div id="screen-options">
+
+                <div class="multiple-screen">
+                    <input type="button" id="one-screen">    
+                </div>
+
+                <div class="multiple-screen">
+                    <div>
+                        <input type="button" class="multiple-screen-element" id="four-screen-left-top">
+                        <input type="button" class="multiple-screen-element" id="four-screen-right-top">
+                    </div>
+                    <div>
+                        <input type="button" class="multiple-screen-element" id="four-screen-left-bottom">
+                        <input type="button" class="multiple-screen-element" id="four-screen-right-bottom">
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="polychrome-checkbox-div">
+                <div id="polychrome-eventtypes-text">EVENT TYPES</div>
+                <div class="polychrome-checkbox">Click
+                    <input type="checkbox" value="click" id="polychrome-checkbox-click" checked></div>
+                <div class="polychrome-checkbox">Scroll
+                    <input type="checkbox" value="scroll" id="polychrome-checkbox-scroll" checked></div>
+                <div class="polychrome-checkbox">Mouse Down
+                    <input type="checkbox" value="mousedown" id="polychrome-checkbox-mousedown" checked></div>
+                <div class="polychrome-checkbox">Mouse Move
+                    <input type="checkbox" value="mousemove" id="polychrome-checkbox-mousemove" checked></div>
+                <div class="polychrome-checkbox">Mouse Up
+                    <input type="checkbox" value="mouseup" id="polychrome-checkbox-mouseup" checked></div>
+                <div class="polychrome-checkbox">Touch Start
+                    <input type="checkbox" value="touchstart" id="polychrome-checkbox-touchstart" checked></div>
+                <div class="polychrome-checkbox">Touch Move
+                    <input type="checkbox" value="touchmove" id="polychrome-checkbox-touchmove" checked></div>
+                <div class="polychrome-checkbox">Touch End
+                    <input type="checkbox" value="touchend" id="polychrome-checkbox-touchend" checked></div>
+            </div>
+
+
+            <div id="polychrome-event-config">
+                <div id="polychrome-event-text">EVENTS</div>
+                <div id="polychrome-events-div">
+                    <div id="polychrome-events-list">
+                        <div class="polychrome-event-button" id="polychrome-self-event-tab">
+                    My events
+                        </div>
+                    </div>
+                    <div id="polychrome-events-dump">
+                    </div>
+                </div>
+            </div>
+            
+            <div id="polychrome-display-config">
+                <div id="polychrome-display-text">DISPLAY</div>
+                <div id="polychrome-display-div">
+                    <div id="polychrome-display-list">
+                        <div class="polychrome-display-button" id="polychrome-self-display-tab">
+                    My display
+                        </div>
+                    </div>
+                    <div id="polychrome-display-dump">
+                    </div>
+                </div>
+            </div>
+            <div id="polychrome-disconnect">
+        DISCONNECT
+            </div>
+        </div>
+        <div id="pc-event-capturer">
+        </div>
+
+	</body>
+</html>

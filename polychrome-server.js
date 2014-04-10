@@ -88,6 +88,11 @@ app.get('/iris', routes.iris);
 /* app5 map */
 app.get('/map', routes.map);
 
+
+/* app5 PolyChrome */
+app.get('/preso', routes.preso);
+
+
 /* requests for data */
 app.get('/data/*', function (req, res) {
     console.log("data request captured: " + req.url);

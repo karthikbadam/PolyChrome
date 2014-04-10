@@ -263,6 +263,8 @@ function onData(connectedDeviceId, data) {
 		var targetId = data.targetId;
 
         executeEventOnPosition(eventType, eventName, posX, posY, targetName, targetId); 
+        console.log(eventType + "," + deviceId + "," + (new Date().getTime()) +" , "+(data.time));
+           
         addEventFeedback(connectedDeviceId, eventType, parseInt(posX), parseInt(posY)); 
 
     } else {
@@ -330,7 +332,7 @@ $(document).ready(function () {
     screenWidth = $(window).width();
     screenHeight = $(window).height();
 
-    var fb = new FeedbackPanel({});
+    //var fb = new FeedbackPanel({});
 
     var eventHandler = function (evt) {
 
@@ -369,8 +371,8 @@ $(document).ready(function () {
 
             if (evt.type == "touchend") {
                 toSend.eventType = "mouseup";
-                toSend.posX = evt.touches[0].pageX * idealWidth / screenWidth;
-                toSend.posY = evt.touches[0].pageY * idealHeight / screenHeight;
+                toSend.posX = evt.touches[0]? evt.touches[0].pageX * idealWidth / screenWidth: 0;
+                toSend.posY = evt.touches[0]? evt.touches[0].pageY * idealHeight / screenHeight: 0;
             }
 
             if (evt.type == "mousedown") {
@@ -401,6 +403,7 @@ $(document).ready(function () {
             toSend.globalX = evt.pageX + documentOrigin.x / scaleX;
             toSend.globalY = evt.pageY + documentOrigin.y / scaleY;
             toSend.deviceId = deviceId;
+            toSend.time = new Date().getTime();
 
             // list of elements 
             //var elemList = $.touching({ x: evt.pageX, y: evt.pageY });
@@ -446,7 +449,7 @@ $(document).ready(function () {
         $("#polychrome-actions").slideToggle("slow");
 
         if (!first) {
-            first = true; 
+            first = true;
             var items = document.getElementsByTagName("*");
             for (var i = 0; i < items.length; i++) {
                 elem = items[i];

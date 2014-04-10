@@ -31,3 +31,8 @@ exports.iris = function(req, res){
 exports.map = function(req, res){
   res.render('mapexplore', {});
 };
+
+
+exports.preso = function(req, res){
+  res.render('preso', {});
+};

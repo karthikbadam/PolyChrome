@@ -42,7 +42,8 @@ $(function () {
         },
         touchend: function (coors) {
             if (drawing) {
-                this.touchmove(coors);
+                //this.touchmove(coors);
+                context.stroke();
                 drawing = false;
             }
         },
@@ -59,7 +60,7 @@ $(function () {
         },
         mouseup: function (coors) {
             if (drawing) {
-                this.touchmove(coors);
+                context.stroke();
                 drawing = false;
             }
         }
