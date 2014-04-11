@@ -1,5 +1,5 @@
 [X] Event Replay 
-[ ] Control the display settings
-[ ] A mutliview viz for teaser
-[ ] Demo?
+[X] Control the display settings
+[X] A mutliview viz for teaser
+[X] Demo?
 
