@@ -69,7 +69,7 @@ Resources for Newcomers
 - [The Wiki](https://github.com/karthikbadam/polychrome/wiki)
 - A simple multi-device drawing application is also provided with this framework. You can try it out by running PolyChrome and opening "[hostname]:3000/drawing" in your browser.
 
-- PolyChrome Demo 
+- PolyChrome Demo -- with examples (youtube)
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=pKnRloUAKps
 " target="_blank"><img src="http://img.youtube.com/vi/pKnRloUAKps/0.jpg" 
