@@ -20,12 +20,11 @@ How to download:
   
 ###How to install and run:
 
-- PolyChrome has numerous dependencies, but thanks to node.js, they can all be installed with a single command. Open the PolyChrome folder in your command prompt or terminal and type in:
+- PolyChrome has numerous dependencies, but thanks to npm (a package manager for node.js), they can all be installed with a single command. Open the PolyChrome folder in your command prompt or terminal and type in:
 
 
     * npm install
     
-    "npm" is the package manager for node.js
     
 - This should take care of the dependencies. Note that PolyChrome is built to use [Express](http://expressjs.com/), a web application framework for node.js.
     
