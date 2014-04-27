@@ -2,6 +2,7 @@ PolyChrome
 =====
 
 A web application framework for collaborative web browsing of both static web pages and dynamic web visualizations.
+[PolyChrome is currently under development and we are rapidly improving it. Please contact [us](sbadam@purdue.edu) if you are interested and would like to contribute to our project in any way.]
 
 ### To build:
 
