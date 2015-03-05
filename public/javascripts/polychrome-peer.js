@@ -1221,7 +1221,7 @@ function Peer(id, options) {
   // Init immediately if ID is given, otherwise ask server for ID
   if (id) {
     this.id = id;
-    this._init();
+    //this._init();
   } else {
     this.id = null;
     this._retrieveId();
@@ -1247,7 +1247,7 @@ Peer.prototype._retrieveId = function(cb) {
           return;
         }
         self.id = http.responseText;
-        self._init();
+        //self._init();
       }
     };
     http.send(null);
@@ -1272,7 +1272,7 @@ Peer.prototype._retrieveAllIds = function(cb) {
           return;
         }
         self.clientIds = http.responseText;
-        //self._init();
+        self._init();
       }
     };
     http.send(null);
