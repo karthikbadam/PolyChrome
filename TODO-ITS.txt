@@ -1,5 +1,0 @@
-[X] Event Replay 
-[X] Control the display settings
-[X] A mutliview viz for teaser
-[X] Demo?
-
