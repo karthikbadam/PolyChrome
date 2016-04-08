@@ -13,15 +13,16 @@
     "ws": "~0.4.25",
     "optimist": "*",
     "request": "*",
-    "jsdom": "*", 
+    "jsdom": "0.11.1", 
     "url": "*",
-    "connect": "*", 
+    "connect": "2.25.5", 
     "cheerio": "*", 
     "async": "*", 
     "util": "*", 
     "mime": "*", 
     "socket.io": "*",
-    "webshot": "*"
+    "webshot": "*", 
+    "peer": "*"
   },
   "devDependencies": {
     "expect.js": "*",

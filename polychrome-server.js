@@ -43,8 +43,9 @@ var sessions = {};
 var peerIds = [];
 
 /* peer server to give unique id to each peer */
-var peer = require('./peer/server');
-var PeerServer = peer.PeerServer;
+//var peer = require('./peer/server');
+//var PeerServer = peer.PeerServer;
+var PeerServer = require('peer').PeerServer;
 
 var app = express();
 app.engine('.html', require('ejs').__express);
@@ -543,9 +544,11 @@ httpserver.listen(app.get('port'), function () {
 });
 
 /* peer server */
-new PeerServer({
-    port: 8000
-});
+//new PeerServer({
+//    port: 8000
+//});
+
+var server = PeerServer({port: 8000, path: '/polychrome', allow_discovery: true, key: 'peerjs'});
 
 /* socket io */
 var io = require('socket.io').listen(httpserver);

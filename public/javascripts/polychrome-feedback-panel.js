@@ -2,7 +2,7 @@
  * @author Karthik Badam
  * created in March 2014
  */
- 
+
 var screenCount = 1;
 var screenIndex = 1;
 var myclick = false;
@@ -11,7 +11,10 @@ var scaleX = 1;
 var scaleY = 1;
 var screenWidth = 10;
 var screenHeight = 10;
-var documentOrigin = { x: 0, y: 0 };
+var documentOrigin = {
+    x: 0,
+    y: 0
+};
 var hostname = '';
 var port = '';
 
@@ -24,10 +27,10 @@ eventCapture.click = true;
 eventCapture.touchstart = true;
 eventCapture.touchmove = true;
 eventCapture.touchend = true;
-eventCapture.mousedown = true; 
-eventCapture.mousemove = true; 
+eventCapture.mousedown = true;
+eventCapture.mousemove = true;
 eventCapture.mouseup = true;
-var isMouseDown = false; 
+var isMouseDown = false;
 
 /* parse page URL to get peerId and screen details*/
 var selfUrl = document.URL;
@@ -69,7 +72,7 @@ if (match != null) {
 
 match = portCheck.exec(selfUrl);
 if (match != null) {
-    port = ''+match[1];
+    port = '' + match[1];
 } else {
     port = "3000";
 }
@@ -80,13 +83,13 @@ var globalElement = null;
 
 /* generate a random string if no ID is present */
 function randomString(len, charSet) {
-	charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-	var randomString = '';
-	for (var i = 0; i < len; i++) {
-		var randomPoz = Math.floor(Math.random() * charSet.length);
-		randomString += charSet.substring(randomPoz, randomPoz + 1);
-	}
-	return randomString;
+    charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var randomString = '';
+    for (var i = 0; i < len; i++) {
+        var randomPoz = Math.floor(Math.random() * charSet.length);
+        randomString += charSet.substring(randomPoz, randomPoz + 1);
+    }
+    return randomString;
 }
 
 /* default event options */
@@ -109,64 +112,60 @@ var eventMatchers = {
 }
 
 /* simulate the Mouse event */
-function simulateMouseEvent(element, eventType, options)
-{
-    var oEvent = null; 
+function simulateMouseEvent(element, eventType, options) {
+    var oEvent = null;
 
-    if (document.createEvent)
-    {
+    if (document.createEvent) {
         oEvent = document.createEvent("MouseEvents");
-        
+
         /* recognize that this is PolyChrome event */
         oEvent.isPolyChrome = true;
         oEvent.initMouseEvent(eventType, options.bubbles, options.cancelable, document.defaultView,
-        1, options.pointerX, options.pointerY, options.pointerX, options.pointerY,
-        options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, element);
+            1, options.pointerX, options.pointerY, options.pointerX, options.pointerY,
+            options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, element);
         element.dispatchEvent(oEvent);
-        return true; 
+        return true;
 
     } else {
-    
+
         options.clientX = options.pointerX;
         options.clientY = options.pointerY;
         var evt = document.createEventObject();
-        evt.isPolyChrome = true; 
+        evt.isPolyChrome = true;
         oEvent = extend(evt, options);
         element.fireEvent('on' + eventType, oEvent);
-        return true; 
+        return true;
     }
     return false;
 }
 
 /* simulate the HTML event */
-function simulateHTMLEvent(element, eventType, options)
-{
-    var oEvent = null; 
+function simulateHTMLEvent(element, eventType, options) {
+    var oEvent = null;
 
-    if (document.createEvent)
-    {
+    if (document.createEvent) {
         oEvent = document.createEvent("HTMLEvents");
-        oEvent.isPolyChrome = true; 
+        oEvent.isPolyChrome = true;
         oEvent.initEvent(eventType, options.bubbles, options.cancelable);
         element.dispatchEvent(oEvent);
-        return true; 
+        return true;
 
     } else {
-    
+
         options.clientX = options.pointerX;
         options.clientY = options.pointerY;
         var evt = document.createEventObject();
-        evt.isPolyChrome = true; 
+        evt.isPolyChrome = true;
         oEvent = extend(evt, options);
         element.fireEvent('on' + eventType, oEvent);
-        return true; 
+        return true;
     }
     return false;
 }
 
 function extend(destination, source) {
     for (var property in source)
-      destination[property] = source[property];
+        destination[property] = source[property];
     return destination;
 }
 
@@ -175,7 +174,7 @@ var executeEventOnPosition = function (eventType, eventName, posX, posY, targetN
 
     var pageX = posX;
     var pageY = posY;
-    var elem = $("#"+targetId).get(0);
+    var elem = $("#" + targetId).get(0);
 
     if (targetId == null || eventType == "mousedown" || eventType == "click") {
         //var removeElements = [];
@@ -188,14 +187,18 @@ var executeEventOnPosition = function (eventType, eventName, posX, posY, targetN
         //    
         //}
 
-        $('#pc-event-capturer').css({ "display": "none" });
+        $('#pc-event-capturer').css({
+            "display": "none"
+        });
         globalElement = document.elementFromPoint(pageX, pageY);
-        $('#pc-event-capturer').css({ "display": "initial" });
+        $('#pc-event-capturer').css({
+            "display": "initial"
+        });
 
     }
 
-    
-    
+
+
     if (elem && eventName == "HTMLEvents") {
         /* copying the defaultOptions */
         var options = new Object();
@@ -212,30 +215,30 @@ var executeEventOnPosition = function (eventType, eventName, posX, posY, targetN
 }
 
 function makeMessage(eventType, message) {
-	var data = new Object();
+    var data = new Object();
 
-	//message for click events 
-	if (eventType == "click") {
-		data.eventType = "click";
-		data.message = message;
-	}
+    //message for click events 
+    if (eventType == "click") {
+        data.eventType = "click";
+        data.message = message;
+    }
 
-	//message for scroll events
-	if (eventType == "scroll") {
-		data.eventType = "scroll";
-	}
-	return data;
+    //message for scroll events
+    if (eventType == "scroll") {
+        data.eventType = "scroll";
+    }
+    return data;
 }
 
 /* Method for adding event details to UI */
-var addEventFeedback = function(connectedClientId, eventType, posX, posY) {
-      $('#polychrome-events-dump').prepend('<div class="polychrome-event-element">'+eventType+' for '+connectedClientId+' at '+posX+", "+posY+' </div>');
+var addEventFeedback = function (connectedClientId, eventType, posX, posY) {
+    $('#polychrome-events-dump').prepend('<div class="polychrome-event-element">' + eventType + ' for ' + connectedClientId + ' at ' + posX + ", " + posY + ' </div>');
 }
 
 /* Method to add new peer details to the UI when connected */
-var addNewPeer = function(connectedPeer) {
-    $('#polychrome-events-list').append('<div class="polychrome-event-button" id="polychrome-'+connectedPeer+'-tab">'+connectedPeer+'</div>');
-    $('#polychrome-display-list').append('<div class="polychrome-display-button" id="polychrome-'+connectedPeer+'-tab">'+connectedPeer+'</div>');
+var addNewPeer = function (connectedPeer) {
+    $('#polychrome-events-list').append('<div class="polychrome-event-button" id="polychrome-' + connectedPeer + '-tab">' + connectedPeer + '</div>');
+    $('#polychrome-display-list').append('<div class="polychrome-display-button" id="polychrome-' + connectedPeer + '-tab">' + connectedPeer + '</div>');
 }
 
 /* handle received event */
@@ -244,10 +247,10 @@ function onData(connectedDeviceId, data) {
     var eventName = null;
 
     for (var name in eventMatchers) {
-        if (eventMatchers[name].test(data.eventType)) { 
+        if (eventMatchers[name].test(data.eventType)) {
             eventType = data.eventType;
             eventName = name;
-            break; 
+            break;
         }
     }
 
@@ -256,61 +259,91 @@ function onData(connectedDeviceId, data) {
 
     if (eventType && eventName) {
         var targetName = data.target;
-		var posX = data.posX * screenWidth/idealWidth - document.body.scrollLeft;
-		var posY = data.posY  * screenHeight/idealHeight - document.body.scrollTop;
-		var globalX = data.globalX;
-		var globalY = data.globalY;
-		var targetId = data.targetId;
+        var posX = data.posX * screenWidth / idealWidth - document.body.scrollLeft;
+        var posY = data.posY * screenHeight / idealHeight - document.body.scrollTop;
+        var globalX = data.globalX;
+        var globalY = data.globalY;
+        var targetId = data.targetId;
 
-        executeEventOnPosition(eventType, eventName, posX, posY, targetName, targetId); 
-        console.log(eventType + "," + deviceId + "," + (new Date().getTime()) +" , "+(data.time));
-           
-        addEventFeedback(connectedDeviceId, eventType, parseInt(posX), parseInt(posY)); 
+        executeEventOnPosition(eventType, eventName, posX, posY, targetName, targetId);
+        console.log(eventType + "," + deviceId + "," + (new Date().getTime()) + " , " + (data.time));
+
+        addEventFeedback(connectedDeviceId, eventType, parseInt(posX), parseInt(posY));
 
     } else {
         /* It is not an event but a message*/
-    
+
     }
 }
 
 //on connection 
 function connect(conn) {
-	conn.on('open', function() {
-		connections.push(conn);
-		//alert("Now connected to " + conn.peer);
+    conn.on('open', function () {
+        connections.push(conn);
+        //alert("Now connected to " + conn.peer);
         addNewPeer(conn.peer);
-	});
+    });
 
-	conn.on('data', function(data) {
-		if (data != null)
-			onData(conn.peer, data);
+    conn.on('data', function (data) {
+        if (data != null)
+            onData(conn.peer, data);
 
-	});
+    });
 }
 
+//var peer = new Peer(deviceId, {
+//    host: hostname,
+//    port: '8000'
+//});
+
 var peer = new Peer(deviceId, {
-	host: hostname,
-	port: '8000'    
+    host: hostname,
+    port: 8000,
+    path: '/polychrome',
+    key: 'peerjs'
 });
 
-peer.on('open', function(id, clientIds) {
-	$('#polychrome-id').text("CLIENT ID: "+id);
-	
-    console.log(clientIds);
-    if (clientIds) {
-	    var peer1 = clientIds.split(",");
-	    peer1.forEach(function(peerid) {
-		    var conn = peer.connect(peerid);
-		    conn.on('open', function() {
-			    connections.push(conn);
-			    addNewPeer(conn.peer);
-		    });
+peer.on('open', function (id, clientIds) {
+    $('#polychrome-id').text("CLIENT ID: " + id);
 
-		    conn.on('data', function(data) {
-			    if (data != null)
-				    onData(conn.peer, data);
-		    });
-	    });
+    //console.log(clientIds);
+
+    if (clientIds) {
+        var peer1 = clientIds.split(",");
+        peer1.forEach(function (peerid) {
+            var conn = peer.connect(peerid);
+            conn.on('open', function () {
+                connections.push(conn);
+                addNewPeer(conn.peer);
+            });
+
+            conn.on('data', function (data) {
+                if (data != null)
+                    onData(conn.peer, data);
+            });
+        });
+
+    } else {
+
+        peer.listAllPeers(function (clientIds) {
+            clientIds.forEach(function (peerid) {
+                if (peerid == deviceId) {
+                    return;
+                }
+
+                var conn = peer.connect(peerid);
+                conn.on('open', function () {
+                    connections.push(conn);
+                    addNewPeer(conn.peer);
+                });
+
+                conn.on('data', function (data) {
+                    if (data != null)
+                        onData(conn.peer, data);
+                });
+                
+            });
+        });
     }
 });
 
@@ -319,7 +352,7 @@ peer.on('connection', connect);
 
 
 /* sockets to connect to server */
-var socket = io.connect('http://'+hostname+":"+port);
+var socket = io.connect('http://' + hostname + ":" + port);
 
 /* socket handle incoming messages */
 socket.on('MouseEvents', function (data) {
@@ -329,6 +362,7 @@ socket.on('MouseEvents', function (data) {
 
 /* on document load */
 $(document).ready(function () {
+
     screenWidth = $(window).width();
     screenHeight = $(window).height();
 
@@ -371,31 +405,43 @@ $(document).ready(function () {
 
             if (evt.type == "touchend") {
                 toSend.eventType = "mouseup";
-                toSend.posX = evt.touches[0]? evt.touches[0].pageX * idealWidth / screenWidth: 0;
-                toSend.posY = evt.touches[0]? evt.touches[0].pageY * idealHeight / screenHeight: 0;
+                toSend.posX = evt.touches[0] ? evt.touches[0].pageX * idealWidth / screenWidth : 0;
+                toSend.posY = evt.touches[0] ? evt.touches[0].pageY * idealHeight / screenHeight : 0;
             }
 
             if (evt.type == "mousedown") {
                 isMouseDown = true;
-                $('#pc-event-capturer').css({ "display": "none" });
+                $('#pc-event-capturer').css({
+                    "display": "none"
+                });
                 globalElement = document.elementFromPoint(evt.clientX, evt.clientY);
-                $('#pc-event-capturer').css({ "display": "initial" });
+                $('#pc-event-capturer').css({
+                    "display": "initial"
+                });
                 toSend.targetId = globalElement.id;
             }
 
             if (evt.type == "click") {
-                $('#pc-event-capturer').css({ "display": "none" });
+                $('#pc-event-capturer').css({
+                    "display": "none"
+                });
                 globalElement = document.elementFromPoint(evt.clientX, evt.clientY);
-                $('#pc-event-capturer').css({ "display": "initial" });
+                $('#pc-event-capturer').css({
+                    "display": "initial"
+                });
                 toSend.targetId = globalElement.id;
             }
 
 
             if (evt.type == "mouseup") {
                 isMouseDown = false;
-                $('#pc-event-capturer').css({ "display": "none" });
+                $('#pc-event-capturer').css({
+                    "display": "none"
+                });
                 globalElement = document.elementFromPoint(evt.clientX, evt.clientY);
-                $('#pc-event-capturer').css({ "display": "initial" });
+                $('#pc-event-capturer').css({
+                    "display": "initial"
+                });
                 toSend.targetId = globalElement.id;
             }
 
@@ -485,13 +531,17 @@ $(document).ready(function () {
             documentOrigin.x = 0;
             documentOrigin.y = 0;
 
-            $("body").panzoom("zoom", 2, { silent: true });
+            $("body").panzoom("zoom", 2, {
+                silent: true
+            });
 
         } else if (screenIndex == 2) {
             documentOrigin.x = screenWidth;
             documentOrigin.y = 0;
 
-            $("body").panzoom("zoom", 2, { silent: true });
+            $("body").panzoom("zoom", 2, {
+                silent: true
+            });
 
             window.scrollTo(screenWidth / 2, 0);
 
