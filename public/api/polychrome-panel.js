@@ -1,5 +1,3 @@
-
-
 var screenCount = 1;
 var screenIndex = 1;
 var deviceId = "";
@@ -41,45 +39,47 @@ eventCapture.mousemove = true;
 eventCapture.mouseup = true;
 
 var pcrandom = {
-  normal: function(mu, sigma) {
-    var n = arguments.length;
-    if (n < 2) sigma = 1;
-    if (n < 1) mu = 0;
-    return function() {
-      var x, y, r;
-      do {
-        /* should synchronize this value!! for pseudo random */
-        x = Math.random() * 2 - 1;
-        y = Math.random() * 2 - 1;
-        r = x * x + y * y;
-      } while (!r || r > 1);
-      return mu + sigma * x * Math.sqrt(-2 * Math.log(r) / r);
-    };
-  },
-  logNormal: function() {
-    var random = d3.random.normal.apply(d3, arguments);
-    return function() {
-      return Math.exp(random());
-    };
-  },
-  bates: function(m) {
-    var random = d3.random.irwinHall(m);
-    return function() {
-      return random() / m;
-    };
-  },
-  irwinHall: function(m) {
-    return function() {
-      for (var s = 0, j = 0; j < m; j++) s += Math.random();
-      return s;
-    };
-  }
+    normal: function (mu, sigma) {
+        var n = arguments.length;
+        if (n < 2) sigma = 1;
+        if (n < 1) mu = 0;
+        return function () {
+            var x, y, r;
+            do {
+                /* should synchronize this value!! for pseudo random */
+                x = Math.random() * 2 - 1;
+                y = Math.random() * 2 - 1;
+                r = x * x + y * y;
+            } while (!r || r > 1);
+            return mu + sigma * x * Math.sqrt(-2 * Math.log(r) / r);
+        };
+    },
+    logNormal: function () {
+        var random = d3.random.normal.apply(d3, arguments);
+        return function () {
+            return Math.exp(random());
+        };
+    },
+    bates: function (m) {
+        var random = d3.random.irwinHall(m);
+        return function () {
+            return random() / m;
+        };
+    },
+    irwinHall: function (m) {
+        return function () {
+            for (var s = 0, j = 0; j < m; j++) s += Math.random();
+            return s;
+        };
+    }
 };
 
 var FeedbackPanel = {
 
     init: function () {
-        $('#polychrome-display-dump').css({ 'background-color': 'rgba(100, 100, 100, 1)' });
+        $('#polychrome-display-dump').css({
+            'background-color': 'rgba(100, 100, 100, 1)'
+        });
         $('#polychrome-display-dump').css('background-image', 'none');
     },
 
@@ -90,8 +90,8 @@ var FeedbackPanel = {
         html2canvas(document.body, {
             onrendered: function (canvas) {
                 var ctx = canvas.getContext('2d'),
-                rect = {},
-                drag = false;
+                    rect = {},
+                    drag = false;
 
                 var width = 200;
                 var height = 100;
@@ -272,25 +272,57 @@ var PeerConnection = {
             port = "3000";
         }
 
-        _self.peer = new Peer(deviceId, { host: hostname, port: '8000' });
+//        _self.peer = new Peer(deviceId, {
+//            host: hostname,
+//            port: '8000'
+//        });
+
+        _self.peer = new Peer(deviceId, {
+            host: hostname,
+            port: 8000,
+            path: '/polychrome',
+            key: 'peerjs'
+        });
 
         _self.peer.on('open', function (id, clientIds) {
             $('#polychrome-id').text("CLIENT ID: " + id);
 
+            //console.log(clientIds);
+
             if (clientIds) {
-                var peers = clientIds.split(",");
-                peers.forEach(function (peerid) {
+                var peer1 = clientIds.split(",");
+                peer1.forEach(function (peerid) {
                     var conn = _self.peer.connect(peerid);
                     conn.on('open', function () {
                         _self.connections.push(conn);
                         FeedbackPanel.addNewPeer(conn.peer);
-                        //alert("Connected to -" + conn.peer);
-                        console.log("connected to " + conn.peer);
                     });
 
                     conn.on('data', function (data) {
                         if (data != null)
                             _self.onData(conn.peer, data);
+                    });
+                });
+
+            } else {
+
+                _self.peer.listAllPeers(function (clientIds) {
+                    clientIds.forEach(function (peerid) {
+                        if (peerid == deviceId) {
+                            return;
+                        }
+
+                        var conn = _self.peer.connect(peerid);
+                        conn.on('open', function () {
+                            _self.connections.push(conn);
+                            FeedbackPanel.addNewPeer(conn.peer);
+                        });
+
+                        conn.on('data', function (data) {
+                            if (data != null)
+                                _self.onData(conn.peer, data);
+                        });
+
                     });
                 });
             }
@@ -426,7 +458,7 @@ var PolyChromeEventHandler = {
             nativeEvent: nativeEvent,
             pageWidth: screenWidth,
             pageHeight: screenHeight,
-            isNative: true, 
+            isNative: true,
             time: new Date().getTime()
         });
     },
@@ -442,9 +474,9 @@ var PolyChromeEventHandler = {
     createCustomEvent: function (eventType, content) {
         var _self = this;
         _self.event = new PolyChromeEvent({
-            deviceId: deviceId, 
-            content: content, 
-            eventType: eventType, 
+            deviceId: deviceId,
+            content: content,
+            eventType: eventType,
             isNative: false
         });
     },
@@ -457,11 +489,11 @@ var PolyChromeEventHandler = {
 }
 
 /* 
-*  Leader -> share all events - receive no events,
-*  Lagger -> share no events - receive all events, 
-*  implicit -> share and receive all events,
-*  explicit -> pile events on the client and wait for an explicit register 
-*/
+ *  Leader -> share all events - receive no events,
+ *  Lagger -> share no events - receive all events,
+ *  implicit -> share and receive all events,
+ *  explicit -> pile events on the client and wait for an explicit register
+ */
 
 var SHARING = {
     LEADER: 0,
@@ -520,8 +552,12 @@ var DisplayConfiguration = {
             /* translation */
             _self.xTranslate = (Math.floor(_self.screen % _self.hScaling)) * screenWidth;
             _self.yTranslate = (Math.floor(_self.screen / _self.hScaling)) * screenHeight;
-            $('html').css({ '-webkit-transform-origin': (_self.xTranslate) + "px " + (_self.yTranslate) + "px" });
-            $('html').css({ '-webkit-transform': "scale(" + _self.hScaling + "," + _self.vScaling + ")" });
+            $('html').css({
+                '-webkit-transform-origin': (_self.xTranslate) + "px " + (_self.yTranslate) + "px"
+            });
+            $('html').css({
+                '-webkit-transform': "scale(" + _self.hScaling + "," + _self.vScaling + ")"
+            });
 
             _self.TAG = "PIVOTWALL";
 
@@ -537,8 +573,12 @@ var DisplayConfiguration = {
             _self.vScaling = _self.numberOfScreens[1];
 
             /* translation */
-            $('html').css({ '-webkit-transform-origin': (_self.xTranslate) + "px " + (_self.yTranslate) + "px" });
-            $('html').css({ '-webkit-transform': "scale(" + _self.hScaling + "," + _self.vScaling + ")" });
+            $('html').css({
+                '-webkit-transform-origin': (_self.xTranslate) + "px " + (_self.yTranslate) + "px"
+            });
+            $('html').css({
+                '-webkit-transform': "scale(" + _self.hScaling + "," + _self.vScaling + ")"
+            });
 
             _self.TAG = "TABLET";
         }
