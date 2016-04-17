@@ -13,7 +13,7 @@
     "ws": "~0.4.25",
     "optimist": "*",
     "request": "*",
-    "jsdom": "0.11.1", 
+    "jsdom": "*", 
     "url": "*",
     "connect": "2.25.5", 
     "cheerio": "*", 
